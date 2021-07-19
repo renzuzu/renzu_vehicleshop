@@ -44,21 +44,21 @@ function GetRandomNumber(length)
 	end
 end
 
-RegisterCommand('testa', function()
-    MySQL.Async.fetchAll('SELECT * FROM owned_vehicles', {}, function (result)
-        local plate = veh(tonumber(92299))
-        plate = plate:gsub("=", "")
-        print(plate)
-        local total = 8 - plate:len()
-        print(total)
-        if total ~= 0 then
-            plate = veh(tonumber(92299))..GetRandomNumber(total)
-            plate = plate:gsub("=", "")
-        end
-        print(plate,plate:len())
-        cb(plate)
-	end)
-end)
+-- RegisterCommand('testa', function()
+--     MySQL.Async.fetchAll('SELECT * FROM owned_vehicles', {}, function (result)
+--         local plate = veh(tonumber(92299))
+--         plate = plate:gsub("=", "")
+--         print(plate)
+--         local total = 8 - plate:len()
+--         print(total)
+--         if total ~= 0 then
+--             plate = veh(tonumber(92299))..GetRandomNumber(total)
+--             plate = plate:gsub("=", "")
+--         end
+--         print(plate,plate:len())
+--         cb(plate)
+-- 	end)
+-- end)
 
 ESX.RegisterServerCallback('renzu_vehicleshop:GenPlate', function (source, cb)
     MySQL.Async.fetchAll('SELECT * FROM owned_vehicles', {}, function (result)
@@ -100,13 +100,6 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
                     else
                         xPlayer.removeAccountMoney('bank', tonumber(price))
                     end
-                    -- local societyAccount = nil
-                    -- TriggerEvent('esx_addonaccount:getSharedAccount', 'society_monkey', function(account)
-                    -- societyAccount = account
-                    -- end)
-                    -- if vehiclePrice < 50000000 then
-                    -- societyAccount.addMoney(vehiclePrice * 0.15)
-                    -- end
                     stock = stock - 1
                     local data = json.encode(props)
                     MySQL.Async.execute('INSERT INTO owned_vehicles (owner, plate, vehicle, stored) VALUES (@owner, @plate, @props, @stored)',
@@ -117,7 +110,6 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
                         ['@stored'] = 1
                     },
                     function (rowsChanged)
-                        TriggerClientEvent("vehicleshop.sussessbuy", source, name, props, price)
                         MySQL.Sync.execute('UPDATE vehicles SET stock = @stock WHERE model = @model',
                         {
                             ['@stock'] = stock,
