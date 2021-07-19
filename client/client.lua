@@ -1400,7 +1400,7 @@ function SpawnVehicleLocal(model)
 
     SetNuiFocus(true, true)
     if LastVehicleFromGarage ~= nil then
-        DeleteEntity(LastVehicleFromGarage)
+        ReqAndDelete(LastVehicleFromGarage)
         SetModelAsNoLongerNeeded(hash)
     end
 
@@ -1427,7 +1427,7 @@ function SpawnVehicleLocal(model)
             --SetVehicleProp(LastVehicleFromGarage, props)
             currentcar = LastVehicleFromGarage
             if currentcar ~= LastVehicleFromGarage then
-                DeleteEntity(LastVehicleFromGarage)
+                ReqAndDelete(LastVehicleFromGarage)
                 SetModelAsNoLongerNeeded(hash)
             end
             TaskWarpPedIntoVehicle(GetPlayerPed(-1), LastVehicleFromGarage, -1)
@@ -1451,6 +1451,7 @@ RegisterNUICallback(
         local v = nil
         local hash = tonumber(data.modelcar)
         local count = 0
+        ReqAndDelete(LastVehicleFromGarage)
         if not HasModelLoaded(hash) then
             RequestModel(hash)
             while not HasModelLoaded(hash) and count < 555 do
@@ -1475,7 +1476,7 @@ RegisterNUICallback(
                         local dist = #(vector3(v.spawn_x,v.spawn_y,v.spawn_z) - GetEntityCoords(PlayerPedId()))
                         if dist <= 70.0 and id == v.name then
                             DoScreenFadeOut(333)
-                            DeleteEntity(LastVehicleFromGarage)
+                            ReqAndDelete(LastVehicleFromGarage)
                             Citizen.Wait(333)
                             SetEntityCoords(PlayerPedId(), v.shop_x,v.shop_y,v.shop_z, false, false, false, true)
                             --v = CreateVehicle(tonumber(props.model), v.spawn_x,v.spawn_y,v.spawn_z, v.heading, 1, 1)
@@ -1515,7 +1516,7 @@ RegisterNUICallback(
                     })
                 else
                     ESX.ShowNotification("Not Enough money cabron")
-                    DeleteEntity(v)
+                    ReqAndDelete(v)
                 end
             end, data.model, props)
         end)
@@ -1531,6 +1532,7 @@ RegisterNUICallback(
         local v = nil
         local hash = tonumber(data.modelcar)
         local count = 0
+        ReqAndDelete(LastVehicleFromGarage)
         if not HasModelLoaded(hash) then
             RequestModel(hash)
             while not HasModelLoaded(hash) and count < 555 do
@@ -1562,7 +1564,7 @@ RegisterNUICallback(
             max = 10
             plus = 0
             drawtext = false
-            oldcoord = GetEntityCoords(PlayerPedId())
+            oldcoord = vector3(VehicleShop[data.shop].spawn_x,VehicleShop[data.shop].spawn_y,VehicleShop[data.shop].spawn_z)
             indist = false
             SendNUIMessage(
             {
@@ -1595,7 +1597,7 @@ RegisterNUICallback(
             end
             while DoesEntityExist(veh) do
                 Wait(0)
-                DeleteEntity(veh)
+                ReqAndDelete(veh)
             end
             SetEntityCoords(PlayerPedId(),oldcoord)
         end)
@@ -1631,7 +1633,7 @@ function CloseNui()
     InGarageShell('exit')
     if inGarage then
         if LastVehicleFromGarage ~= nil then
-            DeleteEntity(LastVehicleFromGarage)
+            ReqAndDelete(LastVehicleFromGarage)
         end
 
         local ped = PlayerPedId()     
