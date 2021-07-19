@@ -40,7 +40,6 @@ end
 
 RegisterCommand('testa', function()
     MySQL.Async.fetchAll('SELECT * FROM owned_vehicles', {}, function (result)
-        print(#result,"ASO")
         local plate = veh(tonumber(92299))
         plate = plate:gsub("=", "")
         print(plate)
@@ -57,11 +56,9 @@ end)
 
 ESX.RegisterServerCallback('renzu_vehicleshop:GenPlate', function (source, cb)
     MySQL.Async.fetchAll('SELECT * FROM owned_vehicles', {}, function (result)
-        print(#result,"ASO")
         local plate = veh(tonumber(#result))
         plate = plate:gsub("=", "")
         local total = 8 - plate:len()
-        print(total)
         if total ~= 0 then
             plate = veh(tonumber(#result))..GetRandomNumber(total)
             plate = plate:gsub("=", "")
@@ -78,7 +75,6 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
 		['@model'] = model
     }, function (result)
         if #result > 0 then
-            print("tikol")
             local model = result[1].model
             local price = result[1].price
             local stock = result[1].stock

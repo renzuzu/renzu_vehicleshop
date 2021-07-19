@@ -1407,7 +1407,6 @@ function SpawnVehicleLocal(model)
     for k,v in pairs(VehicleShop) do
         local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
         if dist <= 40.0 and id == v.name then
-            print('dist')
             local zaxis = v.shop_z
             local hash = tonumber(model)
             local count = 0
@@ -1421,7 +1420,6 @@ function SpawnVehicleLocal(model)
                     end
                 end
             end
-            print("create")
             LastVehicleFromGarage = CreateVehicle(hash, v.shop_x,v.shop_y,zaxis - 30, 42.0, 0, 1)
             SetEntityHeading(LastVehicleFromGarage, 50.117)
             FreezeEntityPosition(LastVehicleFromGarage, true)
@@ -1481,13 +1479,13 @@ RegisterNUICallback(
                             Citizen.Wait(333)
                             SetEntityCoords(PlayerPedId(), v.shop_x,v.shop_y,v.shop_z, false, false, false, true)
                             --v = CreateVehicle(tonumber(props.model), v.spawn_x,v.spawn_y,v.spawn_z, v.heading, 1, 1)
-                            SetVehicleProp(v, props)
+                            SetVehicleProp(veh, props)
                             --Spawn_Vehicle_Forward(v, vector3(v.spawn_x,v.spawn_y,v.spawn_z))
                             DoScreenFadeIn(111)
                             while veh == nil do
                                 Citizen.Wait(101)
                             end
-                            NetworkFadeInEntity(v,1)
+                            NetworkFadeInEntity(veh,1)
                             TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
                         end
                     end
@@ -1531,7 +1529,6 @@ RegisterNUICallback(
         local props = nil
         local veh = nil
         local v = nil
-        print("TEST")
         local hash = tonumber(data.modelcar)
         local count = 0
         if not HasModelLoaded(hash) then
@@ -1545,11 +1542,9 @@ RegisterNUICallback(
             end
         end
         ESX.TriggerServerCallback("renzu_vehicleshop:GenPlate",function(plate)
-            print('plate',plate,data.shop,data.model)
             v = CreateVehicle(tonumber(data.modelcar), VehicleShop[data.shop].spawn_x,VehicleShop[data.shop].spawn_y,VehicleShop[data.shop].spawn_z, VehicleShop[data.shop].heading, 1, 1)
             veh = v
             SetVehicleNumberPlateText(v,plate)
-            print(plate)
             props = GetVehicleProperties(v)
             props.plate = plate
             SetEntityAlpha(v, 51, false)
