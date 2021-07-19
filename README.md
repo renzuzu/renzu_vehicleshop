@@ -1,6 +1,14 @@
 # renzu_vehicleshop
 FIVEM VEHICLE SHOP HUD (WIP)
 
+# Current Feature
+- Multi Shops
+- Job Vehicle Shop
+- Multi Payment Method
+- Categorized Shop
+- Clean UI
+- Test Driving
+
 #Vehicle Shop
 - ![alt text](https://i.imgur.com/zXDIuqm.png)
 - Quick Pick
