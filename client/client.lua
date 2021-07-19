@@ -28,7 +28,7 @@ RegisterNetEvent('esx:playerLoaded')
 AddEventHandler('esx:playerLoaded', function(xPlayer)
     playerloaded = true
     for k, v in pairs (VehicleShop) do
-        local blip = AddBlipForCoord(v.garage_x, v.garage_y, v.garage_z)
+        local blip = AddBlipForCoord(v.shop_x, v.shop_y, v.shop_z)
         SetBlipSprite (blip, v.Blip.sprite)
         SetBlipDisplay(blip, 4)
         SetBlipScale  (blip, v.Blip.scale)
@@ -84,7 +84,7 @@ CreateThread(function()
     if Config.UsePopUI then
         while true do
             for k,v in pairs(VehicleShop) do
-                local vec = vector3(v.garage_x,v.garage_y,v.garage_z)
+                local vec = vector3(v.shop_x,v.shop_y,v.shop_z)
                 local dist = #(vec - GetEntityCoords(PlayerPedId()))
                 if dist < v.Dist then
                     neargarage = true
@@ -105,7 +105,7 @@ AddEventHandler('vehicleshop', function()
     for k,v in pairs(VehicleShop) do
         if not v.property then
             local actualShop = v
-            local dist = #(vector3(v.garage_x,v.garage_y,v.garage_z) - GetEntityCoords(ped))
+            local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
             if not DoesEntityExist(vehiclenow) then
                 if dist <= v.Dist then
                     ESX.ShowNotification("Opening Shop...Please wait..")
@@ -397,13 +397,13 @@ RegisterNUICallback("choosecategory", function(data, cb)
         if not Config.Quickpick then
             RequestCollisionAtCoord(926.15, -959.06, 61.94-30.0)
             for k,v in pairs(VehicleShop) do
-                local dist = #(vector3(v.garage_x,v.garage_y,v.garage_z) - GetEntityCoords(ped))
+                local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
                 if dist <= 40.0 and id == v.name then
-                cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", v.garage_x-5.0, v.garage_y, v.garage_z-28.0, 360.00, 0.00, 0.00, 60.00, false, 0)
-                PointCamAtCoord(cam, v.garage_x, v.garage_y, v.garage_z-30.0)
+                cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", v.shop_x-5.0, v.shop_y, v.shop_z-28.0, 360.00, 0.00, 0.00, 60.00, false, 0)
+                PointCamAtCoord(cam, v.shop_x, v.shop_y, v.shop_z-30.0)
                 SetCamActive(cam, true)
                 RenderScriptCams(true, true, 1, true, true)
-                SetFocusPosAndVel(v.garage_x, v.garage_y, v.garage_z-30.0, 0.0, 0.0, 0.0)
+                SetFocusPosAndVel(v.shop_x, v.shop_y, v.shop_z-30.0, 0.0, 0.0, 0.0)
                 DisplayHud(false)
                 DisplayRadar(false)
                 end
@@ -532,13 +532,13 @@ function OpenShop(id)
         if not Config.Quickpick then
             RequestCollisionAtCoord(926.15, -959.06, 61.94-30.0)
             for k,v in pairs(VehicleShop) do
-                local dist = #(vector3(v.garage_x,v.garage_y,v.garage_z) - GetEntityCoords(ped))
+                local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
                 if dist <= 40.0 and id == v.name then
-                cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", v.garage_x-5.0, v.garage_y, v.garage_z-28.0, 360.00, 0.00, 0.00, 60.00, false, 0)
-                PointCamAtCoord(cam, v.garage_x, v.garage_y, v.garage_z-30.0)
+                cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", v.shop_x-5.0, v.shop_y, v.shop_z-28.0, 360.00, 0.00, 0.00, 60.00, false, 0)
+                PointCamAtCoord(cam, v.shop_x, v.shop_y, v.shop_z-30.0)
                 SetCamActive(cam, true)
                 RenderScriptCams(true, true, 1, true, true)
-                SetFocusPosAndVel(v.garage_x, v.garage_y, v.garage_z-30.0, 0.0, 0.0, 0.0)
+                SetFocusPosAndVel(v.shop_x, v.shop_y, v.shop_z-30.0, 0.0, 0.0, 0.0)
                 DisplayHud(false)
                 DisplayRadar(false)
                 end
@@ -851,10 +851,10 @@ function GotoGarage(id, property, propertycoord, data)
     local ped = GetPlayerPed(-1)
     if not property then
         for k,v in pairs(VehicleShop) do
-            local dist = #(vector3(v.garage_x,v.garage_y,v.garage_z) - GetEntityCoords(ped))
+            local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
             local actualShop = v
             if dist <= 70.0 and id == v.name then
-                garage_coords =vector3(actualShop.garage_x,actualShop.garage_y-9.0,actualShop.garage_z)-vector3(0,0,30)
+                garage_coords =vector3(actualShop.shop_x,actualShop.shop_y-9.0,actualShop.shop_z)-vector3(0,0,30)
             end
         end
     else
@@ -931,14 +931,14 @@ function GotoGarage(id, property, propertycoord, data)
                 for k,v in pairs(VehicleShop) do
                     local actualShop = v
                     if property then
-                        v.garage_x = myoldcoords.x
-                        v.garage_y = myoldcoords.y
-                        v.garage_z = myoldcoords.z
-                        SetEntityCoords(ped, v.garage_x,v.garage_y,v.garage_z, 0, 0, 0, false)  
+                        v.shop_x = myoldcoords.x
+                        v.shop_y = myoldcoords.y
+                        v.shop_z = myoldcoords.z
+                        SetEntityCoords(ped, v.shop_x,v.shop_y,v.shop_z, 0, 0, 0, false)  
                     end
-                    local dist = #(vector3(v.garage_x,v.garage_y,v.garage_z) - GetEntityCoords(ped))
+                    local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
                     if dist <= 70.0 and id == v.name then
-                        SetEntityCoords(ped, v.garage_x,v.garage_y,v.garage_z, 0, 0, 0, false)  
+                        SetEntityCoords(ped, v.shop_x,v.shop_y,v.shop_z, 0, 0, 0, false)  
                     end
                 end
                 DoScreenFadeIn(1000)
@@ -1231,7 +1231,7 @@ function VehiclesinGarage(coords, distance, property, propertycoord, gid)
                                     DoScreenFadeOut(333)
                                     Citizen.Wait(333)
                                     if not property then
-                                    SetEntityCoords(PlayerPedId(), v.garage_x,v.garage_y,v.garage_z, false, false, false, true)
+                                    SetEntityCoords(PlayerPedId(), v.shop_x,v.shop_y,v.shop_z, false, false, false, true)
                                     end
                                     Citizen.Wait(1000)
                                     local hash = tonumber(model)
@@ -1308,7 +1308,7 @@ function VehiclesinGarage(coords, distance, property, propertycoord, gid)
                                             DoScreenFadeOut(333)
                                             Citizen.Wait(333)
                                             if not property then
-                                            SetEntityCoords(PlayerPedId(), v.garage_x,v.garage_y,v.garage_z, false, false, false, true)
+                                            SetEntityCoords(PlayerPedId(), v.shop_x,v.shop_y,v.shop_z, false, false, false, true)
                                             end
                                             Citizen.Wait(1000)
                                             model = GetEntityModel(vehicle)
@@ -1406,10 +1406,10 @@ function SpawnVehicleLocal(model)
     end
 
     for k,v in pairs(VehicleShop) do
-        local dist = #(vector3(v.garage_x,v.garage_y,v.garage_z) - GetEntityCoords(ped))
+        local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
         if dist <= 40.0 and id == v.name then
             print('dist')
-            local zaxis = v.garage_z
+            local zaxis = v.shop_z
             local hash = tonumber(model)
             local count = 0
             if not HasModelLoaded(hash) then
@@ -1423,7 +1423,7 @@ function SpawnVehicleLocal(model)
                 end
             end
             print("create")
-            LastVehicleFromGarage = CreateVehicle(hash, v.garage_x,v.garage_y,zaxis - 30, 42.0, 0, 1)
+            LastVehicleFromGarage = CreateVehicle(hash, v.shop_x,v.shop_y,zaxis - 30, 42.0, 0, 1)
             SetEntityHeading(LastVehicleFromGarage, 50.117)
             FreezeEntityPosition(LastVehicleFromGarage, true)
             SetEntityCollision(LastVehicleFromGarage,false)
@@ -1481,7 +1481,7 @@ RegisterNUICallback(
                             DoScreenFadeOut(333)
                             DeleteEntity(LastVehicleFromGarage)
                             Citizen.Wait(333)
-                            SetEntityCoords(PlayerPedId(), v.garage_x,v.garage_y,v.garage_z, false, false, false, true)
+                            SetEntityCoords(PlayerPedId(), v.shop_x,v.shop_y,v.shop_z, false, false, false, true)
                             --v = CreateVehicle(tonumber(props.model), v.spawn_x,v.spawn_y,v.spawn_z, v.heading, 1, 1)
                             SetVehicleProp(v, props)
                             --Spawn_Vehicle_Forward(v, vector3(v.spawn_x,v.spawn_y,v.spawn_z))
@@ -1592,7 +1592,6 @@ RegisterNUICallback(
             end
             Wait(1000)
             while count > 1 and IsPedInAnyVehicle(PlayerPedId()) do
-                print("TIKOL")
                 count = count - 1
                 --ESX.ShowNotification("Seconds Left: "..count)
                 local timeSeconds = count/100
@@ -1617,10 +1616,10 @@ RegisterNUICallback("Close",function(data, cb)
     CloseNui()
     for k,v in pairs(VehicleShop) do
         local actualShop = v
-        if v.garage_x ~= nil then
-            local dist = #(vector3(v.garage_x,v.garage_y,v.garage_z) - GetEntityCoords(ped))
+        if v.shop_x ~= nil then
+            local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
             if dist <= 40.0 and id == v.name then
-                SetEntityCoords(ped, v.garage_x,v.garage_y,v.garage_z, 0, 0, 0, false)  
+                SetEntityCoords(ped, v.shop_x,v.shop_y,v.shop_z, 0, 0, 0, false)  
             end
         end
     end
