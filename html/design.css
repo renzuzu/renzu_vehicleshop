@@ -414,7 +414,7 @@
           z-index:0;
           font-family: 'azonixregular';  
           width: 50vh;
-          height: 20vh;
+          height: 27vh;
           max-width: 350px;
           max-height: 220px !important;
           border-radius:15px;
@@ -461,7 +461,7 @@
       .container .modal .modal-footer{
           z-index:2;
           padding:10px 15px;
-          width:90%;
+          width:100%;
           height:45%;
           display:flex;
           align-items: flex-end;
@@ -485,7 +485,7 @@
       }   
 
       .container .modal .modal-footer .modal-buttons{
-          width:45%;
+          width:80%;
           display:flex;            
           flex-direction: row;
           align-items: center;
@@ -683,6 +683,7 @@ position: relative;
 height: 200vh;
 top:20%;
 right:5%;
+width: 100%;
 }
 
 .app::-webkit-scrollbar {
@@ -692,37 +693,17 @@ width: 1em;
 .app::-webkit-scrollbar-track {/* box-shadow: inset 0 0 6px rgba(3, 117, 170, 0.3); */}
 
 .app::-webkit-scrollbar-thumb {background-color: rgba(0, 0, 0, 0.705);outline: 1px solid rgb(6, 110, 214);}
-.app {font-size: 20px;border-radius: 10px;width: 30vw;margin: 0 auto;height: 70vh;max-height: 70vh;position: absolute;right: 0;top: 300px;/* padding-top: 26vh; *//* margin-top: 100px; */overflow-y: scroll;overflow-x: hidden;box-shadow: 4px 5px 5px 5px rgb(64 47 47 / 11%);-webkit-animation: intro 0.34s 0.4s cubic-bezier(1, 1.4, 0.41, 1.01) forwards;animation: intro 0.34s 0.4s cubic-bezier(1, 1.4, 0.41, 1.01) forwards;transform: translateY(-50%) scale(0) rotateX(10deg) rotateY(10deg) rotateZ(10deg);margin: auto;font-family: &quot;Roboto Condensed&quot;,sans-serif;}
+.app {font-size: 20px;border-radius: 10px;width: 30vw;margin: 0 auto;height: auto;
+  min-height: 370px;
+  background: #1b191942;max-height: 70vh;position: absolute;right: 0;top: 300px;/* padding-top: 26vh; *//* margin-top: 100px; */overflow-y: scroll;overflow-x: hidden;box-shadow: 4px 5px 5px 5px rgb(64 47 47 / 11%);-webkit-animation: intro 0.34s 0.4s cubic-bezier(1, 1.4, 0.41, 1.01) forwards;animation: intro 0.34s 0.4s cubic-bezier(1, 1.4, 0.41, 1.01) forwards;transform: translateY(-50%) scale(0) rotateX(10deg) rotateY(10deg) rotateZ(10deg);margin: auto;font-family: &quot;Roboto Condensed&quot;,sans-serif;}
 
 @media only screen and (min-width: 1900px) {
 .app {
 width: 22vw;
 }
 .main-menu {
-  background: #1b1919;
   position: absolute;
-  top: 24%;
-  bottom: 0;
-  height: 100%;
-  right: 27% !important;
-  width: 55px;
-  height: 36.6vh;
-  overflow: hidden;
-  -webkit-transition: width .2s linear;
-  transition: width .2s linear;
-  -webkit-transform: translateZ(0) scale(1,1);
-  box-shadow: 1px 0 15px rgb(0 0 0 / 7%);
-  opacity: 1;
-}
-}
-@media only screen and (min-width: 2400px) {
-.app {
-width: 17vw;
-}
-.main-menu {
-  background: #1b1919;
-  position: absolute;
-  top: 22%;
+  top: 7.6%;
   bottom: 0;
   height: 100%;
   right: 22% !important;
@@ -732,7 +713,25 @@ width: 17vw;
   -webkit-transition: width .2s linear;
   transition: width .2s linear;
   -webkit-transform: translateZ(0) scale(1,1);
-  box-shadow: 1px 0 15px rgb(0 0 0 / 7%);
+  opacity: 1;
+}
+}
+@media only screen and (min-width: 2400px) {
+.app {
+width: 17vw;
+}
+.main-menu {
+  position: absolute;
+  top: 7.6%;
+  bottom: 0;
+  height: 100%;
+  right: 17% !important;
+  width: 55px;
+  height: 36.6vh;
+  overflow: hidden;
+  -webkit-transition: width .2s linear;
+  transition: width .2s linear;
+  -webkit-transform: translateZ(0) scale(1,1);
   opacity: 1;
 }
 }
@@ -1057,7 +1056,7 @@ border-color: #41EFB6;
         
         #style-1::-webkit-scrollbar
         {
-        width: 5px;
+        width: 0px;
         background-color: #181212;
         }
         
@@ -1107,19 +1106,17 @@ border-color: #41EFB6;
         }
         
         .main-menu {
-          background: #1b1919;
     position: absolute;
-    top: 24%;
-    bottom: 0;
-    height: 100%;
-    right: 35%;
+    top: 7.6%;
+  bottom: 0;
+  height: 100%;
+  right: 30%;
     width: 55px;
     height: 36.6vh;
     overflow: hidden;
     -webkit-transition: width .2s linear;
     transition: width .2s linear;
     -webkit-transform: translateZ(0) scale(1,1);
-    box-shadow: 1px 0 15px rgb(0 0 0 / 7%);
     opacity: 1;
         }
         
@@ -1281,3 +1278,81 @@ border-color: #41EFB6;
           font-weight: 300;
           src: local('Titillium WebLight'), local('TitilliumWeb-Light'), url(https://themes.googleusercontent.com/static/fonts/titilliumweb/v2/anMUvcNT0H1YN4FII8wpr24bNCNEoFTpS2BTjF6FB5E.woff) format('woff');
         }
+
+        @import url('https://fonts.googleapis.com/css?family=Lato:400,500,600,700&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Lato', sans-serif;
+}
+.wrapper{
+  display: inline-flex;
+  background: rgba(255, 255, 255, 0);
+  height: 50px;
+  width: 100%;
+  align-items: center;
+  justify-content: space-evenly;
+  border-radius: 5px;
+  padding: 5px 5px;
+  box-shadow: 5px 5px 30px rgba(0,0,0,0.2);
+}
+.wrapper .option{
+  background: #fff;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  margin: 0 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0 10px;
+  border: 2px solid lightgrey;
+  transition: all 0.3s ease;
+}
+.wrapper .option .dot{
+  height: 10px;
+  width: 10px;
+  background: #d9d9d9;
+  border-radius: 50%;
+  position: relative;
+}
+.wrapper .option .dot::before{
+  position: absolute;
+  content: "";
+  top: 4px;
+  left: 4px;
+  width: 12px;
+  height: 12px;
+  background: #0069d900;
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(1.5);
+  transition: all 0.3s ease;
+}
+input[type="radio"]{
+  display: none;
+}
+#option-1:checked:checked ~ .option-1,
+#option-2:checked:checked ~ .option-2{
+  border-color: #0069d9;
+  background: #0069d9;
+}
+#option-1:checked:checked ~ .option-1 .dot,
+#option-2:checked:checked ~ .option-2 .dot{
+  background: #fff;
+}
+#option-1:checked:checked ~ .option-1 .dot::before,
+#option-2:checked:checked ~ .option-2 .dot::before{
+  opacity: 1;
+  transform: scale(1);
+}
+.wrapper .option span{
+  font-size: 15px;
+  color: #808080;
+}
+#option-1:checked:checked ~ .option-1 span,
+#option-2:checked:checked ~ .option-2 span{
+  color: #fff;
+}

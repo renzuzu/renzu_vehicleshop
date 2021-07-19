@@ -104,12 +104,12 @@ AddEventHandler('vehicleshop', function()
     local jobgarage = false
     for k,v in pairs(VehicleShop) do
         if not v.property then
-            local actualShop = v
+            local job = v.job == 'all' or PlayerData.job.name == v.job
             local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
             if not DoesEntityExist(vehiclenow) then
-                if dist <= v.Dist then
+                if dist <= v.Dist and job then
                     ESX.ShowNotification("Opening Shop...Please wait..")
-                    TriggerServerEvent("renzu_vehicleshop:GetAvailableVehicle")
+                    TriggerServerEvent("renzu_vehicleshop:GetAvailableVehicle",v.name)
                     fetchdone = false
                     id = v.name
                     while not fetchdone do
@@ -1518,7 +1518,7 @@ RegisterNUICallback(
                     ESX.ShowNotification("Not Enough money cabron")
                     ReqAndDelete(v)
                 end
-            end, data.model, props)
+            end, data.model, props, data.payment)
         end)
     end
 )

@@ -2,11 +2,17 @@ ESX = nil
 local vehicles = {}
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 RegisterServerEvent('renzu_vehicleshop:GetAvailableVehicle')
-AddEventHandler('renzu_vehicleshop:GetAvailableVehicle', function()
+AddEventHandler('renzu_vehicleshop:GetAvailableVehicle', function(shop)
     local src = source 
     local xPlayer = ESX.GetPlayerFromId(src)
     local identifier = xPlayer.identifier
-    local Owned_Vehicle = MySQL.Sync.fetchAll('SELECT * FROM vehicles', {})
+    local Owned_Vehicle = MySQL.Sync.fetchAll('SELECT * FROM vehicles WHERE shop = @shop', {['shop'] = shop})
+    --TriggerClientEvent('table',-1,Owned_Vehicle)
+    if #Owned_Vehicle > 0 then
+        Owned_Vehicle = Owned_Vehicle
+    else
+        Owned_Vehicle = VehicleShop[shop].shop
+    end
     TriggerClientEvent("renzu_vehicleshop:receive_vehicles", src , Owned_Vehicle)
 end)
 
@@ -68,7 +74,7 @@ ESX.RegisterServerCallback('renzu_vehicleshop:GenPlate', function (source, cb)
 	end)
 end)
 
-ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb, model, props)
+ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb, model, props, payment)
     local source = source
 	local xPlayer = ESX.GetPlayerFromId(source)
     MySQL.Async.fetchAll('SELECT * FROM vehicles WHERE model = @model LIMIT 1', {
@@ -78,10 +84,22 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
             local model = result[1].model
             local price = result[1].price
             local stock = result[1].stock
+            local payment = payment
+            if payment == 'cash' then
+                money = xPlayer.getMoney() >= tonumber(price)
+                print("METHOD",payment)
+            else
+                print("METHOD",payment)
+                money = xPlayer.getAccount('bank').money >= tonumber(price)
+            end
             stock = 999
             if stock > 0 then           
-                if xPlayer.getMoney() >= tonumber(price) then
-                    xPlayer.removeMoney(tonumber(price))
+                if money then
+                    if payment == 'cash' then
+                        xPlayer.removeMoney(tonumber(price))
+                    else
+                        xPlayer.removeAccountMoney('bank', tonumber(price))
+                    end
                     -- local societyAccount = nil
                     -- TriggerEvent('esx_addonaccount:getSharedAccount', 'society_monkey', function(account)
                     -- societyAccount = account

@@ -6,6 +6,7 @@ var currentcar
 var chopper = false
 var inGarageVehicle = {}
 var categories = {}
+var payment = 'cash'
 
 function changecategory(c,v) {
     //console.log(c,v)
@@ -145,12 +146,12 @@ $(document).ready(function() {
     });
 
     var app = '<div class="container">\
-    <nav class="main-menu">\
-       <div class="scrollbar" id="style-1">\
-       <ul id="category">\
-       </ul>\
-      </nav>\
     <div class="right">\
+        <nav class="main-menu">\
+        <div class="scrollbar" id="style-1">\
+        <ul id="category">\
+        </ul>\
+        </nav>\
       <div class="app">\
         <div class="app_inner" id="vehlist">\
         </div>\
@@ -208,7 +209,7 @@ function ShowVehicle(currentTarget) {
 
             $(".menu-modifications").css("display","block");
 
-            CurrentVehicle = {brand: data.brand, model: data.model, modelcar: data.model2, sale: 1, name: data.name, props: data.props, shop: data.shop }
+            CurrentVehicle = {brand: data.brand, model: data.model, modelcar: data.model2, sale: 1, name: data.name, props: data.props, shop: data.shop ,payment: payment}
             $('#contentVehicle').append(`
                 <div class="row spacebetween">
                     <span class="title">HANDLING</span>
@@ -270,6 +271,7 @@ function garage() {
 }
 
 function BuyVehicle(n,c,p) {
+    payment = 'cash'
     //console.log(n,c,p)
     document.getElementById("closemenu").innerHTML = '';
 
@@ -296,8 +298,32 @@ function BuyVehicle(n,c,p) {
                     <button href="#!" id="card" class="modal-money button" onclick="BuyVehicleCallback('cancel')">X</button>
                 </div>
             </div>
+            <div class="wrapper">
+            <input type="radio" name="select" id="option-1" checked>
+            <input type="radio" name="select" id="option-2">
+            <label for="option-1" class="option option-1">
+            <div class="dot"></div>
+            <span>Cash</span>
+            </label>
+            <label for="option-2" class="option option-2">
+            <div class="dot"></div>
+            <span>Bank</span>
+            </label>
+            </div>
         </div>
     `);
+    $('input[type=radio][id=option-1]').change(function() {
+        if (this.value == 'on') {
+            CurrentVehicle.payment = 'cash'
+            console.log(CurrentVehicle.payment)
+        }
+    });
+    $('input[type=radio][id=option-2]').change(function() {
+        if (this.value == 'on') {
+            CurrentVehicle.payment = 'bank'
+            console.log(CurrentVehicle.payment)
+        }
+    });
 }
 
 function TestDrive(n,c,p,m) {
