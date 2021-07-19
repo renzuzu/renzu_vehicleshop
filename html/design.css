@@ -698,10 +698,42 @@ width: 1em;
 .app {
 width: 22vw;
 }
+.main-menu {
+  background: #1b1919;
+  position: absolute;
+  top: 24%;
+  bottom: 0;
+  height: 100%;
+  right: 27% !important;
+  width: 55px;
+  height: 36.6vh;
+  overflow: hidden;
+  -webkit-transition: width .2s linear;
+  transition: width .2s linear;
+  -webkit-transform: translateZ(0) scale(1,1);
+  box-shadow: 1px 0 15px rgb(0 0 0 / 7%);
+  opacity: 1;
+}
 }
 @media only screen and (min-width: 2400px) {
 .app {
 width: 17vw;
+}
+.main-menu {
+  background: #1b1919;
+  position: absolute;
+  top: 22%;
+  bottom: 0;
+  height: 100%;
+  right: 22% !important;
+  width: 55px;
+  height: 36.6vh;
+  overflow: hidden;
+  -webkit-transition: width .2s linear;
+  transition: width .2s linear;
+  -webkit-transform: translateZ(0) scale(1,1);
+  box-shadow: 1px 0 15px rgb(0 0 0 / 7%);
+  opacity: 1;
 }
 }
 .app_inner {position: relative;/* top: 0; */}
@@ -1077,10 +1109,10 @@ border-color: #41EFB6;
         .main-menu {
           background: #1b1919;
     position: absolute;
-    top: 14vh;
+    top: 24%;
     bottom: 0;
     height: 100%;
-    right: 50vh;
+    right: 35%;
     width: 55px;
     height: 36.6vh;
     overflow: hidden;

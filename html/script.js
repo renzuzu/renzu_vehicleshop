@@ -50,6 +50,7 @@ window.addEventListener('message', function(event) {
     }
     if (event.data.type == "categories") {
         categories = event.data.cats
+        $('#category').empty();
         //console.log(categories)
         for(var [k,v] of Object.entries(categories)){
             //console.log(k,v)
@@ -144,6 +145,11 @@ $(document).ready(function() {
     });
 
     var app = '<div class="container">\
+    <nav class="main-menu">\
+       <div class="scrollbar" id="style-1">\
+       <ul id="category">\
+       </ul>\
+      </nav>\
     <div class="right">\
       <div class="app">\
         <div class="app_inner" id="vehlist">\
@@ -390,6 +396,7 @@ $(document).on('keydown', function(event) {
 
     $('.vehiclegarage').empty();
     $('.app_inner').empty();
+    $('#category').empty();
 (() => {
     renzu_vehicleshop = {};
     inGarageVehicle = {}
