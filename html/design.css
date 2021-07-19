@@ -718,7 +718,7 @@ transition: all 0.3s 0.2s cubic-bezier(0.455, 0.03, 0.515, 0.955);
 .app_inner input[type=radio]:not(checked) + label .app_inner__tab {
   height: 80px;
   border-left: 12px solid rgb(47 48 49 / 82%) !important;
-  border: 5px solid rgb(112 120 130 / 91%);
+  border: 4px solid rgb(137 140 144 / 91%);
 }
 .app_inner input[type=radio]:not(checked) + label .app_inner__tab .tab_right {
 top: 110px;
