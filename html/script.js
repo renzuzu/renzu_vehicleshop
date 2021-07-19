@@ -254,7 +254,6 @@ function ShowVehicle(currentTarget) {
                 margin-left: 10px;"> <div class="w3-grey" style="height:5px;width:`+data.brake.toFixed(1)/2*100+`%"></div> </div>
                 </div>
             `);
-            console.log("BENJO")
             $.post("https://renzu_vehicleshop/SpawnVehicle", JSON.stringify({ modelcar: data.model2 }));
         }
     }

@@ -1396,7 +1396,6 @@ function DeleteGarage()
 end
 
 function SpawnVehicleLocal(model)
-    print(model,"ASO",id)
     local ped = GetPlayerPed(-1)
 
     SetNuiFocus(true, true)
@@ -1440,7 +1439,6 @@ function SpawnVehicleLocal(model)
 end
 
 RegisterNUICallback("SpawnVehicle",function(data, cb)
-    print("ASO",not Config.Quickpick)
     if not Config.Quickpick then
         SpawnVehicleLocal(data.modelcar)
     end
