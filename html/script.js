@@ -40,14 +40,8 @@ function icon(c) {
 }
 window.addEventListener('message', function(event) {
     var data = event.data;
-    if (event.data.type == "returnveh") {
-        returnveh();
-    }
     if (event.data.type == "cleanup") {
         cleanup()
-    }
-    if (event.data.type == "onimpound") {
-        onimpound();
     }
     if (event.data.type == "categories") {
         categories = event.data.cats

@@ -87,9 +87,7 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
             local payment = payment
             if payment == 'cash' then
                 money = xPlayer.getMoney() >= tonumber(price)
-                print("METHOD",payment)
             else
-                print("METHOD",payment)
                 money = xPlayer.getAccount('bank').money >= tonumber(price)
             end
             stock = 999
@@ -118,16 +116,16 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
                         cb(true)
                     end)
                 else
+                    xPlayer.showNotification('Not Enough Money',1,0,110)
                     cb(false)
-                    xPlayer.ShowNotification('Not Enough Money')
                 end
             else
+                xPlayer.showNotification('Vehicle Out of stock',1,0,110)
                 cb(false)
-                xPlayer.ShowNotification('Vehicle Out of stock')
             end
         else
+            xPlayer.showNotification('Vehicle does not Exist',1,0,110)
             cb(false)
-            xPlayer.ShowNotification('Vehicle does not Exist')
         end
     end)
 end)

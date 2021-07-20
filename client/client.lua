@@ -739,7 +739,7 @@ function DeleteGarage()
 end
 
 function SpawnVehicleLocal(model)
-    local ped = GetPlayerPed(-1)
+    local ped = PlayerPedId()
 
     SetNuiFocus(true, true)
     if LastVehicleFromGarage ~= nil then
@@ -773,8 +773,8 @@ function SpawnVehicleLocal(model)
                 ReqAndDelete(LastVehicleFromGarage)
                 SetModelAsNoLongerNeeded(hash)
             end
-            TaskWarpPedIntoVehicle(GetPlayerPed(-1), LastVehicleFromGarage, -1)
-            InGarageShell('enter')
+            TaskWarpPedIntoVehicle(PlayerPedId(), LastVehicleFromGarage, -1)
+            --InGarageShell('enter')
         end
     end
 end
@@ -839,11 +839,11 @@ RegisterNUICallback(
                     end
                     --TriggerServerEvent("renzu_garage:changestate", props.plate, 0, id, props.model, props)
                     LastVehicleFromGarage = nil
-                    TaskWarpPedIntoVehicle(GetPlayerPed(-1), veh, -1)
+                    TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
                     CloseNui()
                     ESX.ShowNotification("Purchase Success: Plate: "..props.plate.."")
                     SetEntityAlpha(v, 255, false)
-                    TaskWarpPedIntoVehicle(GetPlayerPed(-1), veh, -1)
+                    TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
                     --SetVehicleEngineHealth(v,props.engineHealth)
                     --Wait(100)
                     --SetVehicleStatus(GetVehiclePedIsIn(PlayerPedId()))
@@ -858,7 +858,8 @@ RegisterNUICallback(
                     type = "cleanup"
                     })
                 else
-                    ESX.ShowNotification("Not Enough money cabron")
+                    CloseNui()
+                    --ESX.ShowNotification("Not Enough money cabron")
                     ReqAndDelete(v)
                 end
             end, data.model, props, data.payment)
