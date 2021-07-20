@@ -875,75 +875,79 @@ RegisterNUICallback(
         local v = nil
         local hash = tonumber(data.modelcar)
         local count = 0
-        ReqAndDelete(LastVehicleFromGarage)
-        if not HasModelLoaded(hash) then
-            RequestModel(hash)
-            while not HasModelLoaded(hash) and count < 555 do
-                count = count + 10
-                Citizen.Wait(1)
-                if count > 9999 then
-                return
+        if Config.EnableTestDrive then
+            ReqAndDelete(LastVehicleFromGarage)
+            if not HasModelLoaded(hash) then
+                RequestModel(hash)
+                while not HasModelLoaded(hash) and count < 555 do
+                    count = count + 10
+                    Citizen.Wait(1)
+                    if count > 9999 then
+                    return
+                    end
                 end
             end
+            ESX.TriggerServerCallback("renzu_vehicleshop:GenPlate",function(plate)
+                v = CreateVehicle(tonumber(data.modelcar), VehicleShop[data.shop].spawn_x,VehicleShop[data.shop].spawn_y,VehicleShop[data.shop].spawn_z, VehicleShop[data.shop].heading, 1, 1)
+                veh = v
+                SetVehicleNumberPlateText(v,plate)
+                props = GetVehicleProperties(v)
+                props.plate = plate
+                SetEntityAlpha(v, 51, false)
+                LastVehicleFromGarage = nil
+                TaskWarpPedIntoVehicle(GetPlayerPed(-1), veh, -1)
+                CloseNui()
+                ESX.ShowNotification("Test Drive: Start")
+                SetEntityAlpha(v, 255, false)
+                TaskWarpPedIntoVehicle(GetPlayerPed(-1), veh, -1)
+                --SetVehicleEngineHealth(v,props.engineHealth)
+                --Wait(100)
+                --SetVehicleStatus(GetVehiclePedIsIn(PlayerPedId()))
+                i = 0
+                min = 0
+                max = 10
+                plus = 0
+                drawtext = false
+                oldcoord = vector3(VehicleShop[data.shop].spawn_x,VehicleShop[data.shop].spawn_y,VehicleShop[data.shop].spawn_z)
+                indist = false
+                SendNUIMessage(
+                {
+                type = "cleanup"
+                })
+                local count = 30000
+                local function Draw2DText(x, y, text, scale)
+                    -- Draw text on screen
+                    SetTextFont(4)
+                    SetTextProportional(7)
+                    SetTextScale(scale, scale)
+                    SetTextColour(255, 255, 255, 255)
+                    SetTextDropShadow(0, 0, 0, 0,255)
+                    SetTextDropShadow()
+                    SetTextEdge(4, 0, 0, 0, 255)
+                    SetTextOutline()
+                    SetTextEntry("STRING")
+                    AddTextComponentString(text)
+                    DrawText(x, y)
+                end
+                Wait(1000)
+                while count > 1 and IsPedInAnyVehicle(PlayerPedId()) do
+                    count = count - 1
+                    --ESX.ShowNotification("Seconds Left: "..count)
+                    local timeSeconds = count/100
+                    local timeMinutes = math.floor(timeSeconds/60.0)
+                    timeSeconds = timeSeconds - 60.0*timeMinutes
+                    Draw2DText(0.015, 0.725, ("~y~%02d:%06.3f"):format(timeMinutes, timeSeconds), 0.7)
+                    Wait(1)
+                end
+                while DoesEntityExist(veh) do
+                    Wait(0)
+                    ReqAndDelete(veh)
+                end
+                SetEntityCoords(PlayerPedId(),oldcoord)
+            end)
+        else
+            ESX.ShowNotification("Test Driving is Disable")
         end
-        ESX.TriggerServerCallback("renzu_vehicleshop:GenPlate",function(plate)
-            v = CreateVehicle(tonumber(data.modelcar), VehicleShop[data.shop].spawn_x,VehicleShop[data.shop].spawn_y,VehicleShop[data.shop].spawn_z, VehicleShop[data.shop].heading, 1, 1)
-            veh = v
-            SetVehicleNumberPlateText(v,plate)
-            props = GetVehicleProperties(v)
-            props.plate = plate
-            SetEntityAlpha(v, 51, false)
-            LastVehicleFromGarage = nil
-            TaskWarpPedIntoVehicle(GetPlayerPed(-1), veh, -1)
-            CloseNui()
-            ESX.ShowNotification("Test Drive: Start")
-            SetEntityAlpha(v, 255, false)
-            TaskWarpPedIntoVehicle(GetPlayerPed(-1), veh, -1)
-            --SetVehicleEngineHealth(v,props.engineHealth)
-            --Wait(100)
-            --SetVehicleStatus(GetVehiclePedIsIn(PlayerPedId()))
-            i = 0
-            min = 0
-            max = 10
-            plus = 0
-            drawtext = false
-            oldcoord = vector3(VehicleShop[data.shop].spawn_x,VehicleShop[data.shop].spawn_y,VehicleShop[data.shop].spawn_z)
-            indist = false
-            SendNUIMessage(
-            {
-            type = "cleanup"
-            })
-            local count = 30000
-            local function Draw2DText(x, y, text, scale)
-                -- Draw text on screen
-                SetTextFont(4)
-                SetTextProportional(7)
-                SetTextScale(scale, scale)
-                SetTextColour(255, 255, 255, 255)
-                SetTextDropShadow(0, 0, 0, 0,255)
-                SetTextDropShadow()
-                SetTextEdge(4, 0, 0, 0, 255)
-                SetTextOutline()
-                SetTextEntry("STRING")
-                AddTextComponentString(text)
-                DrawText(x, y)
-            end
-            Wait(1000)
-            while count > 1 and IsPedInAnyVehicle(PlayerPedId()) do
-                count = count - 1
-                --ESX.ShowNotification("Seconds Left: "..count)
-                local timeSeconds = count/100
-                local timeMinutes = math.floor(timeSeconds/60.0)
-                timeSeconds = timeSeconds - 60.0*timeMinutes
-                Draw2DText(0.015, 0.725, ("~y~%02d:%06.3f"):format(timeMinutes, timeSeconds), 0.7)
-                Wait(1)
-            end
-            while DoesEntityExist(veh) do
-                Wait(0)
-                ReqAndDelete(veh)
-            end
-            SetEntityCoords(PlayerPedId(),oldcoord)
-        end)
     end
 )
 
