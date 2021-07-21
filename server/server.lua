@@ -100,7 +100,7 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
                     end
                     stock = stock - 1
                     local data = json.encode(props)
-                    MySQL.Async.execute('INSERT INTO owned_vehicles (owner, plate, vehicle, stored) VALUES (@owner, @plate, @props, @stored)',
+                    MySQL.Async.execute('INSERT INTO owned_vehicles (owner, plate, vehicle, `stored`) VALUES (@owner, @plate, @props, @stored)',
                     {
                         ['@owner']   = xPlayer.identifier,
                         ['@plate']   = props.plate,
