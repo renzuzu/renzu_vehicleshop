@@ -6,14 +6,25 @@ AddEventHandler('renzu_vehicleshop:GetAvailableVehicle', function(shop)
     local src = source 
     local xPlayer = ESX.GetPlayerFromId(src)
     local identifier = xPlayer.identifier
-    local Owned_Vehicle = MySQL.Sync.fetchAll('SELECT * FROM vehicles WHERE shop = @shop', {['shop'] = shop})
-    --TriggerClientEvent('table',-1,Owned_Vehicle)
-    if #Owned_Vehicle > 0 then
-        Owned_Vehicle = Owned_Vehicle
+    if Config.Mysql == 'mysql-async' then
+        Owned_Vehicle = MySQL.Sync.fetchAll('SELECT * FROM vehicles WHERE shop = @shop', {['shop'] = shop})
+        --TriggerClientEvent('table',-1,Owned_Vehicle)
+        if #Owned_Vehicle > 0 then
+            Owned_Vehicle = Owned_Vehicle
+        else
+            Owned_Vehicle = VehicleShop[shop].shop
+        end
+        TriggerClientEvent("renzu_vehicleshop:receive_vehicles", src , Owned_Vehicle)
     else
-        Owned_Vehicle = VehicleShop[shop].shop
+        exports['ghmattimysql']:execute('SELECT * FROM vehicles WHERE shop = @shop', {['@shop'] = shop}, function(result)
+            if #result > 0 then
+                Owned_Vehicle = result
+            else
+                Owned_Vehicle = VehicleShop[shop].shop
+            end
+            TriggerClientEvent("renzu_vehicleshop:receive_vehicles", src , Owned_Vehicle)
+        end)
     end
-    TriggerClientEvent("renzu_vehicleshop:receive_vehicles", src , Owned_Vehicle)
 end)
 
 local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/' -- You will need this for encoding/decoding
@@ -77,29 +88,50 @@ end)
 ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb, model, props, payment)
     local source = source
 	local xPlayer = ESX.GetPlayerFromId(source)
-    MySQL.Async.fetchAll('SELECT * FROM vehicles WHERE model = @model LIMIT 1', {
-		['@model'] = model
-    }, function (result)
-        if #result > 0 then
-            local model = result[1].model
-            local price = result[1].price
-            local stock = result[1].stock
-            local payment = payment
-            if payment == 'cash' then
-                money = xPlayer.getMoney() >= tonumber(price)
-            else
-                money = xPlayer.getAccount('bank').money >= tonumber(price)
-            end
-            stock = 999
-            if stock > 0 then           
-                if money then
-                    if payment == 'cash' then
-                        xPlayer.removeMoney(tonumber(price))
-                    else
-                        xPlayer.removeAccountMoney('bank', tonumber(price))
-                    end
-                    stock = stock - 1
-                    local data = json.encode(props)
+    local function sqlfunc(sql, query)
+        if sql == 'mysql-async' then
+            MySQL.Async.fetchAll(query, {
+                ['@model'] = model
+            }, function (result)
+                cb(Buy(result,xPlayer,model, props, payment))
+                return result
+            end)
+        else
+            exports['ghmattimysql']:execute(query, {
+                ['@model'] = model
+            }, function (result)
+                cb(Buy(result,xPlayer,model, props, payment))
+                return result
+            end)
+        end
+    end
+    sqlfunc(Config.Mysql,'SELECT * FROM vehicles WHERE model = @model LIMIT 1')
+end)
+
+function Buy(result,xPlayer,model, props, payment)
+    fetchdone = false
+    bool = false
+    if result then
+        local model = result[1].model
+        local price = result[1].price
+        local stock = result[1].stock
+        local payment = payment
+        if payment == 'cash' then
+            money = xPlayer.getMoney() >= tonumber(price)
+        else
+            money = xPlayer.getAccount('bank').money >= tonumber(price)
+        end
+        stock = 999
+        if stock > 0 then           
+            if money then
+                if payment == 'cash' then
+                    xPlayer.removeMoney(tonumber(price))
+                else
+                    xPlayer.removeAccountMoney('bank', tonumber(price))
+                end
+                stock = stock - 1
+                local data = json.encode(props)
+                if Config.Mysql == 'mysql-async' then
                     MySQL.Async.execute('INSERT INTO owned_vehicles (owner, plate, vehicle, `stored`) VALUES (@owner, @plate, @props, @stored)',
                     {
                         ['@owner']   = xPlayer.identifier,
@@ -113,19 +145,39 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
                             ['@stock'] = stock,
                             ['@model'] = model
                         })
-                        cb(true)
+                        fetchdone = true
+                        bool = true
                     end)
                 else
-                    xPlayer.showNotification('Not Enough Money',1,0,110)
-                    cb(false)
+                    exports['ghmattimysql']:execute('INSERT INTO owned_vehicles (owner, plate, vehicle, `stored`) VALUES (@owner, @plate, @props, @stored)', {
+                        ['@owner']   = xPlayer.identifier,
+                        ['@plate']   = props.plate,
+                        ['@props'] = data,
+                        ['@stored'] = 1
+                    }, function (rowsChanged)
+                        exports['ghmattimysql']:execute('UPDATE vehicles SET stock = @stock WHERE model = @model', {
+                            ['@stock'] = stock,
+                            ['@model'] = model
+                        })
+                        fetchdone = true
+                        bool = true
+                    end)
                 end
             else
-                xPlayer.showNotification('Vehicle Out of stock',1,0,110)
-                cb(false)
+                xPlayer.showNotification('Not Enough Money',1,0,110)
+                fetchdone = true
+                bool = false
             end
         else
-            xPlayer.showNotification('Vehicle does not Exist',1,0,110)
-            cb(false)
+            xPlayer.showNotification('Vehicle Out of stock',1,0,110)
+            fetchdone = true
+            bool = false
         end
-    end)
-end)
+    else
+        xPlayer.showNotification('Vehicle does not Exist',1,0,110)
+        fetchdone = true
+        bool = false
+    end
+    while not fetchdone do Wait(0) end
+    return bool
+end
