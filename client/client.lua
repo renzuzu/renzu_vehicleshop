@@ -808,9 +808,10 @@ RegisterNUICallback(
         ESX.TriggerServerCallback("renzu_vehicleshop:GenPlate",function(plate)
             v = CreateVehicle(tonumber(data.modelcar), VehicleShop[data.shop].spawn_x,VehicleShop[data.shop].spawn_y,VehicleShop[data.shop].spawn_z, VehicleShop[data.shop].heading, 1, 1)
             veh = v
-            SetVehicleNumberPlateText(v,plate)
+            while not DoesEntityExist(veh) do Wait(10) end
+            SetVehicleNumberPlateText(v,tostring(plate))
             props = GetVehicleProperties(v)
-            props.plate = plate
+            props.plate = tostring(plate)
             SetEntityAlpha(v, 51, false)
             TaskWarpPedIntoVehicle(PlayerPedId(), v, -1)
             ESX.TriggerServerCallback("renzu_vehicleshop:buyvehicle",function(canbuy)

@@ -72,17 +72,31 @@ end
 -- end)
 
 ESX.RegisterServerCallback('renzu_vehicleshop:GenPlate', function (source, cb)
-    MySQL.Async.fetchAll('SELECT * FROM owned_vehicles', {}, function (result)
-        local plate = veh(tonumber(#result))
-        plate = plate:gsub("=", "")
-        local total = 8 - plate:len()
-        if total ~= 0 then
-            plate = veh(tonumber(#result))..GetRandomNumber(total)
+    if Config.Mysql == 'mysql-async' then then
+        MySQL.Async.fetchAll('SELECT * FROM owned_vehicles', {}, function (result)
+            local plate = veh(tonumber(#result))
             plate = plate:gsub("=", "")
-        end
-        print(plate,plate:len())
-        cb(plate)
-	end)
+            local total = 8 - plate:len()
+            if total ~= 0 then
+                plate = veh(tonumber(#result))..GetRandomNumber(total)
+                plate = plate:gsub("=", "")
+            end
+            print(plate,plate:len())
+            cb(plate)
+        end)
+    else
+        exports['ghmattimysql']:execute('SELECT * FROM owned_vehicles', {}, function(result)
+            local plate = veh(tonumber(#result))
+            plate = plate:gsub("=", "")
+            local total = 8 - plate:len()
+            if total ~= 0 then
+                plate = veh(tonumber(#result))..GetRandomNumber(total)
+                plate = plate:gsub("=", "")
+            end
+            print(plate,plate:len())
+            cb(plate)
+        end)
+    end
 end)
 
 ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb, model, props, payment)
