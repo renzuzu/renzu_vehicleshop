@@ -72,7 +72,7 @@ end
 -- end)
 
 ESX.RegisterServerCallback('renzu_vehicleshop:GenPlate', function (source, cb)
-    if Config.Mysql == 'mysql-async' then then
+    if Config.Mysql == 'mysql-async' then
         MySQL.Async.fetchAll('SELECT * FROM owned_vehicles', {}, function (result)
             local plate = veh(tonumber(#result))
             plate = plate:gsub("=", "")
