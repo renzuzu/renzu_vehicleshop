@@ -91,7 +91,7 @@ ESX.RegisterServerCallback('renzu_vehicleshop:GenPlate', function (source, cb)
                 plate = plate:gsub("=", "")
             end
             print(plate,plate:len())
-            cb(plate)
+            cb(plate:upper())
         end)
     else
         exports['ghmattimysql']:execute('SELECT * FROM owned_vehicles', {}, function(result)
@@ -103,7 +103,7 @@ ESX.RegisterServerCallback('renzu_vehicleshop:GenPlate', function (source, cb)
                 plate = plate:gsub("=", "")
             end
             print(plate,plate:len())
-            cb(plate)
+            cb(plate:upper())
         end)
     end
 end)
@@ -158,7 +158,7 @@ function Buy(result,xPlayer,model, props, payment)
                     MySQL.Async.execute('INSERT INTO owned_vehicles (owner, plate, vehicle, `stored`) VALUES (@owner, @plate, @props, @stored)',
                     {
                         ['@owner']   = xPlayer.identifier,
-                        ['@plate']   = props.plate,
+                        ['@plate']   = props.plate:upper(),
                         ['@props'] = data,
                         ['@stored'] = 1
                     },
@@ -174,7 +174,7 @@ function Buy(result,xPlayer,model, props, payment)
                 else
                     exports['ghmattimysql']:execute('INSERT INTO owned_vehicles (owner, plate, vehicle, `stored`) VALUES (@owner, @plate, @props, @stored)', {
                         ['@owner']   = xPlayer.identifier,
-                        ['@plate']   = props.plate,
+                        ['@plate']   = props.plate:upper(),
                         ['@props'] = data,
                         ['@stored'] = 1
                     }, function (rowsChanged)
