@@ -76,9 +76,18 @@ ESX.RegisterServerCallback('renzu_vehicleshop:GenPlate', function (source, cb)
         MySQL.Async.fetchAll('SELECT * FROM owned_vehicles', {}, function (result)
             local plate = veh(tonumber(#result))
             plate = plate:gsub("=", "")
-            local total = 8 - plate:len()
+            if not Config.PlateSpace then
+                total = 8 - plate:len()
+            else
+                total = 7 - plate:len()
+            end
             if total ~= 0 then
-                plate = veh(tonumber(#result))..GetRandomNumber(total)
+                if not Config.PlateSpace then
+                    plate = string.upper(veh(tonumber(#result))..GetRandomNumber(total))
+                else
+                    plate = string.upper(""..veh(tonumber(#result)).." "..GetRandomNumber(total).."")
+                end
+                --plate = veh(tonumber(#result))..GetRandomNumber(total)
                 plate = plate:gsub("=", "")
             end
             print(plate,plate:len())
