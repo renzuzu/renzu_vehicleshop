@@ -108,7 +108,7 @@ ESX.RegisterServerCallback('renzu_vehicleshop:GenPlate', function (source, cb)
     end
 end)
 
-ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb, model, props, payment)
+ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb, model, props, payment, job)
     local source = source
 	local xPlayer = ESX.GetPlayerFromId(source)
     local function sqlfunc(sql, query)
@@ -116,28 +116,47 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
             MySQL.Async.fetchAll(query, {
                 ['@model'] = model
             }, function (result)
-                cb(Buy(result,xPlayer,model, props, payment))
+                cb(Buy(result,xPlayer,model, props, payment, job))
                 return result
             end)
         else
             exports['ghmattimysql']:execute(query, {
                 ['@model'] = model
             }, function (result)
-                cb(Buy(result,xPlayer,model, props, payment))
+                cb(Buy(result,xPlayer,model, props, payment, job))
                 return result
             end)
         end
     end
-    sqlfunc(Config.Mysql,'SELECT * FROM vehicles WHERE model = @model LIMIT 1')
+    if not job then
+        sqlfunc(Config.Mysql,'SELECT * FROM vehicles WHERE model = @model LIMIT 1')
+    else
+        for k,v in pairs(VehicleShop) do
+            local actualShop = v
+            if v.job == job then
+                local result = {}
+                for k,v in pairs(v.shop) do
+                    if v.model == model then
+                        result[1] = {}
+                        result[1].model = v.model
+                        result[1].price = v.price
+                        result[1].stock = 100
+                    end
+                end
+                cb(Buy(result,xPlayer,model, props, payment, job))
+            end
+        end
+    end
 end)
 
-function Buy(result,xPlayer,model, props, payment)
+function Buy(result,xPlayer,model, props, payment, job)
     fetchdone = false
     bool = false
     if result then
         local model = result[1].model
         local price = result[1].price
         local stock = result[1].stock
+        print(mode,price,stock)
         local payment = payment
         if payment == 'cash' then
             money = xPlayer.getMoney() >= tonumber(price)
@@ -154,15 +173,25 @@ function Buy(result,xPlayer,model, props, payment)
                 end
                 stock = stock - 1
                 local data = json.encode(props)
-                if Config.Mysql == 'mysql-async' then
-                    MySQL.Async.execute('INSERT INTO owned_vehicles (owner, plate, vehicle, `stored`) VALUES (@owner, @plate, @props, @stored)',
-                    {
+                local query = 'INSERT INTO owned_vehicles (owner, plate, vehicle, `stored`) VALUES (@owner, @plate, @props, @stored)'
+                local var = {
+                    ['@owner']   = xPlayer.identifier,
+                    ['@plate']   = props.plate:upper(),
+                    ['@props'] = data,
+                    ['@stored'] = 1
+                }
+                if Config.SaveJob and job ~= false then
+                    query = 'INSERT INTO owned_vehicles (owner, plate, vehicle, `stored`, job) VALUES (@owner, @plate, @props, @stored, @job)'
+                    var = {
                         ['@owner']   = xPlayer.identifier,
                         ['@plate']   = props.plate:upper(),
                         ['@props'] = data,
-                        ['@stored'] = 1
-                    },
-                    function (rowsChanged)
+                        ['@stored'] = 1,
+                        ['@job'] = job
+                    }
+                end
+                if Config.Mysql == 'mysql-async' then
+                    MySQL.Async.execute(query,var, function (rowsChanged)
                         MySQL.Sync.execute('UPDATE vehicles SET stock = @stock WHERE model = @model',
                         {
                             ['@stock'] = stock,
@@ -172,12 +201,7 @@ function Buy(result,xPlayer,model, props, payment)
                         bool = true
                     end)
                 else
-                    exports['ghmattimysql']:execute('INSERT INTO owned_vehicles (owner, plate, vehicle, `stored`) VALUES (@owner, @plate, @props, @stored)', {
-                        ['@owner']   = xPlayer.identifier,
-                        ['@plate']   = props.plate:upper(),
-                        ['@props'] = data,
-                        ['@stored'] = 1
-                    }, function (rowsChanged)
+                    exports['ghmattimysql']:execute(query,var, function (rowsChanged)
                         exports['ghmattimysql']:execute('UPDATE vehicles SET stock = @stock WHERE model = @model', {
                             ['@stock'] = stock,
                             ['@model'] = model

@@ -9,6 +9,7 @@ ESX = nil
 local fetchdone = false
 local PlayerData = {}
 local playerLoaded = false
+local jobcar = false
 Citizen.CreateThread(function()
 	while ESX == nil do
 		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
@@ -106,12 +107,16 @@ AddEventHandler('vehicleshop', function()
     local ped = PlayerPedId()
     local vehiclenow = GetVehiclePedIsIn(GetPlayerPed(-1), false)
     local jobgarage = false
+    jobcar = false
     for k,v in pairs(VehicleShop) do
         if not v.property then
             local job = v.job == 'all' or PlayerData.job.name == v.job
             local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
             if not DoesEntityExist(vehiclenow) then
                 if dist <= v.Dist and job then
+                    if PlayerData.job.name == v.job then
+                        jobcar = v.job
+                    end
                     ESX.ShowNotification("Opening Shop...Please wait..")
                     TriggerServerEvent("renzu_vehicleshop:GetAvailableVehicle",v.name)
                     fetchdone = false
@@ -869,7 +874,7 @@ RegisterNUICallback(
                     --ESX.ShowNotification("Not Enough money cabron")
                     ReqAndDelete(v)
                 end
-            end, data.model, props, data.payment)
+            end, data.model, props, data.payment, jobcar)
         end)
     end
 )

@@ -6,6 +6,7 @@ Config.UsePopUI = true -- Create a Thread for checking playercoords and Use POPU
 Config.Quickpick = true -- if false system will create a garage shell and spawn every vehicle you preview
 Config.EnableTestDrive = true
 Config.PlateSpace = true -- enabkle / disable plate spaces (compatibility with esx 1.1?)
+Config.SaveJob = true -- this config is to save the value to owned_vehicles.job column
 VehicleShop = {
     ['pdm'] = { -- same with name
         name = "pdm", --LEGION
