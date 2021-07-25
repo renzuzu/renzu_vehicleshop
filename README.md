@@ -6,6 +6,7 @@ FIVEM VEHICLE SHOP HUD (WIP)
 - Job Vehicle Shop
 - Multi Payment Method
 - Categorized Shop
+- Users Able to Sell Owned Vehicles
 - Clean UI
 - Test Driving
 
