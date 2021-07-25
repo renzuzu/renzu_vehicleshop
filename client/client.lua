@@ -1110,3 +1110,12 @@ function Spawn_Vehicle_Forward(veh, coords)
     else return end
     Spawn_Vehicle_Forward(veh, move_coords)
 end
+
+Citizen.CreateThread(function() --load IPL for Vehicleshop
+	RequestIpl('shr_int')
+
+	local interiorID = 7170
+	LoadInterior(interiorID)
+	EnableInteriorProp(interiorID, 'csr_beforeMission')
+	RefreshInterior(interiorID)
+end)
