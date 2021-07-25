@@ -71,6 +71,69 @@ end
 -- 	end)
 -- end)
 
+function Database(query,var,src,type)
+    if Config.Mysql == 'mysql-async' and type =='fetch' then
+        return MySQL.Sync.fetchAll(query,var)
+    elseif Config.MySQL == 'mysql-async' and type == 'execute' then
+        MySQL.Async.execute(query,var, function (rowsChanged)
+            TriggerClientEvent('sellvehiclecallback',src)
+        end)
+    else
+        local res = nil
+        exports['ghmattimysql']:execute(query,var, function (result)
+            res = result
+            if type == 'execute' then
+                TriggerClientEvent('sellvehiclecallback',src)
+            end
+        end)
+        local c = 0
+        while res == nil and c < 2000 do Wait(10) c = c + 1 end
+        return res
+    end
+end
+
+function Deleteveh(plate,src)
+    local plate = tostring(plate)
+    if plate and type(plate) == 'string' then
+        Database('DELETE FROM owned_vehicles WHERE plate=@plate', {['@plate'] = plate},src,'execute')
+    else
+        print('error not string - Delete Vehicle')
+    end
+end
+
+RegisterServerEvent('renzu_vehicleshop:sellvehicle')
+AddEventHandler('renzu_vehicleshop:sellvehicle', function()
+    local source = source
+    local plate = tostring(plate)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local price = 1000
+    local vehicle = GetVehiclePedIsIn(GetPlayerPed(source))
+    local plate = GetVehicleNumberPlateText(vehicle)
+    r = Database('SELECT * FROM owned_vehicles WHERE UPPER(plate) = @plate and owner = @owner', {['@plate'] = plate:upper(), ['@owner'] = xPlayer.identifier},xPlayer.source,'fetch')
+    if #r > 0 then
+        local model = json.decode(r[1].vehicle).model
+        if model == GetEntityModel(vehicle) then
+            result = Database('SELECT * FROM vehicles', {},xPlayer.source,'fetch')
+                if #result > 0 then
+                    for k,v in pairs(result) do
+                        if model == GetHashKey(v.model) then
+                            price = v.price * (Config.RefundPercent * 0.01)
+                        end
+                    end
+                    Deleteveh(plate,xPlayer.source)
+                    xPlayer.addMoney(price)
+                    xPlayer.showNotification('Vehicle has been Sold for ^g '..price..'',1,0,110)
+                end
+        else
+            print("EXPLOIT")
+            xPlayer.showNotification('Are you really sure this is the vehicle?',1,0,110)
+        end
+    else
+        xPlayer.showNotification('You dont owned this vehicle',1,0,110)
+        print("not owned")
+    end
+end)
+
 ESX.RegisterServerCallback('renzu_vehicleshop:GenPlate', function (source, cb)
     if Config.Mysql == 'mysql-async' then
         MySQL.Async.fetchAll('SELECT * FROM owned_vehicles', {}, function (result)

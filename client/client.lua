@@ -64,13 +64,14 @@ function tostringplate(plate)
 end
 
 local neargarage = false
-function PopUI(name,v)
+function PopUI(name,v,event,text,server)
+    local text = text or ''
     local table = {
-        ['event'] = 'vehicleshop',
+        ['event'] = event,
         ['title'] = 'Vehicle Shop',
-        ['server_event'] = false,
+        ['server_event'] = server,
         ['unpack_arg'] = false,
-        ['invehicle_title'] = 'Sell Vehicle',
+        ['invehicle_title'] = 'Sell Vehicle '..text..'%',
         ['confirm'] = '[ENTER]',
         ['reject'] = '[CLOSE]',
         ['custom_arg'] = {}, -- example: {1,2,3,4}
@@ -91,14 +92,35 @@ CreateThread(function()
             for k,v in pairs(VehicleShop) do
                 local vec = vector3(v.shop_x,v.shop_y,v.shop_z)
                 local dist = #(vec - GetEntityCoords(PlayerPedId()))
-                if dist < v.Dist then
+                if dist < v.Dist and not IsPedInAnyVehicle(PlayerPedId()) then
                     neargarage = true
-                    PopUI(v.name,vec)
+                    PopUI(v.name,vec,"vehicleshop")
+                end
+            end
+
+            for k,v in pairs(Refund) do
+                local vec = vector3(v.shop_x,v.shop_y,v.shop_z)
+                local dist = #(vec - GetEntityCoords(PlayerPedId()))
+                while dist < v.Dist * 2 and IsPedInAnyVehicle(PlayerPedId()) do
+                    dist = #(vec - GetEntityCoords(PlayerPedId()))
+                    DrawMarker(1, vec ,0,0,0,0,0,2.0,2.0,2.0,1.0,255, 102, 0,200,0,0,0,1)
+                    if dist < v.Dist and IsPedInAnyVehicle(PlayerPedId()) then
+                        neargarage = true
+                        PopUI(v.name,vec,"renzu_vehicleshop:sellvehicle",Config.RefundPercent,true)
+                        break
+                    end
+                    Wait(0)
                 end
             end
             Wait(1000)
         end
     end
+end)
+
+RegisterNetEvent('sellvehiclecallback')
+AddEventHandler('sellvehiclecallback', function()
+    print("SELL")
+    ReqAndDelete(GetVehiclePedIsIn(PlayerPedId()))
 end)
 
 RegisterNetEvent('vehicleshop')

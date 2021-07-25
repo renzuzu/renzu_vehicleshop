@@ -1,11 +1,11 @@
 Config = {}
 Config.Locale = "en"
-Config.Mysql = 'mysql-async' -- "ghmattisql", "msyql-async"
+Config.Mysql = 'ghmattisql' -- "ghmattisql", "msyql-async"
 Config.UseRayZone = false -- unrelease script https://github.com/renzuzu/renzu_rayzone
 Config.UsePopUI = true -- Create a Thread for checking playercoords and Use POPUI to Trigger Event, set this to false if using rayzone. Popui is originaly built in to RayZone -- DOWNLOAD https://github.com/renzuzu/renzu_popui
 Config.Quickpick = true -- if false system will create a garage shell and spawn every vehicle you preview
 Config.EnableTestDrive = true
-Config.PlateSpace = true -- enabkle / disable plate spaces (compatibility with esx 1.1?)
+Config.PlateSpace = true -- enable / disable plate spaces (compatibility with esx 1.1?)
 Config.SaveJob = true -- this config is to save the value to owned_vehicles.job column
 VehicleShop = {
     ['pdm'] = { -- same with name
@@ -40,5 +40,19 @@ VehicleShop = {
             {shop='police',category='Police Sedan',stock=50,price=100000,model='police4',name="Police 4"},
             {shop='police',category='Police SUVs',stock=50,price=100000,model='police3',name="Police SUV"},
         },
+    },
+}
+
+Config.EnableVehicleSelling = true -- allow your user to sell the vehicle and deletes it from database
+Config.RefundPercent = 70 -- 70% (percentage from original value)
+Refund = {
+    ['pdm'] = { -- same with name
+        name = "pdm", --LEGION
+        job = 'all',
+        Dist = 7, -- distance
+        Blip = {color = 38, sprite = 219, scale = 0.6},
+        shop_x = -46.320140838623,
+        shop_y = -1095.1837158203,
+        shop_z = 25.91579246521, -- coordinates for selling / refunding the vehicle
     },
 }
