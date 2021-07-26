@@ -14,7 +14,7 @@ AddEventHandler('renzu_vehicleshop:GetAvailableVehicle', function(shop)
         else
             Owned_Vehicle = VehicleShop[shop].shop
         end
-        TriggerClientEvent("renzu_vehicleshop:receive_vehicles", src , Owned_Vehicle)
+        TriggerClientEvent("renzu_vehicleshop:receive_vehicles", src , Owned_Vehicle,VehicleShop[shop].type or 'car')
     else
         exports['ghmattimysql']:execute('SELECT * FROM vehicles WHERE shop = @shop', {['@shop'] = shop}, function(result)
             if #result > 0 then
@@ -22,7 +22,7 @@ AddEventHandler('renzu_vehicleshop:GetAvailableVehicle', function(shop)
             else
                 Owned_Vehicle = VehicleShop[shop].shop
             end
-            TriggerClientEvent("renzu_vehicleshop:receive_vehicles", src , Owned_Vehicle)
+            TriggerClientEvent("renzu_vehicleshop:receive_vehicles", src , Owned_Vehicle,VehicleShop[shop].type or 'car')
         end)
     end
 end)
@@ -171,7 +171,7 @@ ESX.RegisterServerCallback('renzu_vehicleshop:GenPlate', function (source, cb)
     end
 end)
 
-ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb, model, props, payment, job)
+ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb, model, props, payment, job, type)
     local source = source
 	local xPlayer = ESX.GetPlayerFromId(source)
     local function sqlfunc(sql, query)
@@ -179,19 +179,20 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
             MySQL.Async.fetchAll(query, {
                 ['@model'] = model
             }, function (result)
-                cb(Buy(result,xPlayer,model, props, payment, job))
+                cb(Buy(result,xPlayer,model, props, payment, job, type))
                 return result
             end)
         else
             exports['ghmattimysql']:execute(query, {
                 ['@model'] = model
             }, function (result)
-                cb(Buy(result,xPlayer,model, props, payment, job))
+                cb(Buy(result,xPlayer,model, props, payment, job, type))
                 return result
             end)
         end
     end
-    if not job then
+    print(type)
+    if not job and type == 'car' then
         sqlfunc(Config.Mysql,'SELECT * FROM vehicles WHERE model = @model LIMIT 1')
     else
         for k,v in pairs(VehicleShop) do
@@ -204,15 +205,33 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
                         result[1].model = v.model
                         result[1].price = v.price
                         result[1].stock = 100
+                        cb(Buy(result,xPlayer,model, props, payment, job, type))
+                        break
                     end
                 end
-                cb(Buy(result,xPlayer,model, props, payment, job))
+            elseif type ~= 'car' then
+                local result = {}
+                if v.shop then
+                    for k,v in pairs(v.shop) do
+                        print(model)
+                        if v.model == model then
+                            print(model)
+                            result[1] = {}
+                            result[1].model = v.model
+                            result[1].price = v.price
+                            result[1].stock = 100
+                            cb(Buy(result,xPlayer,model, props, payment, job, type))
+                            break
+                        end
+                    end
+                    print("ASO")
+                end
             end
         end
     end
 end)
 
-function Buy(result,xPlayer,model, props, payment, job)
+function Buy(result,xPlayer,model, props, payment, job, type)
     fetchdone = false
     bool = false
     if result then
@@ -235,22 +254,33 @@ function Buy(result,xPlayer,model, props, payment, job)
                     xPlayer.removeAccountMoney('bank', tonumber(price))
                 end
                 stock = stock - 1
+                garage = 'Garage A'
+                if type == 'boat' then
+                    garage = 'Boat Garage A'
+                end
+                if type == 'plane' then
+                    garage = 'Plane Hangar A'
+                end
                 local data = json.encode(props)
-                local query = 'INSERT INTO owned_vehicles (owner, plate, vehicle, `stored`) VALUES (@owner, @plate, @props, @stored)'
+                local query = 'INSERT INTO owned_vehicles (owner, plate, vehicle, `stored`, garage_id, `type`) VALUES (@owner, @plate, @props, @stored, @garage_id, @type)'
                 local var = {
                     ['@owner']   = xPlayer.identifier,
                     ['@plate']   = props.plate:upper(),
                     ['@props'] = data,
-                    ['@stored'] = 1
+                    ['@stored'] = 1,
+                    ['@garage_id'] = garage,
+                    ['@type'] = type
                 }
                 if Config.SaveJob and job ~= false then
-                    query = 'INSERT INTO owned_vehicles (owner, plate, vehicle, `stored`, job) VALUES (@owner, @plate, @props, @stored, @job)'
+                    query = 'INSERT INTO owned_vehicles (owner, plate, vehicle, `stored`, job, garage_id, `type`) VALUES (@owner, @plate, @props, @stored, @job, @garage_id, @type)'
                     var = {
                         ['@owner']   = xPlayer.identifier,
                         ['@plate']   = props.plate:upper(),
                         ['@props'] = data,
                         ['@stored'] = 1,
-                        ['@job'] = job
+                        ['@job'] = job,
+                        ['@garage_id'] = garage,
+                        ['@type'] = type
                     }
                 end
                 if Config.Mysql == 'mysql-async' then

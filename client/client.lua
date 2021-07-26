@@ -10,6 +10,7 @@ local fetchdone = false
 local PlayerData = {}
 local playerLoaded = false
 local jobcar = false
+local type = 'car'
 Citizen.CreateThread(function()
 	while ESX == nil do
 		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
@@ -23,11 +24,6 @@ Citizen.CreateThread(function()
 	end
 
 	PlayerData = ESX.GetPlayerData()
-end)
-
-RegisterNetEvent('esx:playerLoaded')
-AddEventHandler('esx:playerLoaded', function(xPlayer)
-    playerloaded = true
     for k, v in pairs (VehicleShop) do
         local blip = AddBlipForCoord(v.shop_x, v.shop_y, v.shop_z)
         SetBlipSprite (blip, v.Blip.sprite)
@@ -39,6 +35,11 @@ AddEventHandler('esx:playerLoaded', function(xPlayer)
         AddTextComponentSubstringPlayerName("Vehicle Shop: "..v.name.."")
         EndTextCommandSetBlipName(blip)
     end
+end)
+
+RegisterNetEvent('esx:playerLoaded')
+AddEventHandler('esx:playerLoaded', function(xPlayer)
+    playerloaded = true
 end)
 
 
@@ -64,11 +65,11 @@ function tostringplate(plate)
 end
 
 local neargarage = false
-function PopUI(name,v,event,text,server)
+function PopUI(name,v,event,text,server,shopname)
     local text = text or ''
     local table = {
         ['event'] = event,
-        ['title'] = 'Vehicle Shop',
+        ['title'] = name,
         ['server_event'] = server,
         ['unpack_arg'] = false,
         ['invehicle_title'] = 'Sell Vehicle '..text..'%',
@@ -91,22 +92,23 @@ CreateThread(function()
         while true do
             for k,v in pairs(VehicleShop) do
                 local vec = vector3(v.shop_x,v.shop_y,v.shop_z)
+                local inveh = IsPedInAnyVehicle(PlayerPedId())
                 local dist = #(vec - GetEntityCoords(PlayerPedId()))
-                if dist < v.Dist and not IsPedInAnyVehicle(PlayerPedId()) then
+                if dist < v.Dist and not inveh then
                     neargarage = true
-                    PopUI(v.name,vec,"vehicleshop")
+                    PopUI(v.title or v.name,vec,"vehicleshop")
                 end
             end
 
             for k,v in pairs(Refund) do
                 local vec = vector3(v.shop_x,v.shop_y,v.shop_z)
                 local dist = #(vec - GetEntityCoords(PlayerPedId()))
-                while dist < v.Dist * 2 and IsPedInAnyVehicle(PlayerPedId()) do
+                while dist < v.Dist * 2 and inveh do
                     dist = #(vec - GetEntityCoords(PlayerPedId()))
                     DrawMarker(1, vec ,0,0,0,0,0,2.0,2.0,2.0,1.0,255, 102, 0,200,0,0,0,1)
-                    if dist < v.Dist and IsPedInAnyVehicle(PlayerPedId()) then
+                    if dist < v.Dist and inveh then
                         neargarage = true
-                        PopUI(v.name,vec,"renzu_vehicleshop:sellvehicle",Config.RefundPercent,true)
+                        PopUI(v.title or v.name,vec,"renzu_vehicleshop:sellvehicle",Config.RefundPercent,true)
                         break
                     end
                     Wait(0)
@@ -119,7 +121,6 @@ end)
 
 RegisterNetEvent('sellvehiclecallback')
 AddEventHandler('sellvehiclecallback', function()
-    print("SELL")
     ReqAndDelete(GetVehiclePedIsIn(PlayerPedId()))
 end)
 
@@ -139,6 +140,7 @@ AddEventHandler('vehicleshop', function()
                     if PlayerData.job.name == v.job then
                         jobcar = v.job
                     end
+                    type = v.type
                     ESX.ShowNotification("Opening Shop...Please wait..")
                     TriggerServerEvent("renzu_vehicleshop:GetAvailableVehicle",v.name)
                     fetchdone = false
@@ -454,7 +456,7 @@ RegisterNUICallback("choosecategory", function(data, cb)
     end
 end)
 RegisterNetEvent('renzu_vehicleshop:receive_vehicles')
-AddEventHandler('renzu_vehicleshop:receive_vehicles', function(tb)
+AddEventHandler('renzu_vehicleshop:receive_vehicles', function(tb,shoptype)
     fetchdone = false
     OwnedVehicles = nil
     Wait(100)
@@ -476,25 +478,21 @@ AddEventHandler('renzu_vehicleshop:receive_vehicles', function(tb)
         end
 
         local vehname = value.name
-        -- for _,value in pairs(vehdata) do -- fetch vehicle names from vehicles sql table
-        --     if tonumber(props.model) == GetHashKey(value.model) then
-        --         vehname = value.name
-        --     end
-        -- end
-
-        --local vehname = vehicle_data[GetDisplayNameFromVehicleModel(tonumber(props.model))]
-        --print(value.model)
         if vehname == nil then
             vehname = GetDisplayNameFromVehicleModel(tonumber(props.model))
+        end
+        local pmult, tmult, handling, brake = 1000,800,GetPerformanceStats(vehicleModel).handling,GetPerformanceStats(vehicleModel).brakes
+        if shoptype == 'boat' or shoptype == 'plane' then
+            pmult,tmult,handling, brake = 10,8,GetPerformanceStats(vehicleModel).handling * 0.1, GetPerformanceStats(vehicleModel).brakes * 0.1
         end
         local VTable = {
             brand = GetVehicleClassnamemodel(GetHashKey(value.model)),
             name = vehname:upper(),
-            brake = GetPerformanceStats(vehicleModel).brakes,
-            handling = GetPerformanceStats(vehicleModel).handling,
+            brake = brake,
+            handling = handling,
             topspeed = math.ceil(GetVehicleModelEstimatedMaxSpeed(vehicleModel)*4.605936),
-            power = math.ceil(GetVehicleModelAcceleration(vehicleModel)*1000),
-            torque = math.ceil(GetVehicleModelAcceleration(vehicleModel)*800),
+            power = math.ceil(GetVehicleModelAcceleration(vehicleModel)*pmult),
+            torque = math.ceil(GetVehicleModelAcceleration(vehicleModel)*tmult),
             model = value.model,
             category = value.category,
             model2 = GetHashKey(value.model),
@@ -896,7 +894,7 @@ RegisterNUICallback(
                     --ESX.ShowNotification("Not Enough money cabron")
                     ReqAndDelete(v)
                 end
-            end, data.model, props, data.payment, jobcar)
+            end, data.model, props, data.payment, jobcar, type)
         end)
     end
 )

@@ -226,3 +226,12 @@ ADD shop varchar(32) NOT NULL DEFAULT 'pdm';
 
 ALTER TABLE vehicles
 ADD stock int(11) NOT NULL DEFAULT 100;
+
+ALTER TABLE owned_vehicles
+ADD `type` varchar(32) NOT NULL DEFAULT 'car';
+
+ALTER TABLE owned_vehicles
+ADD `garage_id` varchar(32) NOT NULL DEFAULT 'A';
+
+ALTER TABLE owned_vehicles
+ADD `job` varchar(32) NOT NULL;
