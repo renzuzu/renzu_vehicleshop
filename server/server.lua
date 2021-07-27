@@ -153,7 +153,7 @@ ESX.RegisterServerCallback('renzu_vehicleshop:GenPlate', function (source, cb)
                 --plate = veh(tonumber(#result))..GetRandomNumber(total)
                 plate = plate:gsub("=", "")
             end
-            print(plate,plate:len())
+            --print(plate,plate:len())
             cb(plate:upper())
         end)
     else
@@ -165,7 +165,7 @@ ESX.RegisterServerCallback('renzu_vehicleshop:GenPlate', function (source, cb)
                 plate = veh(tonumber(#result))..GetRandomNumber(total)
                 plate = plate:gsub("=", "")
             end
-            print(plate,plate:len())
+            --print(plate,plate:len())
             cb(plate:upper())
         end)
     end
@@ -191,7 +191,7 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
             end)
         end
     end
-    print(type)
+    --print(type)
     if not job and type == 'car' then
         sqlfunc(Config.Mysql,'SELECT * FROM vehicles WHERE model = @model LIMIT 1')
     else
@@ -213,9 +213,9 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
                 local result = {}
                 if v.shop then
                     for k,v in pairs(v.shop) do
-                        print(model)
+                        --print(model)
                         if v.model == model then
-                            print(model)
+                            --print(model)
                             result[1] = {}
                             result[1].model = v.model
                             result[1].price = v.price
@@ -224,7 +224,6 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
                             break
                         end
                     end
-                    print("ASO")
                 end
             end
         end
@@ -238,7 +237,6 @@ function Buy(result,xPlayer,model, props, payment, job, type)
         local model = result[1].model
         local price = result[1].price
         local stock = result[1].stock
-        print(mode,price,stock)
         local payment = payment
         if payment == 'cash' then
             money = xPlayer.getMoney() >= tonumber(price)
