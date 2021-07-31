@@ -74,7 +74,7 @@ end
 function Database(query,var,src,type)
     if Config.Mysql == 'mysql-async' and type =='fetch' then
         return MySQL.Sync.fetchAll(query,var)
-    elseif Config.MySQL == 'mysql-async' and type == 'execute' then
+    elseif Config.Mysql == 'mysql-async' and type == 'execute' then
         MySQL.Async.execute(query,var, function (rowsChanged)
             TriggerClientEvent('sellvehiclecallback',src)
         end)
