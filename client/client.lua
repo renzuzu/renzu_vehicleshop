@@ -103,6 +103,7 @@ CreateThread(function()
             for k,v in pairs(Refund) do
                 local vec = vector3(v.shop_x,v.shop_y,v.shop_z)
                 local dist = #(vec - GetEntityCoords(PlayerPedId()))
+                local inveh = IsPedInAnyVehicle(PlayerPedId())
                 while dist < v.Dist * 2 and inveh do
                     dist = #(vec - GetEntityCoords(PlayerPedId()))
                     DrawMarker(1, vec ,0,0,0,0,0,2.0,2.0,2.0,1.0,255, 102, 0,200,0,0,0,1)
