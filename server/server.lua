@@ -156,6 +156,7 @@ ESX.RegisterServerCallback('renzu_vehicleshop:GenPlate', function (source, cb)
 end)
 
 ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb, model, props, payment, job, type, garage)
+    print("BUYING START")
     local source = source
 	local xPlayer = ESX.GetPlayerFromId(source)
     local function sqlfunc(sql, query)
@@ -163,28 +164,33 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
             MySQL.Async.fetchAll(query, {
                 ['@model'] = model
             }, function (result)
-                cb(Buy(result,xPlayer,model, props, payment, job, type))
+                print("USING MYSQL ASYNC")
+                cb(Buy(result,xPlayer,model, props, payment, job, type , garage))
                 return result
             end)
         else
             exports['ghmattimysql']:execute(query, {
                 ['@model'] = model
             }, function (result)
-                cb(Buy(result,xPlayer,model, props, payment, job, type))
+                print("USING GHMATTISQL")
+                cb(Buy(result,xPlayer,model, props, payment, job, type , garage))
                 return result
             end)
         end
     end
     --print(type)
     if not job and type == 'car' then
+        print("BUYING VEHICLES SAVED FROM SQL vehicles tables")
         sqlfunc(Config.Mysql,'SELECT * FROM vehicles WHERE model = @model LIMIT 1')
     else
+        print("BUYING CUSTOM CARS FROM CONFIG SHOP")
         for k,v in pairs(VehicleShop) do
             local actualShop = v
             if v.job == job then
                 local result = {}
                 for k,v in pairs(v.shop) do
                     if v.model:lower() == model:lower() then
+                        print("FOUND A MATCHING MODEL")
                         result[1] = {}
                         result[1].model = v.model
                         result[1].price = v.price
@@ -200,6 +206,7 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
                         --print(model)
                         if v.model:lower() == model:lower() then
                             --print(model)
+                            print("FOUND A MATCHING MODEL")
                             result[1] = {}
                             result[1].model = v.model
                             result[1].price = v.price
@@ -217,7 +224,9 @@ end)
 function Buy(result,xPlayer,model, props, payment, job, type, garage)
     fetchdone = false
     bool = false
+    print(" FUNCTION  BUY")
     if result then
+        print("RESULT FETCHED")
         local model = result[1].model
         local price = result[1].price
         local stock = result[1].stock
@@ -228,8 +237,10 @@ function Buy(result,xPlayer,model, props, payment, job, type, garage)
             money = xPlayer.getAccount('bank').money >= tonumber(price)
         end
         stock = 999
-        if stock > 0 then           
+        if stock > 0 then
+            print("STOCK CONDITION")         
             if money then
+                print("MONEY CONDITION")
                 if payment == 'cash' then
                     xPlayer.removeMoney(tonumber(price))
                 else
@@ -259,40 +270,48 @@ function Buy(result,xPlayer,model, props, payment, job, type, garage)
                     }
                 end
                 if Config.Mysql == 'mysql-async' then
+                    print("SAVING TO MYSQL ASYNC")
                     MySQL.Async.execute(query,var, function (rowsChanged)
                         MySQL.Sync.execute('UPDATE vehicles SET stock = @stock WHERE model = @model',
                         {
                             ['@stock'] = stock,
                             ['@model'] = model
                         })
+                        print("BUY DONE")
                         fetchdone = true
                         bool = true
                     end)
                 else
                     exports['ghmattimysql']:execute(query,var, function (rowsChanged)
+                        print("USING GHMATTI SQL BUY")
                         exports['ghmattimysql']:execute('UPDATE vehicles SET stock = @stock WHERE model = @model', {
                             ['@stock'] = stock,
                             ['@model'] = model
                         })
+                        print("BUY DONE GHMATTI")
                         fetchdone = true
                         bool = true
                     end)
                 end
             else
+                print("NOT ENOUGH MONEY")
                 xPlayer.showNotification('Not Enough Money',1,0,110)
                 fetchdone = true
                 bool = false
             end
         else
+            print("VEHICLE OUT OF STOCK")
             xPlayer.showNotification('Vehicle Out of stock',1,0,110)
             fetchdone = true
             bool = false
         end
     else
+        print("VEHICLE NOT IN DATABASE or CONFIG")
         xPlayer.showNotification('Vehicle does not Exist',1,0,110)
         fetchdone = true
         bool = false
     end
     while not fetchdone do Wait(0) end
+    print("SENDING TO CLIENT SUCCESS")
     return bool
 end
