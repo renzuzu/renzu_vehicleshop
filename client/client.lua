@@ -149,7 +149,7 @@ AddEventHandler('vehicleshop', function()
                     while not fetchdone do
                         Wait(0)
                     end
-                    OpenShop(v.name)
+                    OpenShop(k)
                     break
                 end
             end

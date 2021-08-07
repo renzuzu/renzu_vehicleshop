@@ -184,7 +184,7 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
             if v.job == job then
                 local result = {}
                 for k,v in pairs(v.shop) do
-                    if v.model == model then
+                    if v.model:lower() == model:lower() then
                         result[1] = {}
                         result[1].model = v.model
                         result[1].price = v.price
@@ -198,7 +198,7 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
                 if v.shop then
                     for k,v in pairs(v.shop) do
                         --print(model)
-                        if v.model == model then
+                        if v.model:lower() == model:lower() then
                             --print(model)
                             result[1] = {}
                             result[1].model = v.model
