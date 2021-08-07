@@ -145,7 +145,7 @@ AddEventHandler('vehicleshop', function()
                     ESX.ShowNotification("Opening Shop...Please wait..")
                     TriggerServerEvent("renzu_vehicleshop:GetAvailableVehicle",v.name)
                     fetchdone = false
-                    id = v.name
+                    id = k
                     while not fetchdone do
                         Wait(0)
                     end
@@ -827,24 +827,18 @@ RegisterNUICallback(
                     successbuy = canbuy
                     for k,v in pairs(VehicleShop) do
                         local dist = #(vector3(v.spawn_x,v.spawn_y,v.spawn_z) - GetEntityCoords(PlayerPedId()))
-                        if dist <= 70.0 and id == v.name then
+                        if dist <= 70.0 and id == k then
                             DoScreenFadeOut(333)
                             ReqAndDelete(LastVehicleFromGarage)
                             Citizen.Wait(333)
                             SetEntityCoords(PlayerPedId(), v.shop_x,v.shop_y,v.shop_z, false, false, false, true)
                             SetVehicleProp(veh, props)
                             DoScreenFadeIn(111)
-                            while veh == nil do
-                                Citizen.Wait(101)
-                            end
                             NetworkFadeInEntity(veh,1)
                             TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
                         end
                     end
 
-                    while veh == nil do
-                        Citizen.Wait(10)
-                    end
                     LastVehicleFromGarage = nil
                     TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
                     CloseNui()
