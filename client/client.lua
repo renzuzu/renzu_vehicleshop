@@ -1,6 +1,7 @@
 
 local LastVehicleFromGarage
 local id = 'A'
+local garage = 'A'
 local inGarage = false
 local ingarage = false
 local garage_coords = {}
@@ -146,6 +147,7 @@ AddEventHandler('vehicleshop', function()
                     TriggerServerEvent("renzu_vehicleshop:GetAvailableVehicle",v.name)
                     fetchdone = false
                     id = k
+                    garage = v.default_garage
                     while not fetchdone do
                         Wait(0)
                     end
@@ -859,7 +861,7 @@ RegisterNUICallback(
                     CloseNui()
                     ReqAndDelete(v)
                 end
-            end, data.model, props, data.payment, jobcar, type)
+            end, data.model, props, data.payment, jobcar, type, garage)
             local counter = 0
             while not successbuy and counter < 5 do counter = counter + 1 Wait (1000) end
             if not successbuy then

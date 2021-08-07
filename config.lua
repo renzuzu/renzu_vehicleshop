@@ -13,6 +13,7 @@ VehicleShop = {
         title = "PDM Vehicle Shop",
         type = 'car',
         job = 'all',
+        default_garage = 'Garage A',
         Dist = 7, -- distance (DEPRECATED)
         Blip = {color = 38, sprite = 595, scale = 0.9},
         shop_x = -35.469879150391,
@@ -28,6 +29,7 @@ VehicleShop = {
         name = "Police Vehicle Shop", --MRPD police shop
         job = 'police',
         type = 'car',
+        default_garage = 'Police Garage',
         Dist = 7, -- distance (DEPRECATED)
         Blip = {color = 38, sprite = 662, scale = 0.9},
         shop_x = 456.89453125,
@@ -50,6 +52,7 @@ VehicleShop = {
         name = "Yacht Club Boat Shop", --LEGION
         type = 'boat', -- type of shop
         job = 'all',
+        default_garage = 'Boat Garage A',
         Dist = 7, -- distance (DEPRECATED)
         Blip = {color = 38, sprite = 410, scale = 0.9},
         shop_x = -812.87133789062,
@@ -76,6 +79,7 @@ VehicleShop = {
         title = "DEVIN PLANE SHOP",
         type = 'plane', -- type of shop
         job = 'all',
+        default_garage = 'Plane Hangar A',
         Dist = 7, -- distance (DEPRECATED)
         Blip = {color = 38, sprite = 423, scale = 0.9},
         shop_x = -916.04522705078,

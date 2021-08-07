@@ -155,7 +155,7 @@ ESX.RegisterServerCallback('renzu_vehicleshop:GenPlate', function (source, cb)
     end
 end)
 
-ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb, model, props, payment, job, type)
+ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb, model, props, payment, job, type, garage)
     local source = source
 	local xPlayer = ESX.GetPlayerFromId(source)
     local function sqlfunc(sql, query)
@@ -189,7 +189,7 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
                         result[1].model = v.model
                         result[1].price = v.price
                         result[1].stock = 100
-                        cb(Buy(result,xPlayer,model, props, payment, job, type))
+                        cb(Buy(result,xPlayer,model, props, payment, job, type, garage))
                         break
                     end
                 end
@@ -204,7 +204,7 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
                             result[1].model = v.model
                             result[1].price = v.price
                             result[1].stock = 100
-                            cb(Buy(result,xPlayer,model, props, payment, job, type))
+                            cb(Buy(result,xPlayer,model, props, payment, job, type, garage))
                             break
                         end
                     end
@@ -214,7 +214,7 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
     end
 end)
 
-function Buy(result,xPlayer,model, props, payment, job, type)
+function Buy(result,xPlayer,model, props, payment, job, type, garage)
     fetchdone = false
     bool = false
     if result then
@@ -236,13 +236,6 @@ function Buy(result,xPlayer,model, props, payment, job, type)
                     xPlayer.removeAccountMoney('bank', tonumber(price))
                 end
                 stock = stock - 1
-                garage = 'Garage A'
-                if type == 'boat' then
-                    garage = 'Boat Garage A'
-                end
-                if type == 'plane' then
-                    garage = 'Plane Hangar A'
-                end
                 local data = json.encode(props)
                 local query = 'INSERT INTO owned_vehicles (owner, plate, vehicle, `stored`, garage_id, `type`) VALUES (@owner, @plate, @props, @stored, @garage_id, @type)'
                 local var = {
