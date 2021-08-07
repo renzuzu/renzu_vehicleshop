@@ -55,22 +55,6 @@ function GetRandomNumber(length)
 	end
 end
 
--- RegisterCommand('testa', function()
---     MySQL.Async.fetchAll('SELECT * FROM owned_vehicles', {}, function (result)
---         local plate = veh(tonumber(92299))
---         plate = plate:gsub("=", "")
---         print(plate)
---         local total = 8 - plate:len()
---         print(total)
---         if total ~= 0 then
---             plate = veh(tonumber(92299))..GetRandomNumber(total)
---             plate = plate:gsub("=", "")
---         end
---         print(plate,plate:len())
---         cb(plate)
--- 	end)
--- end)
-
 function Database(query,var,src,type)
     if Config.Mysql == 'mysql-async' and type =='fetch' then
         return MySQL.Sync.fetchAll(query,var)
