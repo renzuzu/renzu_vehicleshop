@@ -76,11 +76,11 @@ end
 
 local neargarage = false
 function PopUI(name,v,event,text,server,shopname)
-    local text = text or ''
+    local text = text or 0
     local table = {
         ['event'] = event,
         ['title'] = name,
-        ['server_event'] = server,
+        ['server_event'] = server or false,
         ['unpack_arg'] = false,
         ['invehicle_title'] = 'Sell Vehicle '..text..'%',
         ['confirm'] = '[ENTER]',
@@ -106,7 +106,7 @@ CreateThread(function()
                 local dist = #(vec - GetEntityCoords(PlayerPedId()))
                 if dist < v.Dist and not inveh then
                     neargarage = true
-                    PopUI(v.title or v.name,vec,"vehicleshop")
+                    PopUI(v.title or v.name,vec,"vehicleshop",false)
                 end
             end
 
