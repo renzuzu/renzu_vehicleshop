@@ -22,7 +22,7 @@ AddEventHandler('renzu_vehicleshop:GetAvailableVehicle', function(shop)
             for k,v in pairs(VehicleShop[shop].shop) do
                 if v.grade ~= nil and v.grade <= xPlayer.job.grade then
                     shoplist[k] = v
-                else
+                elseif v.grade == nil then
                     shoplist[k] = v
                 end
             end
@@ -38,7 +38,7 @@ AddEventHandler('renzu_vehicleshop:GetAvailableVehicle', function(shop)
                 for k,v in pairs(VehicleShop[shop].shop) do
                     if v.grade ~= nil and v.grade <= xPlayer.job.grade then
                         shoplist[k] = v
-                    else
+                    elseif v.grade == nil then
                         shoplist[k] = v
                     end
                 end
