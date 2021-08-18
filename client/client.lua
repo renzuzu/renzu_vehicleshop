@@ -43,6 +43,15 @@ AddEventHandler('esx:playerLoaded', function(xPlayer)
     playerloaded = true
 end)
 
+RegisterNetEvent('renzu_vehicleshop:manage')
+AddEventHandler('renzu_vehicleshop:manage', function(xPlayer)
+    SendNUIMessage(
+        {
+            container = "dashboard",
+        }
+    )
+    SetNuiFocus(true, true)
+end)
 
 RegisterNetEvent('esx:setJob')
 AddEventHandler('esx:setJob', function(job)
@@ -495,6 +504,13 @@ AddEventHandler('renzu_vehicleshop:receive_vehicles', function(tb,shoptype)
         }
         table.insert(OwnedVehicles[value.category], VTable)
     end
+    print("GAGO")
+    SendNUIMessage(
+        {
+            container = "shop"
+        }
+    )
+    Wait(1000)
     SendNUIMessage({
         cats = cats,
         type = "categories"

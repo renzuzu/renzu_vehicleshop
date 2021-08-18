@@ -40,10 +40,10 @@ VehicleShop = {
         spawn_z = 27.905115127563,
         heading = 2.6015937328339, -- Vehicle spawn location
         shop = { -- if not vehicle is setup in Database SQL, we will use this
-            {shop='Police Vehicle Shop',category='Police Sedan',stock=50,price=100000,model='police',name="Police Car"},
-            {shop='Police Vehicle Shop',category='Police Sedan',stock=50,price=100000,model='police2',name="Police 2"},
-            {shop='Police Vehicle Shop',category='Police Sedan',stock=50,price=100000,model='police4',name="Police 4"},
-            {shop='Police Vehicle Shop',category='Police SUVs',stock=50,price=100000,model='police3',name="Police SUV"},
+            {shop='Police Vehicle Shop',category='Police Sedan',stock=50,price=100000,model='police',name="Police Car", grade = 1},
+            {shop='Police Vehicle Shop',category='Police Sedan',stock=50,price=100000,model='police2',name="Police 2", grade = 1},
+            {shop='Police Vehicle Shop',category='Police Sedan',stock=50,price=100000,model='police4',name="Police 4", grade = 3},
+            {shop='Police Vehicle Shop',category='Police SUVs',stock=50,price=100000,model='police3',name="Police SUV",grade = 5},
         },
     },
 

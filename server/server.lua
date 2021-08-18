@@ -1,18 +1,32 @@
 ESX = nil
 local vehicles = {}
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+
+RegisterCommand('pdm', function(source,args)
+    TriggerClientEvent('renzu_vehicleshop:manage', source)
+end, false)
+
 RegisterServerEvent('renzu_vehicleshop:GetAvailableVehicle')
 AddEventHandler('renzu_vehicleshop:GetAvailableVehicle', function(shop)
     local src = source 
     local xPlayer = ESX.GetPlayerFromId(src)
     local identifier = xPlayer.identifier
+    print(shop)
     if Config.Mysql == 'mysql-async' then
         Owned_Vehicle = MySQL.Sync.fetchAll('SELECT * FROM vehicles WHERE shop = @shop', {['shop'] = shop})
         --TriggerClientEvent('table',-1,Owned_Vehicle)
         if #Owned_Vehicle > 0 then
             Owned_Vehicle = Owned_Vehicle
         else
-            Owned_Vehicle = VehicleShop[shop].shop
+            local shoplist = {}
+            for k,v in pairs(VehicleShop[shop].shop) do
+                if v.grade ~= nil and v.grade <= xPlayer.job.grade then
+                    shoplist[k] = v
+                else
+                    shoplist[k] = v
+                end
+            end
+            Owned_Vehicle = shoplist
         end
         TriggerClientEvent("renzu_vehicleshop:receive_vehicles", src , Owned_Vehicle,VehicleShop[shop].type or 'car')
     else
@@ -20,7 +34,15 @@ AddEventHandler('renzu_vehicleshop:GetAvailableVehicle', function(shop)
             if #result > 0 then
                 Owned_Vehicle = result
             else
-                Owned_Vehicle = VehicleShop[shop].shop
+                local shoplist = {}
+                for k,v in pairs(VehicleShop[shop].shop) do
+                    if v.grade ~= nil and v.grade <= xPlayer.job.grade then
+                        shoplist[k] = v
+                    else
+                        shoplist[k] = v
+                    end
+                end
+                Owned_Vehicle = shoplist
             end
             TriggerClientEvent("renzu_vehicleshop:receive_vehicles", src , Owned_Vehicle,VehicleShop[shop].type or 'car')
         end)
