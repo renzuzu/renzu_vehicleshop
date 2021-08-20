@@ -1053,4 +1053,6 @@ Citizen.CreateThread(function() --load IPL for Vehicleshop
 	LoadInterior(interiorID)
 	EnableInteriorProp(interiorID, 'csr_beforeMission')
 	RefreshInterior(interiorID)
+    Wait(1000)
+    CloseNui()
 end)
