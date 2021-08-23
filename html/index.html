@@ -1,21 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta http-equiv="X-UA-Compatible" content="ie=edge">
-      <title>Renzu Vehicle Garage</title>
-      <script src="https://kit.fontawesome.com/eb73bbb7e4.js" crossorigin="anonymous"></script>
-      <link rel="stylesheet" href="design.css">
-      <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css'>
-      <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-      <script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
-      <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Renzu Vehicle Garage</title>
+    <script src="https://kit.fontawesome.com/eb73bbb7e4.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="design.css">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css'>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+    <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
   </head>
-
   <body>
-      <div id="garage"></div>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-      <script src="script.js"></script>
+    <div id="garage"></div>
+    <div class="wrap" style="display: none;" id="perf">
+      <div class="section-title wow fadeInUp">
+        <h1>
+          <span id="name">Jester Classic</span> - <span id="class">Sports</span>
+        </h1>
+        <h3 style="float: right;position: absolute;right: 6%;top: 5%;font-size: 20px;">Value: $ <span id="turbo" style="color:lime;">10000</span>
+        </h3>
+        <span class="border"></span>
+      </div>
+      <article id="perfrow" class="row" style="
+    width: 70%;
+">
+        <h4 style="margin: 5px;margin-bottom: 10px;">Vehicle Performance</h4>
+        <ul>
+          <li class="perf">
+            <em>Top Speed</em>
+            <div>
+              <span class="animated fadeInLeft" id="topspeed" style="width: 67.6667%;"></span>
+            </div>
+          </li>
+          <li class="perf">
+            <em>Acceleration</em>
+            <div>
+              <span class="animated fadeInLeft" id="acceleration" style="width: 48%;"></span>
+            </div>
+          </li>
+          <li class="perf">
+            <em>Traction</em>
+            <div>
+              <span class="animated fadeInLeft" id="traction" style="width: 65.2625%;"></span>
+            </div>
+          </li>
+          <li class="perf">
+            <em>Brakes</em>
+            <div>
+              <span class="animated fadeInLeft" id="brakes" style="width: 76%;"></span>
+            </div>
+          </li>
+        </ul>
+      </article>
+      <article class="row" id="perfrow" style="
+    width: 28%;
+">
+        <h4 style="margin: 11px;margin-bottom: 10px;">Vehicle Info</h4>
+        <ul>
+          <li class="perf" style="
+    padding: 10px;
+">
+            <em style="
+    margin-bottom: 10px;
+           ">
+              <b style="color:#fff">Seat Capacity</b> : <span id="seat"></span>
+            </em>
+          </li>
+          <li class="perf" style="
+    padding: 10px;
+">
+            <em style="
+    margin-bottom: 10px;
+           ">
+              <b style="color:#fff">Vehicle Weight</b> : <span id="weight"></span> kg </em>
+          </li>
+          <li class="perf" style="
+    padding: 10px;
+">
+            <em style="
+    margin-bottom: 10px;
+           ">
+              <b style="color:#fff">Drivetrain</b> : <span id="drivetrain">FWD</span>
+            </em>
+          </li>
+          <li class="perf" style="
+    padding: 10px;
+">
+            <em style="
+    margin-bottom: 10px;
+           ">
+              <b style="color:#fff">Number of Gears</b> : <span id="gear">6</span>
+            </em>
+          </li>
+        </ul>
+      </article>
+      <div style="text-align: center; position: absolute; bottom: 4%; right: 40%; display: block;" id="seemod">Press [E] to Purchase this Vehicle</div>
+    </div>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="script.js"></script>
   </body>
 </html>

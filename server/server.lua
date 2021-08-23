@@ -159,7 +159,7 @@ ESX.RegisterServerCallback('renzu_vehicleshop:GenPlate', function (source, cb)
                 --plate = veh(tonumber(#result))..GetRandomNumber(total)
                 plate = plate:gsub("=", "")
             end
-            --print(plate,plate:len())
+            print(plate,plate:len())
             cb(plate:upper())
         end)
     else
@@ -177,7 +177,7 @@ ESX.RegisterServerCallback('renzu_vehicleshop:GenPlate', function (source, cb)
     end
 end)
 
-ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb, model, props, payment, job, type, garage)
+ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb, model, props, payment, job, type, garage, notregister)
     print("BUYING START")
     local source = source
 	local xPlayer = ESX.GetPlayerFromId(source)
@@ -201,9 +201,11 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
         end
     end
     --print(type)
-    if not job and type == 'car' then
+    if not job and type == 'car' and not notregister then
         print("BUYING VEHICLES SAVED FROM SQL vehicles tables")
         sqlfunc(Config.Mysql,'SELECT * FROM vehicles WHERE model = @model LIMIT 1')
+    elseif notregister then
+        cb(Buy(true,xPlayer,model, props, payment, job, type or 'car' , garage or false, notregister))
     else
         print("BUYING CUSTOM CARS FROM CONFIG SHOP")
         for k,v in pairs(VehicleShop) do
@@ -243,15 +245,22 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
     end
 end)
 
-function Buy(result,xPlayer,model, props, payment, job, type, garage)
+function Buy(result,xPlayer,model, props, payment, job, type, garage, notregister)
     fetchdone = false
     bool = false
     print(" FUNCTION  BUY")
     if result then
         print("RESULT FETCHED")
-        local model = result[1].model
-        local price = result[1].price
-        local stock = result[1].stock
+        local model = nil
+        local price = nil
+        local stock = nil
+        if not notregister then
+            model = result[1].model
+            price = result[1].price
+        else
+            model = model
+            price = notregister.value
+        end
         local payment = payment
         if payment == 'cash' then
             money = xPlayer.getMoney() >= tonumber(price)

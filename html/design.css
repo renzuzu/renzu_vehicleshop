@@ -1371,3 +1371,107 @@ input[type="radio"]{
 #option-2:checked:checked ~ .option-2 span{
   color: #fff;
 }
+
+.wrap{
+  max-width: 40vw;
+  margin: 0 auto;
+  position: relative;
+  padding: 0 20px;
+  height: 315px;
+  background: #080808e0;
+  border-radius: 20px;
+  margin-top: 70px;
+  margin-left: 100px;
+  color: #d8d6d6;
+  font-size: 12px;
+  font-family: revert;
+  font-weight: 100;
+}
+.section-title h1{
+    margin: 0;
+    line-height: 50px;
+    letter-spacing: 5px;
+    font-weight: 600;
+    color: white;
+}.border{
+  display: block;
+  height: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  background: #5aff67;
+}
+.row{
+  /* width: 47%; */
+  min-height: 1px;
+  float: left;
+  position: relative;
+  display: inline-block;
+}
+#perfrow {
+  width: 47%;
+  min-height: 1px;
+  float: left;
+  position: relative;
+  display: inline-block;
+}
+.row ul {
+  margin: 0 20px 0 0 !important;
+  text-align: left !important;
+  padding: 0;
+}.row ul li{
+  list-style: none !important;
+  
+}.row ul li em{
+  display: block;
+  margin-bottom: 5px;
+  color: #8ca2a1;
+}.row ul li div{
+  margin-bottom: 11px;
+  border-radius: 3px 3px 3px 3px;
+  -webkit-border-radius: 3px 3px 3px 3px;
+  background: #09131B;
+  height: 15px;
+  overflow: hidden;
+  border-radius: 7px;
+}.row ul li div span{
+  height: 15px;
+  width: 50%;
+  display: block;
+  border-radius: 3px 3px 3px 3px;
+  -webkit-border-radius: 3px 3px 3px 3px;
+}
+.row ul li.perf div span {background: #3498db;width: 90%;}
+.turbo div span {background: #3498db;width: 90%;}
+.animated {
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}.fadeInLeft {
+  -webkit-animation-name: fadeInLeft;
+  animation-name: fadeInLeft;
+}
+@-webkit-keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    -webkit-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
+  }100% {
+    opacity: 1;
+    -webkit-transform: none;
+    transform: none;
+  }
+}
+@keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    -webkit-transform: translate3d(-100%, 0, 0);
+    -ms-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
+  }100% {
+    opacity: 1;
+    -webkit-transform: none;
+    -ms-transform: none;
+    transform: none;
+  }
+}

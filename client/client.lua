@@ -12,6 +12,7 @@ local PlayerData = {}
 local playerLoaded = false
 local jobcar = false
 local type = 'car'
+local vehiclesdb = {}
 Citizen.CreateThread(function()
 	while ESX == nil do
 		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
@@ -123,6 +124,175 @@ CreateThread(function()
                         break
                     end
                     Wait(0)
+                end
+            end
+            Wait(1000)
+        end
+    end
+end)
+
+function GetVehicleUpgrades(vehicle)
+    local stats = {}
+    props = GetVehicleProperties(vehicle)
+    stats.engine = props.modEngine+1
+    stats.brakes = props.modBrakes+1
+    stats.transmission = props.modTransmission+1
+    stats.suspension = props.modSuspension+1
+    if props.modTurbo == 1 then
+        stats.turbo = 1
+    elseif props.modTurbo == false then
+        stats.turbo = 0
+    end
+    return stats
+end
+
+function GetMaxMod(vehicle,index)
+    local max = GetNumVehicleMods(vehicle, tonumber(index))
+    return max
+end
+
+function GetVehicleInfo(vehicle,name)
+    local val = GetVehicleHandlingFloat(vehicle, 'CHandlingData', name)
+    return val
+end
+
+function GetVehicleDriveTrain(vehicle)
+    local val = GetVehicleInfo(vehicle,'fDriveBiasFront')
+    local drivetrain = 'FWD'
+    if val >= 0.5 then
+        drivetrain = 'AWD'
+    end
+    if val == 0.0 then
+        drivetrain = 'RWD'
+    end
+    return drivetrain
+end
+
+function GetNumSeat(vehicle)
+    local c = 0
+    for i=0-1, 7 do
+        if IsVehicleSeatFree(vehicle,i) then
+            c = c + 1
+        end
+    end
+    return c
+end
+
+local displaycars = {}
+function numWithCommas(n)
+    return tostring(math.floor(n)):reverse():gsub("(%d%d%d)","%1,")
+                                  :gsub(",(%-?)$","%1"):reverse()
+end
+CreateThread(function()
+    if Config.DisplayCars then
+        local stats_show = nil
+        while true do
+            for shop,v in pairs(VehicleShop) do
+                local vec = vector3(v.shop_x,v.shop_y,v.shop_z)
+                local inveh = IsPedInAnyVehicle(PlayerPedId())
+                local dist = #(vec - GetEntityCoords(PlayerPedId()))
+                if dist < 50 and not inveh and v.displaycars then
+                    neargarage = true
+                    for k,v in pairs(v.displaycars) do
+                        local k = tostring(k)
+                        if displaycars[k] == nil then
+                            local hash = tonumber(GetHashKey(v.model))
+                            local count = 0
+                            if not HasModelLoaded(hash) then
+                                RequestModel(hash)
+                                while not HasModelLoaded(hash) and count < 2000 do
+                                    count = count + 101
+                                    Citizen.Wait(10)
+                                end
+                            end
+                            --local posZ = coord.z + 999.0
+                            --_,posZ = GetGroundZFor_3dCoord(coord.x,coord.y+.0,coord.z,1)
+                            displaycars[k] = CreateVehicle(hash, v.coord.x,v.coord.y,v.coord.z, 42.0, 0, 0)
+                            SetEntityHeading(displaycars[k], v.coord.w)
+                            SetVehicleDoorsLocked(displaycars[k],2)
+                            NetworkFadeInEntity(displaycars[k],1)
+                            SetVehicleOnGroundProperly(displaycars[k])
+                            FreezeEntityPosition(displaycars[k], true)
+                        end
+                    end
+                    for k,v in pairs(v.displaycars) do
+                        if #(vector3(v.coord.x,v.coord.y,v.coord.z) - GetEntityCoords(PlayerPedId())) < 3 then
+                            local nearveh = GetClosestVehicle(GetEntityCoords(PlayerPedId()), 2.000, 0, 70)
+                            if nearveh ~= 0 then
+                                local name = 'not found'
+                                for k,v in pairs(vehiclesdb) do
+                                    if GetEntityModel(nearveh) == GetHashKey(v.model) then
+                                        name = v.name
+                                    end
+                                end
+                                if name == 'not found' then
+                                    name = GetLabelText(GetDisplayNameFromVehicleModel(GetEntityModel(nearveh)))
+                                end
+                                local vehstats = GetVehicleStats(nearveh)
+                                local upgrades = GetVehicleUpgrades(nearveh)
+                                local stats = {
+                                    class = GetVehicleClassnamemodel(nearveh),
+                                    topspeed = vehstats.topspeed / 300 * 100,
+                                    acceleration = vehstats.acceleration * 150,
+                                    brakes = vehstats.brakes * 80,
+                                    traction = vehstats.handling * 10,
+                                    name = name,
+                                    weight = GetVehicleInfo(nearveh,'fMass'),
+                                    seat = GetNumSeat(nearveh),
+                                    drivetrain = GetVehicleDriveTrain(nearveh),
+                                    gear = GetVehicleInfo(nearveh,'nInitialDriveGears'),
+                                    turbo = numWithCommas(v.value),
+                                }
+                                if stats_show == nil or stats_show ~= nearveh then
+                                    stats_show = nearveh
+                                    SendNUIMessage({
+                                        type = "stats",
+                                        perf = stats,
+                                        public = false,
+                                        show = true,
+                                    })
+                                    CreateThread(function()
+                                        while nearveh ~= 0 do
+                                            Wait(200)
+                                            nearveh = GetClosestVehicle(GetEntityCoords(PlayerPedId()), 3.000, 0, 70)
+                                        end
+                                    end)
+                                    while nearveh ~= 0 do 
+                                        if IsControlJustReleased(0,38) then
+                                            local t = {
+                                                ['event'] = 'renzu_vehicleshop:buyvehicle',
+                                                ['title'] = 'Confirm Purchase:',
+                                                ['server_event'] = false,
+                                                ['unpack_arg'] = true,
+                                                ['confirm'] = '[Enter]',
+                                                ['reject'] = '[CLOSE]',
+                                                ['custom_arg'] = {v.model,shop,'cash',v}, -- example: {1,2,3,4}
+                                                ['use_cursor'] = false, -- USE MOUSE CURSOR INSTEAD OF INPUT (ENTER)
+                                            }
+                                            TriggerEvent('renzu_popui:showui',t)
+                                        end
+                                        Wait(1)
+                                    end
+                                end
+                                while nearveh ~= 0 do
+                                    nearveh = GetClosestVehicle(GetEntityCoords(PlayerPedId()), 3.000, 0, 70)
+                                    Wait(200)
+                                end
+                                SendNUIMessage({
+                                    type = "stats",
+                                    perf = false,
+                                    public = false,
+                                    show = false,
+                                })
+                            end
+                        end
+                    end
+                elseif #displaycars > 0 then
+                    for k,v in pairs(displaycars) do
+                        NetworkFadeInEntity(v,1)
+                        ReqAndDelete(v)
+                    end
+                    displaycars = {}
                 end
             end
             Wait(1000)
@@ -479,6 +649,7 @@ RegisterNUICallback("choosecategory", function(data, cb)
         ESX.ShowNotification("You dont have any vehicle")
     end
 end)
+
 RegisterNetEvent('renzu_vehicleshop:receive_vehicles')
 AddEventHandler('renzu_vehicleshop:receive_vehicles', function(tb,shoptype)
     fetchdone = false
@@ -492,6 +663,7 @@ AddEventHandler('renzu_vehicleshop:receive_vehicles', function(tb,shoptype)
         OwnedVehicles[value.category] = {}
         cats[value.category] = value.shop
     end
+    vehiclesdb = tb
 
     for _,value in pairs(tableVehicles) do
         --local props = json.decode(value.vehicle)
@@ -526,7 +698,6 @@ AddEventHandler('renzu_vehicleshop:receive_vehicles', function(tb,shoptype)
         }
         table.insert(OwnedVehicles[value.category], VTable)
     end
-    print("GAGO")
     SendNUIMessage(
         {
             container = "shop"
@@ -832,81 +1003,94 @@ RegisterNUICallback("SpawnVehicle",function(data, cb)
     end
 end)
 
-RegisterNUICallback(
-    "BuyVehicleCallback",
-    function(data, cb)
-        local ped = PlayerPedId()
-        local props = nil
-        local veh = nil
-        local v = nil
-        local hash = tonumber(data.modelcar)
-        local count = 0
-        ReqAndDelete(LastVehicleFromGarage)
-        if not HasModelLoaded(hash) then
-            RequestModel(hash)
-            while not HasModelLoaded(hash) and count < 555 do
-                count = count + 10
-                Citizen.Wait(1)
-                if count > 9999 then
-                return
-                end
+RegisterNetEvent('renzu_vehicleshop:buyvehicle')
+AddEventHandler('renzu_vehicleshop:buyvehicle', function(model,shop,payment,notregister)
+    local data = {
+        modelcar = GetHashKey(model),
+        model = model,
+        payment = 'cash',
+        shop = shop
+    }
+    BuyVehicle(data,notregister)
+end)
+
+function BuyVehicle(data,notregister)
+    local ped = PlayerPedId()
+    local props = nil
+    local veh = nil
+    local v = nil
+    local hash = tonumber(data.modelcar)
+    local count = 0
+    ReqAndDelete(LastVehicleFromGarage)
+    ESX.TriggerServerCallback("renzu_vehicleshop:GenPlate",function(plate)
+        RequestModel(hash)
+        while not HasModelLoaded(hash) and count < 555 do
+            count = count + 10
+            Citizen.Wait(1)
+            if count > 9999 then
+            return
             end
         end
-        ESX.TriggerServerCallback("renzu_vehicleshop:GenPlate",function(plate)
-            v = CreateVehicle(tonumber(data.modelcar), VehicleShop[data.shop].spawn_x,VehicleShop[data.shop].spawn_y,VehicleShop[data.shop].spawn_z, VehicleShop[data.shop].heading, 1, 1)
-            veh = v
-            while not DoesEntityExist(veh) do Wait(10) end
-            SetVehicleNumberPlateText(v,tostring(plate))
-            props = GetVehicleProperties(v)
-            props.plate = tostring(plate)
-            SetEntityAlpha(v, 51, false)
-            TaskWarpPedIntoVehicle(PlayerPedId(), v, -1)
-            local successbuy = false
-            ESX.TriggerServerCallback("renzu_vehicleshop:buyvehicle",function(canbuy)
-                if canbuy then
-                    successbuy = canbuy
-                    for k,v in pairs(VehicleShop) do
-                        local dist = #(vector3(v.spawn_x,v.spawn_y,v.spawn_z) - GetEntityCoords(PlayerPedId()))
-                        if dist <= 70.0 and id == k then
-                            DoScreenFadeOut(333)
-                            ReqAndDelete(LastVehicleFromGarage)
-                            Citizen.Wait(333)
-                            SetEntityCoords(PlayerPedId(), v.shop_x,v.shop_y,v.shop_z, false, false, false, true)
-                            SetVehicleProp(veh, props)
-                            DoScreenFadeIn(111)
-                            NetworkFadeInEntity(veh,1)
-                            TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
-                        end
+        v = CreateVehicle(tonumber(data.modelcar), VehicleShop[data.shop].spawn_x,VehicleShop[data.shop].spawn_y,VehicleShop[data.shop].spawn_z, VehicleShop[data.shop].heading, 1, 1)
+        veh = v
+        while not DoesEntityExist(veh) do Wait(10) end
+        SetVehicleNumberPlateText(v,tostring(plate))
+        props = GetVehicleProperties(v)
+        props.plate = tostring(plate)
+        SetEntityAlpha(v, 51, false)
+        TaskWarpPedIntoVehicle(PlayerPedId(), v, -1)
+        local successbuy = false
+        ESX.TriggerServerCallback("renzu_vehicleshop:buyvehicle",function(canbuy)
+            if canbuy then
+                successbuy = canbuy
+                for k,v in pairs(VehicleShop) do
+                    local dist = #(vector3(v.spawn_x,v.spawn_y,v.spawn_z) - GetEntityCoords(PlayerPedId()))
+                    if dist <= 70.0 and id == k then
+                        DoScreenFadeOut(333)
+                        ReqAndDelete(LastVehicleFromGarage)
+                        Citizen.Wait(333)
+                        SetEntityCoords(PlayerPedId(), v.shop_x,v.shop_y,v.shop_z, false, false, false, true)
+                        SetVehicleProp(veh, props)
+                        DoScreenFadeIn(111)
+                        NetworkFadeInEntity(veh,1)
+                        TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
                     end
-
-                    LastVehicleFromGarage = nil
-                    TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
-                    CloseNui()
-                    ESX.ShowNotification("Purchase Success: Plate: "..props.plate.."")
-                    SetEntityAlpha(v, 255, false)
-                    TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
-                    i = 0
-                    min = 0
-                    max = 10
-                    plus = 0
-                    drawtext = false
-                    indist = false
-                    SendNUIMessage(
-                    {
-                    type = "cleanup"
-                    })
-                else
-                    CloseNui()
-                    ReqAndDelete(v)
                 end
-            end, data.model, props, data.payment, jobcar, type, garage)
-            local counter = 0
-            while not successbuy and counter < 5 do counter = counter + 1 Wait (1000) end
-            if not successbuy then
+
+                LastVehicleFromGarage = nil
+                TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
+                CloseNui()
+                ESX.ShowNotification("Purchase Success: Plate: "..props.plate.."")
+                SetEntityAlpha(v, 255, false)
+                TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
+                i = 0
+                min = 0
+                max = 10
+                plus = 0
+                drawtext = false
+                indist = false
+                SendNUIMessage(
+                {
+                type = "cleanup"
+                })
+            else
                 CloseNui()
                 ReqAndDelete(v)
             end
-        end)
+        end, data.model, props, data.payment, jobcar, type, garage, notregister)
+        local counter = 0
+        while not successbuy and counter < 5 do counter = counter + 1 Wait (1000) end
+        if not successbuy then
+            CloseNui()
+            ReqAndDelete(v)
+        end
+    end)
+end
+
+RegisterNUICallback(
+    "BuyVehicleCallback",
+    function(data, cb)
+        BuyVehicle(data)
     end
 )
 
@@ -1069,6 +1253,8 @@ AddEventHandler("onResourceStop",function(resourceName)
 end)
 
 Citizen.CreateThread(function() --load IPL for Vehicleshop
+    Wait(1000)
+    CloseNui()
 	RequestIpl('shr_int')
 
 	local interiorID = 7170

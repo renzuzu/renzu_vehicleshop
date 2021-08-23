@@ -86,6 +86,24 @@ window.addEventListener('message', function(event) {
             }     
         }
     }
+    if (event.data.type == "stats") {
+        if (event.data.show) {
+            document.getElementById("perf").style.display = 'block';
+            if (!event.data.public) {
+                document.getElementById("seemod").style.display = 'block';
+            }
+            for(var [k,v] of Object.entries(event.data.perf)){
+                if (k =='name' || k =='plate' || k =='turbo' || k =='seat' || k =='gear' || k =='drivetrain' || k =='weight') {
+                    document.getElementById(k).innerHTML = v;
+                } else {
+                    document.getElementById(k).style.width = ''+v+'%';
+                }
+            }
+        } else {
+            document.getElementById("perf").style.display = 'none';
+            document.getElementById("seemod").style.display = 'none';
+        }
+    }
     if (event.data.chopper) {
         chopper = true
     }
@@ -100,7 +118,7 @@ window.addEventListener('message', function(event) {
         currentcar = undefined;
         VehicleArr = [];
         CurrentVehicle = [];
-        $("body").fadeIn();
+        $("#garage").fadeIn();
         for(var [key,value] of Object.entries(data.data)){   
             for(var [k,v] of Object.entries(value)){
                 VehicleArr.push(v);          
@@ -111,7 +129,7 @@ window.addEventListener('message', function(event) {
     }
 
     if (event.data.type == "hide") {
-        $("body").fadeOut();
+        $("#garage").fadeOut();
     }
 
     if (event.data.type == "notify") {       

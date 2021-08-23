@@ -8,6 +8,7 @@ Config.EnableTestDrive = true
 Config.PlateSpace = true -- enable / disable plate spaces (compatibility with esx 1.1?)
 Config.SaveJob = true -- this config is to save the value to owned_vehicles.job column
 Config.Licensed = false -- Enable Driver Licensed Checker
+Config.DisplayCars = true -- enable display of cars
 VehicleShop = {
     ['pdm'] = { -- same with name
         name = "pdm", --LEGION
@@ -15,7 +16,7 @@ VehicleShop = {
         type = 'car',
         job = 'all',
         default_garage = 'Garage A',
-        Dist = 7, -- distance (DEPRECATED)
+        Dist = 3, -- distance (DEPRECATED)
         Blip = {color = 38, sprite = 595, scale = 0.9},
         shop_x = -35.469879150391,
         shop_y = -1100.3621826172,
@@ -23,7 +24,13 @@ VehicleShop = {
         spawn_x = -32.283363342285,
         spawn_y = -1091.0841064453,
         spawn_z = 25.749485015869,
-        heading = 340.23065185547 -- Vehicle spawn location
+        heading = 340.23065185547, -- Vehicle spawn location,
+        displaycars = {
+            [1] = {label = 'Suprang Bagal', model = 'jester3', value = 100000, coord = vector4(-47.427722930908,-1101.3747558594,25.714616775513,341.64694213867)},
+            [2] = {label = 'Suprang Bagal', model = 'elegy', value = 1000000, coord = vector4(-44.736125946045,-1094.1976318359,25.748092651367,158.2547454834)},
+            [3] = {label = 'Suprang Bagal', model = 'adder', value = 1000000, coord = vector4(-40.32751083374,-1095.6105957031,26.009906768799,158.58676147461)},
+            [4] = {label = 'Suprang Bagal', model = 'ruston', value = 1000000, coord = vector4(-43.318450927734,-1102.1627197266,25.758722305298,340.29724121094)},
+        }
     },
 
     ['Police Vehicle Shop'] = { -- same with name
@@ -31,7 +38,7 @@ VehicleShop = {
         job = 'police',
         type = 'car',
         default_garage = 'Police Garage',
-        Dist = 7, -- distance (DEPRECATED)
+        Dist = 3, -- distance (DEPRECATED)
         Blip = {color = 38, sprite = 662, scale = 0.9},
         shop_x = 456.89453125,
         shop_y = -1020.8922729492,
