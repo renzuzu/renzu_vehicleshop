@@ -76,11 +76,11 @@ end
 
 local neargarage = false
 function PopUI(name,v,event,text,server,shopname)
-    local text = text or 0
+    local text = text or ''
     local table = {
         ['event'] = event,
         ['title'] = name,
-        ['server_event'] = server or false,
+        ['server_event'] = server,
         ['unpack_arg'] = false,
         ['invehicle_title'] = 'Sell Vehicle '..text..'%',
         ['confirm'] = '[ENTER]',
@@ -106,7 +106,7 @@ CreateThread(function()
                 local dist = #(vec - GetEntityCoords(PlayerPedId()))
                 if dist < v.Dist and not inveh then
                     neargarage = true
-                    PopUI(v.title or v.name,vec,"vehicleshop",false)
+                    PopUI(v.title or v.name,vec,"vehicleshop")
                 end
             end
 
@@ -148,20 +148,42 @@ AddEventHandler('vehicleshop', function()
             local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
             if not DoesEntityExist(vehiclenow) then
                 if dist <= v.Dist and job then
-                    if PlayerData.job.name == v.job then
-                        jobcar = v.job
+                    if Config.Licensed then
+                        ESX.TriggerServerCallback('esx_license:checkLicense', function(cb)
+                            if cb then
+                                if PlayerData.job.name == v.job then
+                                    jobcar = v.job
+                                end
+                                type = v.type
+                                ESX.ShowNotification("Opening Shop...Please wait..")
+                                TriggerServerEvent("renzu_vehicleshop:GetAvailableVehicle",v.name)
+                                fetchdone = false
+                                id = k
+                                garage = v.default_garage
+                                while not fetchdone do
+                                    Wait(0)
+                                end
+                                OpenShop(k)
+                            else
+                                ESX.ShowNotification("You Dont have a drivers licensed")
+                            end
+                        end, GetPlayerServerId(PlayerId()), 'drive')
+                    else
+                        if PlayerData.job.name == v.job then
+                            jobcar = v.job
+                        end
+                        type = v.type
+                        ESX.ShowNotification("Opening Shop...Please wait..")
+                        TriggerServerEvent("renzu_vehicleshop:GetAvailableVehicle",v.name)
+                        fetchdone = false
+                        id = k
+                        garage = v.default_garage
+                        while not fetchdone do
+                            Wait(0)
+                        end
+                        OpenShop(k)
+                        break
                     end
-                    type = v.type
-                    ESX.ShowNotification("Opening Shop...Please wait..")
-                    TriggerServerEvent("renzu_vehicleshop:GetAvailableVehicle",v.name)
-                    fetchdone = false
-                    id = k
-                    garage = v.default_garage
-                    while not fetchdone do
-                        Wait(0)
-                    end
-                    OpenShop(k)
-                    break
                 end
             end
             if dist > 11 or ingarage then
@@ -1053,6 +1075,4 @@ Citizen.CreateThread(function() --load IPL for Vehicleshop
 	LoadInterior(interiorID)
 	EnableInteriorProp(interiorID, 'csr_beforeMission')
 	RefreshInterior(interiorID)
-    Wait(1000)
-    CloseNui()
 end)

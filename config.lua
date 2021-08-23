@@ -7,6 +7,7 @@ Config.Quickpick = true -- if false system will create a garage shell and spawn 
 Config.EnableTestDrive = true
 Config.PlateSpace = true -- enable / disable plate spaces (compatibility with esx 1.1?)
 Config.SaveJob = true -- this config is to save the value to owned_vehicles.job column
+Config.Licensed = false -- Enable Driver Licensed Checker
 VehicleShop = {
     ['pdm'] = { -- same with name
         name = "pdm", --LEGION
