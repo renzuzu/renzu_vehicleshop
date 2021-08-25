@@ -184,6 +184,7 @@ function numWithCommas(n)
                                   :gsub(",(%-?)$","%1"):reverse()
 end
 CreateThread(function()
+    Wait(2000)
     if Config.DisplayCars then
         local stats_show = nil
         while true do
