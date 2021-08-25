@@ -843,4 +843,4 @@ ALTER TABLE owned_vehicles
 ADD `garage_id` varchar(32) NOT NULL DEFAULT 'A';
 
 ALTER TABLE owned_vehicles
-ADD `job` varchar(32) NOT NULL;
+ADD `job` varchar(32) NULL;
