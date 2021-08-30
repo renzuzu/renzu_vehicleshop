@@ -15,7 +15,7 @@ VehicleShop = {
         title = "PDM Vehicle Shop",
         type = 'car',
         job = 'all',
-        default_garage = 'Garage A',
+        default_garage = 'A',
         Dist = 3, -- distance (DEPRECATED)
         Blip = {color = 38, sprite = 595, scale = 0.9},
         shop_x = -35.469879150391,

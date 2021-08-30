@@ -310,56 +310,57 @@ RegisterNetEvent('vehicleshop')
 AddEventHandler('vehicleshop', function()
     local sleep = 2000
     local ped = PlayerPedId()
-    local vehiclenow = GetVehiclePedIsIn(GetPlayerPed(-1), false)
+    local vehiclenow = GetVehiclePedIsIn(PlayerPedId(), false)
     local jobgarage = false
     jobcar = false
     for k,v in pairs(VehicleShop) do
-        if not v.property then
-            local job = v.job == 'all' or PlayerData.job.name == v.job
-            local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
-            if not DoesEntityExist(vehiclenow) then
-                if dist <= v.Dist and job then
-                    if Config.Licensed then
-                        ESX.TriggerServerCallback('esx_license:checkLicense', function(cb)
-                            if cb then
-                                if PlayerData.job.name == v.job then
-                                    jobcar = v.job
-                                end
-                                type = v.type
-                                ESX.ShowNotification("Opening Shop...Please wait..")
-                                TriggerServerEvent("renzu_vehicleshop:GetAvailableVehicle",v.name)
-                                fetchdone = false
-                                id = k
-                                garage = v.default_garage
-                                while not fetchdone do
-                                    Wait(0)
-                                end
-                                OpenShop(k)
-                            else
-                                ESX.ShowNotification("You Dont have a drivers licensed")
+        local job = true
+        if PlayerData.job.name ~= v.job and v.job ~= 'all' then
+            job = false
+        end
+        local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
+        if not DoesEntityExist(vehiclenow) then
+            if dist <= v.Dist and job then
+                if Config.Licensed then
+                    ESX.TriggerServerCallback('esx_license:checkLicense', function(cb)
+                        if cb then
+                            if PlayerData.job.name == v.job then
+                                jobcar = v.job
                             end
-                        end, GetPlayerServerId(PlayerId()), 'drive')
-                    else
-                        if PlayerData.job.name == v.job then
-                            jobcar = v.job
+                            type = v.type
+                            ESX.ShowNotification("Opening Shop...Please wait..")
+                            TriggerServerEvent("renzu_vehicleshop:GetAvailableVehicle",v.name)
+                            fetchdone = false
+                            id = k
+                            garage = v.default_garage or 'A'
+                            while not fetchdone do
+                                Wait(0)
+                            end
+                            OpenShop(k)
+                        else
+                            ESX.ShowNotification("You Dont have a drivers licensed")
                         end
-                        type = v.type
-                        ESX.ShowNotification("Opening Shop...Please wait..")
-                        TriggerServerEvent("renzu_vehicleshop:GetAvailableVehicle",v.name)
-                        fetchdone = false
-                        id = k
-                        garage = v.default_garage
-                        while not fetchdone do
-                            Wait(0)
-                        end
-                        OpenShop(k)
-                        break
+                    end, GetPlayerServerId(PlayerId()), 'drive')
+                else
+                    if PlayerData.job.name == v.job then
+                        jobcar = v.job
                     end
+                    type = v.type
+                    ESX.ShowNotification("Opening Shop...Please wait..")
+                    TriggerServerEvent("renzu_vehicleshop:GetAvailableVehicle",v.name)
+                    fetchdone = false
+                    id = k
+                    garage = v.default_garage or 'A'
+                    while not fetchdone do
+                        Wait(0)
+                    end
+                    OpenShop(k)
+                    break
                 end
             end
-            if dist > 11 or ingarage then
-                indist = false
-            end
+        end
+        if dist > 11 or ingarage then
+            indist = false
         end
     end
 end)
