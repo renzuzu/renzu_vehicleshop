@@ -634,6 +634,7 @@ RegisterNUICallback("choosecategory", function(data, cb)
                 {
                 brand = v.brand,
                 category = v.category,
+                image = v.image,
                 name = v.name,
                 brake = v.brake,
                 handling = v.handling,
@@ -718,6 +719,10 @@ AddEventHandler('renzu_vehicleshop:receive_vehicles', function(tb,shoptype)
         if shoptype == 'boat' or shoptype == 'plane' then
             pmult,tmult,handling, brake = 10,8,GetPerformanceStats(vehicleModel).handling * 0.1, GetPerformanceStats(vehicleModel).brakes * 0.1
         end
+        local img = 'https://cfx-nui-renzu_vehicleshop/imgs/uploads/'..value.model..'.jpg'
+        if Config.CustomImg then
+            img = value[Config.CustomImgColumn]
+        end
         local VTable = {
             brand = GetVehicleClassnamemodel(GetHashKey(value.model)),
             name = vehname:upper(),
@@ -728,6 +733,7 @@ AddEventHandler('renzu_vehicleshop:receive_vehicles', function(tb,shoptype)
             torque = math.ceil(GetVehicleModelAcceleration(vehicleModel)*tmult),
             model = value.model,
             category = value.category,
+            image = img,
             model2 = GetHashKey(value.model),
             price = value.price,
             name = value.name,
@@ -772,6 +778,7 @@ function OpenShop(id)
                 {
                 brand = v.brand,
                 category = v.category,
+                image = v.image,
                 name = v.name,
                 brake = v.brake,
                 handling = v.handling,

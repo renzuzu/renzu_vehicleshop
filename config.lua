@@ -1,6 +1,6 @@
 Config = {}
 Config.Locale = "en"
-Config.Mysql = 'mysql-async' -- "ghmattisql", "mysql-async"
+Config.Mysql = 'ghmattisql' -- "ghmattisql", "mysql-async"
 Config.UseRayZone = false -- unrelease script https://github.com/renzuzu/renzu_rayzone
 Config.UsePopUI = true -- Create a Thread for checking playercoords and Use POPUI to Trigger Event, set this to false if using rayzone. Popui is originaly built in to RayZone -- DOWNLOAD https://github.com/renzuzu/renzu_popui
 Config.Quickpick = true -- if false system will create a garage shell and spawn every vehicle you preview
@@ -10,6 +10,8 @@ Config.SaveJob = true -- this config is to save the value to owned_vehicles.job 
 Config.Licensed = false -- Enable Driver Licensed Checker
 Config.DisplayCars = true -- enable display of cars
 Config.Marker = false -- use draw marker and Iscontrollpress native , popui will not work if this is true
+Config.CustomImg = false -- if true your Config.CustomImgColumn IMAGE url will be used for each vehicles else, the imgs/uploads/MODEL.jpg
+Config.CustomImgColumn = 'imglink' -- db column name
 
 VehicleShop = {
     ['pdm'] = { -- same with name
@@ -28,10 +30,10 @@ VehicleShop = {
         spawn_z = 25.749485015869,
         heading = 340.23065185547, -- Vehicle spawn location,
         displaycars = {
-            [1] = {model = 'jester3', value = 100000, coord = vector4(-47.427722930908,-1101.3747558594,25.714616775513,341.64694213867)},
-            [2] = {model = 'elegy', value = 1000000, coord = vector4(-44.736125946045,-1094.1976318359,25.748092651367,158.2547454834)},
-            [3] = {model = 'adder', value = 1000000, coord = vector4(-40.32751083374,-1095.6105957031,26.009906768799,158.58676147461)},
-            [4] = {model = 'ruston', value = 1000000, coord = vector4(-43.318450927734,-1102.1627197266,25.758722305298,340.29724121094)},
+            [1] = {label = 'Suprang Bagal', model = 'jester3', value = 100000, coord = vector4(-47.427722930908,-1101.3747558594,25.714616775513,341.64694213867)},
+            [2] = {label = 'Suprang Bagal', model = 'elegy', value = 1000000, coord = vector4(-44.736125946045,-1094.1976318359,25.748092651367,158.2547454834)},
+            [3] = {label = 'Suprang Bagal', model = 'adder', value = 1000000, coord = vector4(-40.32751083374,-1095.6105957031,26.009906768799,158.58676147461)},
+            [4] = {label = 'Suprang Bagal', model = 'ruston', value = 1000000, coord = vector4(-43.318450927734,-1102.1627197266,25.758722305298,340.29724121094)},
         }
     },
 
