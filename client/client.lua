@@ -98,16 +98,47 @@ function PopUI(name,v,event,text,server,shopname)
     TriggerEvent('renzu_popui:closeui')
 end
 
+function ShowFloatingHelpNotification(msg, coords)
+    AddTextEntry('FloatingHelpNotification', msg)
+    SetFloatingHelpTextWorldPosition(1, coords)
+    SetFloatingHelpTextStyle(1, 1, 2, -1, 3, 0)
+    BeginTextCommandDisplayHelp('FloatingHelpNotification')
+    EndTextCommandDisplayHelp(2, false, false, -1)
+end
+
+function Marker(vec,msg,event,server)
+    while #(vec - GetEntityCoords(PlayerPedId())) < 3 and neargarage do
+        Wait(0)
+        DrawMarker(36, vec ,0,0,0,0,0,2.0,2.0,2.0,1.0,255, 255, 220,200,0,0,0,1)
+        ShowFloatingHelpNotification("Press [E] "..msg,vec)
+        if IsControlJustReleased(0,38) then
+            if not server then
+                TriggerEvent(event)
+            else
+                TriggerServerEvent(event)
+            end
+            Wait(100)
+            while neargarage and #(vec - GetEntityCoords(PlayerPedId())) < 3 do Wait(100) end
+            break
+        end
+    end
+end
+
 CreateThread(function()
     if Config.UsePopUI then
         while true do
+            neargarage = false
             for k,v in pairs(VehicleShop) do
                 local vec = vector3(v.shop_x,v.shop_y,v.shop_z)
                 local inveh = IsPedInAnyVehicle(PlayerPedId())
                 local dist = #(vec - GetEntityCoords(PlayerPedId()))
                 if dist < v.Dist and not inveh then
                     neargarage = true
-                    PopUI(v.title or v.name,vec,"vehicleshop")
+                    if Config.Marker then
+                        Marker(vec,v.title,'vehicleshop')
+                    else
+                        PopUI(v.title or v.name,vec,"vehicleshop")
+                    end
                 end
             end
 
@@ -120,7 +151,11 @@ CreateThread(function()
                     DrawMarker(1, vec ,0,0,0,0,0,2.0,2.0,2.0,1.0,255, 102, 0,200,0,0,0,1)
                     if dist < v.Dist and inveh then
                         neargarage = true
-                        PopUI(v.title or v.name,vec,"renzu_vehicleshop:sellvehicle",Config.RefundPercent,true)
+                        if Config.Marker then
+                            Marker(vec,"Sell Vehicle",'renzu_vehicleshop:sellvehicle',true)
+                        else
+                            PopUI(v.title or v.name,vec,"renzu_vehicleshop:sellvehicle",Config.RefundPercent,true)
+                        end
                         break
                     end
                     Wait(0)

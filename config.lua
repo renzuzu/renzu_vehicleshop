@@ -9,6 +9,8 @@ Config.PlateSpace = true -- enable / disable plate spaces (compatibility with es
 Config.SaveJob = true -- this config is to save the value to owned_vehicles.job column
 Config.Licensed = false -- Enable Driver Licensed Checker
 Config.DisplayCars = true -- enable display of cars
+Config.Marker = false -- use draw marker and Iscontrollpress native , popui will not work if this is true
+
 VehicleShop = {
     ['pdm'] = { -- same with name
         name = "pdm", --LEGION
@@ -26,10 +28,10 @@ VehicleShop = {
         spawn_z = 25.749485015869,
         heading = 340.23065185547, -- Vehicle spawn location,
         displaycars = {
-            [1] = { model = 'jester3', value = 100000, coord = vector4(-47.427722930908,-1101.3747558594,25.714616775513,341.64694213867)},
-            [2] = { model = 'elegy', value = 1000000, coord = vector4(-44.736125946045,-1094.1976318359,25.748092651367,158.2547454834)},
-            [3] = { model = 'adder', value = 1000000, coord = vector4(-40.32751083374,-1095.6105957031,26.009906768799,158.58676147461)},
-            [4] = { model = 'ruston', value = 1000000, coord = vector4(-43.318450927734,-1102.1627197266,25.758722305298,340.29724121094)},
+            [1] = {model = 'jester3', value = 100000, coord = vector4(-47.427722930908,-1101.3747558594,25.714616775513,341.64694213867)},
+            [2] = {model = 'elegy', value = 1000000, coord = vector4(-44.736125946045,-1094.1976318359,25.748092651367,158.2547454834)},
+            [3] = {model = 'adder', value = 1000000, coord = vector4(-40.32751083374,-1095.6105957031,26.009906768799,158.58676147461)},
+            [4] = {model = 'ruston', value = 1000000, coord = vector4(-43.318450927734,-1102.1627197266,25.758722305298,340.29724121094)},
         }
     },
 
