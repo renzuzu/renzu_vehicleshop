@@ -119,6 +119,7 @@ window.addEventListener('message', function(event) {
         VehicleArr = [];
         CurrentVehicle = [];
         $("#garage").fadeIn();
+        document.getElementById("garage").style.display = 'block';
         for(var [key,value] of Object.entries(data.data)){   
             for(var [k,v] of Object.entries(value)){
                 VehicleArr.push(v);          
@@ -129,6 +130,7 @@ window.addEventListener('message', function(event) {
     }
 
     if (event.data.type == "hide") {
+        document.getElementById("garage").style.display = 'none';
         $("#garage").fadeOut();
     }
 
