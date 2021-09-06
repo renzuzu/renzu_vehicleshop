@@ -110,7 +110,6 @@ end
 RegisterServerEvent('renzu_vehicleshop:sellvehicle')
 AddEventHandler('renzu_vehicleshop:sellvehicle', function()
     local source = source
-    local plate = tostring(plate)
     local xPlayer = ESX.GetPlayerFromId(source)
     local price = 1000
     local vehicle = GetVehiclePedIsIn(GetPlayerPed(source))
