@@ -258,15 +258,17 @@
       .container .middle-left2-container {
           /* border: 1px solid green; */
           position: absolute;
-          top: 35%;
-          left: 25px;
+          /* top: 4%; */
+          left: 40%;
           transform: translateY(-30%);
           color: rgb(255 255 255);
           text-shadow: 1px 4px #252525;
-          background-color: rgb(0 0 0 / 92%);
-          width: 350px;
+          background-color: rgb(0 0 0 / 42%);
+          width: 20%;
           padding: 11px;
           border-radius: 10px;
+          max-width: 333px;
+          bottom: -5%;
       }
       
       .container .middle-left2-container .title {
@@ -286,6 +288,7 @@
           color: white;
           font-size: 14px;
           font-weight: 100;
+          float: right;
       }
       
       .container .middle-left2-container .handling-container {
@@ -663,8 +666,8 @@
 
 .w3-greyscale-max,.w3-grayscale-max,.w3-hover-greyscale:hover,.w3-hover-grayscale:hover{filter:grayscale(100%)}
 .w3-greyscale,.w3-grayscale{filter:grayscale(75%)}.w3-greyscale-min,.w3-grayscale-min{filter:grayscale(50%)}
-.w3-grey,.w3-hover-grey:hover,.w3-gray,.w3-hover-gray:hover{color:#000!important;background-color: #fffefe!important;transition: width 2s ease-in-out;}
-.w3-border-0{border:0!important}.w3-border{border: 1px solid #9e9e9e!important;}
+.w3-grey,.w3-hover-grey:hover,.w3-gray,.w3-hover-gray:hover{color:#000!important;background-color: #2483e4!important;transition: width 2s ease-in-out;height: 15px;height: 15px !important;}
+.w3-border-0{border:0!important}.w3-border{border: 1px solid #9e9e9e!important;max-width: 70%;}
 .w3-border-top{border-top:1px solid #ccc!important}.w3-border-bottom{border-bottom:1px solid #ccc!important}
 .w3-border-left{border-left:1px solid #ccc!important}.w3-border-right{border-right:1px solid #ccc!important}
 
@@ -676,7 +679,7 @@ box-sizing: border-box;
 body {
 font-family: &quot;Roboto Condensed&quot;, sans-serif;
 }
-body .right {/* float: right; */position: relative;height: 200vh;top:20%;right:5%;width: 100%;}
+body .right {/* float: right; */position: relative;height: 200vh;top: 10%;right: 0.5%;width: 100%;}
 
 .app_inner::-webkit-scrollbar {
 width: 1em;
@@ -689,7 +692,7 @@ background-color: rgba(34, 34, 34, 0.582);
 .app {
   font-size: 20px;
   border-radius: 10px;
-  width: 30vw;
+  width: 25vw;
   margin: 0 auto;
   height: auto;
   min-height: 370px;
@@ -1120,7 +1123,7 @@ border-color: #41EFB6;
     top: -3.3%;
     bottom: 0;
     height: 100%;
-    right: 30%;
+    right: 25%;
     width: 55px;
     /* margin-left: 66%; */
     height: 36.6vh;
@@ -1493,13 +1496,14 @@ main {
   border: 1px solid darkgray;
   box-shadow: 0px 4px 15px -2px #757575;
   /* margin: 1% auto 0; */
-  max-width: 340px;
+  /* max-width: 20%; */
   position: absolute;
   left: 1.5%;
-  top: 50%;
+  top: 65%;
   background: #100f0ff0;
   z-index: 9999;
   border-radius: 20px;
+  width: 20%;
 }
 
 .colors {

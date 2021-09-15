@@ -184,7 +184,7 @@ $(document).ready(function() {
         </ul>\
         </nav>\
       <div class="app">\
-      <div style="position: absolute;top: -12%;right: 0%;width: 100%;height: 80px;background: linear-gradient(        90deg        , rgb(0 0 0 / 95%) 0%, rgb(4 4 4 / 77%) 100%);border-radius: 10px;z-index: -1;padding: 25px;text-align: center;font-size: 20px;color: #fff;border-style: solid;border-color: aliceblue;border-bottom-style: unset;border-right-style: unset;border-left-style: none;"><img style="display: block; height: 60px; position: absolute; top: 10%; left: 15%;" id="shopicon" src="https://i.imgur.com/05SLYUP.png"/> <span id="shopname">Vehicle Lists </span></div>\
+      <div style="position: absolute;top: -12%;right: 0%;width: 100%;height: 80px;background: linear-gradient(        90deg        , rgb(0 0 0 / 95%) 0%, rgb(4 4 4 / 77%) 100%);border-radius: 10px;z-index: -1;padding: 25px;text-align: center;font-size: 20px;color: #fff;border-style: solid;border-color: aliceblue;border-bottom-style: unset;border-right-style: unset;border-left-style: none;"><img style="display: block; height: 60px; position: absolute; top: 2%; left: 9%;" id="shopicon" src="https://i.imgur.com/05SLYUP.png"/> <span id="shopname">Vehicle Lists </span></div>\
         <div class="app_inner" id="vehlist">\
         </div>\
       </div>\
@@ -198,7 +198,7 @@ $(document).ready(function() {
     </div>\
     </div>\
   <div class="middle-left2-container">\
-      <div class="column" id="contentVehicle" style="width:300px !important;">\
+      <div class="column" id="contentVehicle">\
       </div>\
   </div>\
   <div id="messagePopup">\
