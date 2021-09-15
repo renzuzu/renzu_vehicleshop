@@ -3,20 +3,22 @@ Config.Locale = "en"
 Config.Mysql = 'mysql-async' -- "ghmattisql", "mysql-async"
 Config.UseRayZone = false -- unrelease script https://github.com/renzuzu/renzu_rayzone
 Config.UsePopUI = true -- Create a Thread for checking playercoords and Use POPUI to Trigger Event, set this to false if using rayzone. Popui is originaly built in to RayZone -- DOWNLOAD https://github.com/renzuzu/renzu_popui
-Config.Quickpick = true -- if false system will create a garage shell and spawn every vehicle you preview
+Config.Quickpick = false -- if false system will create a garage shell and spawn every vehicle you preview
 Config.EnableTestDrive = true
 Config.PlateSpace = true -- enable / disable plate spaces (compatibility with esx 1.1?)
 Config.SaveJob = true -- this config is to save the value to owned_vehicles.job column
 Config.Licensed = false -- Enable Driver Licensed Checker
 Config.DisplayCars = true -- enable display of cars
-Config.Marker = false -- use draw marker and Iscontrollpress native , popui will not work if this is true
+Config.Marker = true -- use draw marker and Iscontrollpress native , popui will not work if this is true
 Config.CustomImg = false -- if true your Config.CustomImgColumn IMAGE url will be used for each vehicles else, the imgs/uploads/MODEL.jpg
 Config.CustomImgColumn = 'imglink' -- db column name
+Config.RgbColor = true -- your framework or garage must support custom colors ex. https://github.com/renzuzu/renzu_garage
 
 VehicleShop = {
     ['pdm'] = { -- same with name
         name = "pdm", --LEGION
         title = "PDM Vehicle Shop",
+        icon = 'https://i.imgur.com/05SLYUP.png',
         type = 'car',
         job = 'all',
         default_garage = 'A',
@@ -31,14 +33,16 @@ VehicleShop = {
         heading = 340.23065185547, -- Vehicle spawn location,
         displaycars = {
             [1] = {label = 'Suprang Bagal', model = 'jester3', value = 100000, coord = vector4(-47.427722930908,-1101.3747558594,25.714616775513,341.64694213867)},
-            [2] = {label = 'Suprang Bagal', model = 'elegy', value = 1000000, coord = vector4(-44.736125946045,-1094.1976318359,25.748092651367,158.2547454834)},
+            [2] = {label = 'Suprang Bagal', model = 'zr350', value = 1000000, coord = vector4(-44.736125946045,-1094.1976318359,25.748092651367,158.2547454834)},
             [3] = {label = 'Suprang Bagal', model = 'adder', value = 1000000, coord = vector4(-40.32751083374,-1095.6105957031,26.009906768799,158.58676147461)},
-            [4] = {label = 'Suprang Bagal', model = 'ruston', value = 1000000, coord = vector4(-43.318450927734,-1102.1627197266,25.758722305298,340.29724121094)},
+            [4] = {label = 'Suprang Bagal', model = 'rt3000', value = 1000000, coord = vector4(-43.318450927734,-1102.1627197266,25.758722305298,340.29724121094)},
         }
     },
 
     ['Police Vehicle Shop'] = { -- same with name
         name = "Police Vehicle Shop", --MRPD police shop
+        title = "Police Vehicle Shop",
+        icon = 'https://i.imgur.com/t1OPuVL.png',
         job = 'police',
         type = 'car',
         default_garage = 'Police Garage',
@@ -63,6 +67,8 @@ VehicleShop = {
     ['Yacht Club Boat Shop'] = { -- same with name
         name = "Yacht Club Boat Shop", --LEGION
         type = 'boat', -- type of shop
+        title = "Yacht Club Boat Shop",
+        icon = 'https://i.imgur.com/62bRdH6.png',
         job = 'all',
         default_garage = 'Boat Garage A',
         Dist = 7, -- distance (DEPRECATED)
@@ -89,6 +95,7 @@ VehicleShop = {
     ['DEVIN WESTON PLANE SHOP'] = { -- same with name
         name = "DEVIN WESTON PLANE SHOP", --LEGION
         title = "DEVIN PLANE SHOP",
+        icon = 'https://i.imgur.com/12rKk6E.png',
         type = 'plane', -- type of shop
         job = 'all',
         default_garage = 'Plane Hangar A',

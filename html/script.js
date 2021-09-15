@@ -127,6 +127,11 @@ window.addEventListener('message', function(event) {
         }
         renzu_vehicleshop.Open(VehicleArr);
         ShowVehicle(0);
+        document.getElementById("shopicon").src = event.data.shop.icon;
+        document.getElementById("shopname").innerHTML = event.data.shop.shop;
+        if (event.data.quickpick) {
+            document.getElementById("customextra").style.display = 'none';
+        }
     }
 
     if (event.data.type == "hide") {
@@ -159,7 +164,19 @@ $(document).ready(function() {
         $('.button-container').appendTo(currentSlide);
     });
 
-    var app = '<div class="container">\
+    var app = '<main id="customextra" style="padding:10px;display:block;">\
+    <header style="text-align:center;padding:5px;"><button onclick="choosecolor(`primary`)" class="confirm_out" style="background:#0454FE;color:#fff !important;border-radius: 10px;width: 30%;background: #0454FE;color: #fff !important;border-radius: 10px;width: 30%;/* padding-right: 20px; */height: 20px;font-size: 10px;margin-top: 1px !important;height: 100%;margin-right: 20px;">primary</button><button onclick="choosecolor(`secondary`)" class="confirm_out" style="background:#0454FE;color:#fff !important;border-radius: 10px;width: 30%;/* padding-right: 20px; */height: 20px;font-size: 10px;margin-top: 1px;height: 100%;">Secondary</button></header>\
+    <div class="colors" style="height:170px;overflow-x:hidden;"></div>\
+    <header style="text-align: center;\
+    padding: 6px;\
+    font-size: 15px;\
+    color: #fff;\
+    padding-bottom: 0;\
+    height: 20px;\
+}"> Liveries </header>\
+    <header style="text-align:center;padding: 6px;"><button onclick="livery(false)" class="confirm_out" style="background:#0454FE;color:#fff !important;border-radius: 10px;width: 30%;background: #0454FE;color: #fff !important;border-radius: 10px;width: 30%;/* padding-right: 20px; */height: 20px;font-size: 10px;margin-top: -10px !important;height: 100%;margin-right: 20px;"><i style="display:contents;" class="fas fa-arrow-left"></i></button><button onclick="livery(true)" class="confirm_out" style="background:#0454FE;color:#fff !important;border-radius: 10px;width: 30%;/* padding-right: 20px; */height: 20px;font-size: 10px;margin-top: -10px;height: 100%;"> <i style="display:contents;" class="fas fa-arrow-right"></i></button></header>\
+  </main>\
+  <div class="container">\
     <div class="right">\
         <nav class="main-menu">\
         <div class="scrollbar" id="style-1">\
@@ -167,21 +184,19 @@ $(document).ready(function() {
         </ul>\
         </nav>\
       <div class="app">\
+      <div style="position: absolute;top: -12%;right: 0%;width: 100%;height: 80px;background: linear-gradient(        90deg        , rgb(0 0 0 / 95%) 0%, rgb(4 4 4 / 77%) 100%);border-radius: 10px;z-index: -1;padding: 25px;text-align: center;font-size: 20px;color: #fff;border-style: solid;border-color: aliceblue;border-bottom-style: unset;border-right-style: unset;border-left-style: none;"><img style="display: block; height: 60px; position: absolute; top: 10%; left: 15%;" id="shopicon" src="https://i.imgur.com/05SLYUP.png"/> <span id="shopname">Vehicle Lists </span></div>\
         <div class="app_inner" id="vehlist">\
         </div>\
       </div>\
     </div>\
-  <div id="closemenu" class="modal" style="background-color:#050505c5 !important; color:#fff;">\
+    <div id="closemenu" class="modal" style="background-color:#050505c5 !important; color:#fff;">\
   </div>\
-  <div class="middle-left-container" style="display:none;">\
-      <div class="column" id="vehicleclass"> \
-      </div>\
-      <div class="column" id="nameBrand">\
-      </div>\
-      <div class="column menu-modifications" style="right:50px; position:absolute;">\
-          <div class="row" id="confirm"> <button class="confirm_out" style="background:#0454FE;color:#fff !important; border-radius: 10px;" onclick="garage()"> Go to Garage </button> </div>\
-      </div>\
-  </div>\
+    <div class="middle-left-container" style="/* display:none; */position: absolute;top: 0%;left: 1%;background: unset;width: 40%;">\
+    <div class="column" style="display:block;" id="nameBrand">\
+    </div>\
+    <div class="column" id="vehicleclass">\
+    </div>\
+    </div>\
   <div class="middle-left2-container">\
       <div class="column" id="contentVehicle" style="width:300px !important;">\
       </div>\
@@ -193,14 +208,53 @@ $(document).ready(function() {
 </div>'
 
 $('#garage').append(app);
+
+const colorsEl = document.querySelector('.colors');
+
+const resetSelection = () => Array.from(document.querySelectorAll('.colors div')).map((listItem) => listItem.classList.remove('selected'));
+
+const colors = Array.from({ length: 255 }, () => {
+  const color = chance.color({format: 'rgb'});
+  const div = document.createElement('div');
+  const span = document.createElement('span');
+
+  span.className = 'color';
+  span.style.background = color;
+  span.onclick = () => {
+    resetSelection();
+    span.parentNode.classList.toggle('selected');
+    //document.body.style.background = color;
+    $.post("https://renzu_vehicleshop/choosecolor", JSON.stringify({ r: getRGB(color).r, g:getRGB(color).g, b:getRGB(color).b }))
+    console.log(getRGB(color).r)
+  };
+  
+  div.append(span);
+  
+  colorsEl.append(div); 
 });
+});
+
+function choosecolor(type) {
+    console.log(type)
+    $.post("https://renzu_vehicleshop/selectcolortype", JSON.stringify({ type:type }))
+}
+
+function livery(next) {
+    console.log(next)
+    $.post("https://renzu_vehicleshop/setlivery", JSON.stringify({ next:next }))
+}
+
+function getRGB(str){
+    var match = str.match(/rgba?\((\d{1,3}), ?(\d{1,3}), ?(\d{1,3})\)?(?:, ?(\d(?:\.\d?))\))?/);
+    return match ? {
+      r: match[1],
+      g: match[2],
+      b: match[3]
+    } : {};
+  }
 
 function ShowVehicle(currentTarget) {
     var data = inGarageVehicle[currentTarget]
-    //console.log(garage_id,data.plate)
-    //console.log(garage_id,currentTarget)
-    //console.log(garage_id,currentTarget)
-    //console.log(garage_id,currentTarget)
     if (currentcar !== currentTarget) {
         currentcar = currentTarget
         var div = $(this).parent().find('.active');        
@@ -214,10 +268,10 @@ function ShowVehicle(currentTarget) {
             document.getElementById("vehicleclass").innerHTML = '';
             document.getElementById("contentVehicle").innerHTML = '';
                         
-            document.getElementById("vehicleclass").innerHTML = ' <img id="vehicle_class_image" src="https://forum.cfx.re/uploads/default/optimized/3X/0/3/0301f645963889531fb4870e8d47f2f7da7f1c45_2_1024x1024.gif">';
+            document.getElementById("vehicleclass").innerHTML = ' ';
 
             $('#nameBrand').append(`
-                <span id="vehicle_class">`+data.brand+`</span> 
+                <span id="vehicle_class" style="font-size:2em;">`+data.brand+`,</span> 
                 <span id="vehicle_name">`+data.name+`</span> 
             `);
 
@@ -449,7 +503,7 @@ $(document).on('keydown', function(event) {
             var imagecar = data[i].image;
             ////console.log(modelUper)
             inGarageVehicle[i] = data[i]
-            $(".app_inner").append('<label style="cursor:pointer;"><input false="" id="tab-'+ i +'" onclick="ShowVehicle('+i+')" name="buttons" type="radio"> <label for="tab-'+ i +'"> <div class="app_inner__tab"> <span style="position:absolute;top:4px;left:8px;font-size:8px;color:#b0b1b1;font-weight: 500;">Class: '+ data[i].category +'</span> <span style="position:absolute;top:4px;right:5px;font-weight: 700;font-size:12px;color:#5ab34f;">Price: '+ data[i].price +'</span><h2 style="font-size:11px !important;"> <i class="icon" style="right:100px;"><img style="height:20px;" src="https://cdn.discordapp.com/attachments/709992715303125023/813351303887192084/wheel.png"></i> '+ data[i].name +' </h2> <div class="tab_left"> <i class="big icon"><img class="imageborder" style="height:80px;" onerror="this.src=`https://cdn.discordapp.com/attachments/709992715303125023/813351303887192084/wheel.png`;" src="' + imagecar + '"></i>   </div> <div class="tab_right"> <button class="confirm_out" style="background:green" onclick="BuyVehicle(`'+ data[i].name +'`,`'+ data[i].category +'`,`'+ data[i].price +'`)"> Buy </button> <div class="row" id="confirm"> <button class="confirm_out" style="background:red" onclick="TestDrive(`'+ data[i].name +'`,`'+ data[i].category +'`,`'+ data[i].price +'`,`'+ data[i].model +'`)"> Test Drive </button> </div> </div> </div> </label></input></label>');    
+            $(".app_inner").append('<label style="cursor:pointer;"><input false="" id="tab-'+ i +'" onclick="ShowVehicle('+i+')" name="buttons" type="radio"> <label for="tab-'+ i +'"> <div class="app_inner__tab"> <span style="position:absolute;top:4px;left:8px;font-size:8px;color:#b0b1b1;font-weight: 500;">Class: '+ data[i].category +'</span> <span style="position:absolute;top:4px;right:5px;font-weight: 700;font-size:12px;color:#5ab34f;">Price: '+ data[i].price +'</span><h2 style="font-size:11px !important;"> <i class="icon" style="right:100px;"><img style="height:20px;" src="https://cdn.discordapp.com/attachments/709992715303125023/813351303887192084/wheel.png"></i> '+ data[i].name +' </h2> <div class="tab_left"> <i class="big icon"><img class="imageborder" style="width: 120%;height:80px;height: 80px;border-radius: 10px;border-width: medium;border-color: #fdfdfd;border-style: groove;" onerror="this.src=`https://cdn.discordapp.com/attachments/709992715303125023/813351303887192084/wheel.png`;" src="' + imagecar + '"></i>   </div> <div class="tab_right"> <button class="confirm_out" style="background:#55b755" onclick="BuyVehicle(`'+ data[i].name +'`,`'+ data[i].category +'`,`'+ data[i].price +'`)"> Buy </button> <div class="row" id="confirm" style="width: 100%;"> <button class="confirm_out" style="background:#013e9a;" onclick="TestDrive(`'+ data[i].name +'`,`'+ data[i].category +'`,`'+ data[i].price +'`,`'+ data[i].model +'`)"> Test Drive </button> </div> </div> </div> </label></input></label>');    
         }     
     }
     renzu_vehicleshop.Open(VehicleArr)

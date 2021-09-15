@@ -7,6 +7,21 @@ CREATE TABLE `vehicles` (
   PRIMARY KEY (`id`)
 );
 
+ALTER TABLE vehicles
+ADD shop varchar(32) NOT NULL DEFAULT 'pdm';
+
+ALTER TABLE vehicles
+ADD stock int(11) NOT NULL DEFAULT 100;
+
+ALTER TABLE owned_vehicles
+ADD `type` varchar(32) NOT NULL DEFAULT 'car';
+
+ALTER TABLE owned_vehicles
+ADD `garage_id` varchar(32) NOT NULL DEFAULT 'A';
+
+ALTER TABLE owned_vehicles
+ADD job varchar(32) NOT NULL DEFAULT 'civ';
+
 REPLACE  INTO `vehicles` (`name`, `model`, `price`, `category`) VALUES
 	('Adder', 'adder', 900000, 'super'); 
 REPLACE  INTO `vehicles` (`name`, `model`, `price`, `category`) VALUES 
@@ -829,18 +844,3 @@ REPLACE  INTO `vehicles` (`name`, `model`, `price`, `category`) VALUES
 	('previon', 'previon', 2000 ,'sports'); 
 REPLACE  INTO `vehicles` (`name`, `model`, `price`, `category`) VALUES 
 	('warrener2', 'warrener2', 20000, 'sports');
-
-ALTER TABLE vehicles
-ADD shop varchar(32) NOT NULL DEFAULT 'pdm';
-
-ALTER TABLE vehicles
-ADD stock int(11) NOT NULL DEFAULT 100;
-
-ALTER TABLE owned_vehicles
-ADD `type` varchar(32) NOT NULL DEFAULT 'car';
-
-ALTER TABLE owned_vehicles
-ADD `garage_id` varchar(32) NOT NULL DEFAULT 'A';
-
-ALTER TABLE owned_vehicles
-ADD job varchar(32) NOT NULL DEFAULT 'civ';
