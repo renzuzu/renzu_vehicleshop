@@ -1073,6 +1073,12 @@ function SpawnVehicleLocal(model)
         ReqAndDelete(LastVehicleFromGarage)
         SetModelAsNoLongerNeeded(hash)
     end
+    for i = 1, 2 do
+        local nearveh = GetClosestVehicle(GetEntityCoords(PlayerPedId()), 2.000, 0, 70)
+        if DoesEntityExist(nearveh) then
+            ReqAndDelete(nearveh)
+        end
+    end
 
     for k,v in pairs(VehicleShop) do
         local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
