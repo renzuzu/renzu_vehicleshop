@@ -109,8 +109,8 @@ function ShowFloatingHelpNotification(msg, coords)
     EndTextCommandDisplayHelp(2, false, false, -1)
 end
 
-function Marker(vec,msg,event,server)
-    while #(vec - GetEntityCoords(PlayerPedId())) < 3 and neargarage do
+function Marker(vec,msg,event,server,dist)
+    while #(vec - GetEntityCoords(PlayerPedId())) < dist and neargarage do
         Wait(0)
         DrawMarker(36, vec ,0,0,0,0,0,2.0,2.0,2.0,1.0,255, 255, 220,200,0,0,0,1)
         ShowFloatingHelpNotification("Press [E] "..msg,vec)
@@ -121,7 +121,7 @@ function Marker(vec,msg,event,server)
                 TriggerServerEvent(event)
             end
             Wait(100)
-            while neargarage and #(vec - GetEntityCoords(PlayerPedId())) < 3 do Wait(100) end
+            while neargarage and #(vec - GetEntityCoords(PlayerPedId())) < dist do Wait(100) end
             break
         end
     end
@@ -138,7 +138,7 @@ CreateThread(function()
                 if dist < v.Dist and not inveh then
                     neargarage = true
                     if Config.Marker then
-                        Marker(vec,v.title,'vehicleshop')
+                        Marker(vec,v.title,'vehicleshop',false,v.Dist)
                     else
                         PopUI(v.title or v.name,vec,"vehicleshop")
                     end
