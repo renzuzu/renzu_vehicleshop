@@ -686,7 +686,7 @@ RegisterNUICallback("choosecategory", function(data, cb)
     local cars = 0
     for k,v2 in pairs(OwnedVehicles) do
         for k2,v in pairs(v2) do
-            if data.category == v.category then
+            if data.category == v.category and IsModelInCdimage(GetHashKey(v.model)) then
                 cars = cars + 1
                 if vehtable[v.name] == nil then
                     vehtable[v.name] = {}
@@ -830,7 +830,7 @@ function OpenShop(id)
     for k,v2 in pairs(OwnedVehicles) do
         for k2,v in pairs(v2) do
             --if id == v.garage_id or v.garage_id == 'impound' then
-            if id == v.shop then
+            if id == v.shop and IsModelInCdimage(GetHashKey(v.model)) then
                 cars = cars + 1
                 if vehtable[v.name] == nil then
                     vehtable[v.name] = {}
@@ -1065,7 +1065,9 @@ function DeleteGarage()
     TriggerEvent('EndScaleformMovie','mp_car_stats_02')
 end
 
+local loading = false
 function SpawnVehicleLocal(model)
+    if loading then return end
     local ped = PlayerPedId()
 
     SetNuiFocus(true, true)
@@ -1095,7 +1097,9 @@ function SpawnVehicleLocal(model)
                     return
                     end
                 end
+                loading = true
             end
+            loading = false
             LastVehicleFromGarage = CreateVehicle(hash, v.shop_x,v.shop_y,zaxis - 30, 42.0, 0, 1)
             SetEntityHeading(LastVehicleFromGarage, 50.117)
             FreezeEntityPosition(LastVehicleFromGarage, true)
