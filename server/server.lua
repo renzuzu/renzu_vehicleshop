@@ -261,6 +261,7 @@ function Buy(result,xPlayer,model, props, payment, job, type, garage, notregiste
             price = notregister.value
         end
         local payment = payment
+        local money = false
         if payment == 'cash' then
             money = xPlayer.getMoney() >= tonumber(price)
         else
