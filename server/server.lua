@@ -12,6 +12,7 @@ AddEventHandler('renzu_vehicleshop:GetAvailableVehicle', function(shop)
     local xPlayer = ESX.GetPlayerFromId(src)
     local identifier = xPlayer.identifier
     local shop = shop or 'pdm'
+    Owned_Vehicle = {}
     if Config.Mysql == 'mysql-async' then
         Owned_Vehicle = MySQL.Sync.fetchAll('SELECT * FROM vehicles WHERE shop = @shop', {['@shop'] = shop})
         --TriggerClientEvent('table',-1,Owned_Vehicle)

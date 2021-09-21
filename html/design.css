@@ -666,7 +666,7 @@
 
 .w3-greyscale-max,.w3-grayscale-max,.w3-hover-greyscale:hover,.w3-hover-grayscale:hover{filter:grayscale(100%)}
 .w3-greyscale,.w3-grayscale{filter:grayscale(75%)}.w3-greyscale-min,.w3-grayscale-min{filter:grayscale(50%)}
-.w3-grey,.w3-hover-grey:hover,.w3-gray,.w3-hover-gray:hover{color:#000!important;background-color: #2483e4!important;transition: width 2s ease-in-out;height: 15px;height: 15px !important;}
+.w3-grey,.w3-hover-grey:hover,.w3-gray,.w3-hover-gray:hover{color:#000!important;background-color: #dbdbdb!important;transition: width 2s ease-in-out;height: 15px;height: 15px !important;}
 .w3-border-0{border:0!important}.w3-border{border: 1px solid #9e9e9e!important;max-width: 70%;}
 .w3-border-top{border-top:1px solid #ccc!important}.w3-border-bottom{border-bottom:1px solid #ccc!important}
 .w3-border-left{border-left:1px solid #ccc!important}.w3-border-right{border-right:1px solid #ccc!important}
@@ -825,7 +825,7 @@ overflow: hidden;
 position: relative;
 transition: all 0.65s cubic-bezier(1, 0, 0.41, 1.01);
 }
-.app_inner__tab h2 {position: absolute;right: 20px;top: 16px;color: #f3f3f3;font-size: 18px;font-weight: 200;}
+.app_inner__tab h2 {position: absolute;right: 20px;top: 16px;color: #f3f3f3;font-size: 18px;font-weight: 200}
 .app_inner__tab h2 i {
 position: absolute;
 right: 271px;

@@ -531,109 +531,107 @@ MathRound = function(value, numDecimalPlaces)
 end
 
 function GetVehicleProperties(vehicle)
+    -- https://github.com/esx-framework/es_extended/tree/v1-final COPYRIGHT
     if DoesEntityExist(vehicle) then
-        -- https://github.com/esx-framework/es_extended/tree/v1-final COPYRIGHT
-        if DoesEntityExist(vehicle) then
-            local colorPrimary, colorSecondary = GetVehicleColours(vehicle)
-            local pearlescentColor, wheelColor = GetVehicleExtraColours(vehicle)
-            local extras = {}
-            for extraId=0, 12 do
-                if DoesExtraExist(vehicle, extraId) then
-                    local state = IsVehicleExtraTurnedOn(vehicle, extraId) == 1
-                    extras[tostring(extraId)] = state
-                end
+        local colorPrimary, colorSecondary = GetVehicleColours(vehicle)
+        local pearlescentColor, wheelColor = GetVehicleExtraColours(vehicle)
+        local extras = {}
+        for extraId=0, 12 do
+            if DoesExtraExist(vehicle, extraId) then
+                local state = IsVehicleExtraTurnedOn(vehicle, extraId) == 1
+                extras[tostring(extraId)] = state
             end
-            local plate = GetVehicleNumberPlateText(vehicle)
-            local modlivery = GetVehicleLivery(vehicle)
-            if modlivery == -1 then
-                modlivery = GetVehicleMod(vehicle, 48)
-            end
-            return {
-                model             = GetEntityModel(vehicle),
-                plate             = plate,
-                plateIndex        = GetVehicleNumberPlateTextIndex(vehicle),
-
-                bodyHealth        = MathRound(GetVehicleBodyHealth(vehicle), 1),
-                engineHealth      = MathRound(GetVehicleEngineHealth(vehicle), 1),
-                tankHealth        = MathRound(GetVehiclePetrolTankHealth(vehicle), 1),
-
-                fuelLevel         = MathRound(GetVehicleFuelLevel(vehicle), 1),
-                dirtLevel         = MathRound(GetVehicleDirtLevel(vehicle), 1),
-                color1            = colorPrimary,
-                color2            = colorSecondary,
-                rgb				  = table.pack(GetVehicleCustomPrimaryColour(vehicle)),
-                rgb2				  = table.pack(GetVehicleCustomSecondaryColour(vehicle)),
-                pearlescentColor  = pearlescentColor,
-                wheelColor        = wheelColor,
-
-                wheels            = GetVehicleWheelType(vehicle),
-                windowTint        = GetVehicleWindowTint(vehicle),
-                xenonColor        = GetVehicleXenonLightsColour(vehicle),
-
-                neonEnabled       = {
-                    IsVehicleNeonLightEnabled(vehicle, 0),
-                    IsVehicleNeonLightEnabled(vehicle, 1),
-                    IsVehicleNeonLightEnabled(vehicle, 2),
-                    IsVehicleNeonLightEnabled(vehicle, 3)
-                },
-
-                neonColor         = table.pack(GetVehicleNeonLightsColour(vehicle)),
-                extras            = extras,
-                tyreSmokeColor    = table.pack(GetVehicleTyreSmokeColor(vehicle)),
-
-                modSpoilers       = GetVehicleMod(vehicle, 0),
-                modFrontBumper    = GetVehicleMod(vehicle, 1),
-                modRearBumper     = GetVehicleMod(vehicle, 2),
-                modSideSkirt      = GetVehicleMod(vehicle, 3),
-                modExhaust        = GetVehicleMod(vehicle, 4),
-                modFrame          = GetVehicleMod(vehicle, 5),
-                modGrille         = GetVehicleMod(vehicle, 6),
-                modHood           = GetVehicleMod(vehicle, 7),
-                modFender         = GetVehicleMod(vehicle, 8),
-                modRightFender    = GetVehicleMod(vehicle, 9),
-                modRoof           = GetVehicleMod(vehicle, 10),
-
-                modEngine         = GetVehicleMod(vehicle, 11),
-                modBrakes         = GetVehicleMod(vehicle, 12),
-                modTransmission   = GetVehicleMod(vehicle, 13),
-                modHorns          = GetVehicleMod(vehicle, 14),
-                modSuspension     = GetVehicleMod(vehicle, 15),
-                modArmor          = GetVehicleMod(vehicle, 16),
-
-                modTurbo          = IsToggleModOn(vehicle, 18),
-                modSmokeEnabled   = IsToggleModOn(vehicle, 20),
-                modXenon          = IsToggleModOn(vehicle, 22),
-
-                modFrontWheels    = GetVehicleMod(vehicle, 23),
-                modBackWheels     = GetVehicleMod(vehicle, 24),
-
-                modPlateHolder    = GetVehicleMod(vehicle, 25),
-                modVanityPlate    = GetVehicleMod(vehicle, 26),
-                modTrimA          = GetVehicleMod(vehicle, 27),
-                modOrnaments      = GetVehicleMod(vehicle, 28),
-                modDashboard      = GetVehicleMod(vehicle, 29),
-                modDial           = GetVehicleMod(vehicle, 30),
-                modDoorSpeaker    = GetVehicleMod(vehicle, 31),
-                modSeats          = GetVehicleMod(vehicle, 32),
-                modSteeringWheel  = GetVehicleMod(vehicle, 33),
-                modShifterLeavers = GetVehicleMod(vehicle, 34),
-                modAPlate         = GetVehicleMod(vehicle, 35),
-                modSpeakers       = GetVehicleMod(vehicle, 36),
-                modTrunk          = GetVehicleMod(vehicle, 37),
-                modHydrolic       = GetVehicleMod(vehicle, 38),
-                modEngineBlock    = GetVehicleMod(vehicle, 39),
-                modAirFilter      = GetVehicleMod(vehicle, 40),
-                modStruts         = GetVehicleMod(vehicle, 41),
-                modArchCover      = GetVehicleMod(vehicle, 42),
-                modAerials        = GetVehicleMod(vehicle, 43),
-                modTrimB          = GetVehicleMod(vehicle, 44),
-                modTank           = GetVehicleMod(vehicle, 45),
-                modWindows        = GetVehicleMod(vehicle, 46),
-                modLivery         = modlivery
-            }
-        else
-            return
         end
+        local plate = GetVehicleNumberPlateText(vehicle)
+        local modlivery = GetVehicleLivery(vehicle)
+        if modlivery == -1 then
+            modlivery = GetVehicleMod(vehicle, 48)
+        end
+        return {
+            model             = GetEntityModel(vehicle),
+            plate             = plate,
+            plateIndex        = GetVehicleNumberPlateTextIndex(vehicle),
+
+            bodyHealth        = MathRound(GetVehicleBodyHealth(vehicle), 1),
+            engineHealth      = MathRound(GetVehicleEngineHealth(vehicle), 1),
+            tankHealth        = MathRound(GetVehiclePetrolTankHealth(vehicle), 1),
+
+            fuelLevel         = MathRound(GetVehicleFuelLevel(vehicle), 1),
+            dirtLevel         = MathRound(GetVehicleDirtLevel(vehicle), 1),
+            color1            = colorPrimary,
+            color2            = colorSecondary,
+            rgb				  = table.pack(GetVehicleCustomPrimaryColour(vehicle)),
+            rgb2				  = table.pack(GetVehicleCustomSecondaryColour(vehicle)),
+            pearlescentColor  = pearlescentColor,
+            wheelColor        = wheelColor,
+
+            wheels            = GetVehicleWheelType(vehicle),
+            windowTint        = GetVehicleWindowTint(vehicle),
+            xenonColor        = GetVehicleXenonLightsColour(vehicle),
+
+            neonEnabled       = {
+                IsVehicleNeonLightEnabled(vehicle, 0),
+                IsVehicleNeonLightEnabled(vehicle, 1),
+                IsVehicleNeonLightEnabled(vehicle, 2),
+                IsVehicleNeonLightEnabled(vehicle, 3)
+            },
+
+            neonColor         = table.pack(GetVehicleNeonLightsColour(vehicle)),
+            extras            = extras,
+            tyreSmokeColor    = table.pack(GetVehicleTyreSmokeColor(vehicle)),
+
+            modSpoilers       = GetVehicleMod(vehicle, 0),
+            modFrontBumper    = GetVehicleMod(vehicle, 1),
+            modRearBumper     = GetVehicleMod(vehicle, 2),
+            modSideSkirt      = GetVehicleMod(vehicle, 3),
+            modExhaust        = GetVehicleMod(vehicle, 4),
+            modFrame          = GetVehicleMod(vehicle, 5),
+            modGrille         = GetVehicleMod(vehicle, 6),
+            modHood           = GetVehicleMod(vehicle, 7),
+            modFender         = GetVehicleMod(vehicle, 8),
+            modRightFender    = GetVehicleMod(vehicle, 9),
+            modRoof           = GetVehicleMod(vehicle, 10),
+
+            modEngine         = GetVehicleMod(vehicle, 11),
+            modBrakes         = GetVehicleMod(vehicle, 12),
+            modTransmission   = GetVehicleMod(vehicle, 13),
+            modHorns          = GetVehicleMod(vehicle, 14),
+            modSuspension     = GetVehicleMod(vehicle, 15),
+            modArmor          = GetVehicleMod(vehicle, 16),
+
+            modTurbo          = IsToggleModOn(vehicle, 18),
+            modSmokeEnabled   = IsToggleModOn(vehicle, 20),
+            modXenon          = IsToggleModOn(vehicle, 22),
+
+            modFrontWheels    = GetVehicleMod(vehicle, 23),
+            modBackWheels     = GetVehicleMod(vehicle, 24),
+
+            modPlateHolder    = GetVehicleMod(vehicle, 25),
+            modVanityPlate    = GetVehicleMod(vehicle, 26),
+            modTrimA          = GetVehicleMod(vehicle, 27),
+            modOrnaments      = GetVehicleMod(vehicle, 28),
+            modDashboard      = GetVehicleMod(vehicle, 29),
+            modDial           = GetVehicleMod(vehicle, 30),
+            modDoorSpeaker    = GetVehicleMod(vehicle, 31),
+            modSeats          = GetVehicleMod(vehicle, 32),
+            modSteeringWheel  = GetVehicleMod(vehicle, 33),
+            modShifterLeavers = GetVehicleMod(vehicle, 34),
+            modAPlate         = GetVehicleMod(vehicle, 35),
+            modSpeakers       = GetVehicleMod(vehicle, 36),
+            modTrunk          = GetVehicleMod(vehicle, 37),
+            modHydrolic       = GetVehicleMod(vehicle, 38),
+            modEngineBlock    = GetVehicleMod(vehicle, 39),
+            modAirFilter      = GetVehicleMod(vehicle, 40),
+            modStruts         = GetVehicleMod(vehicle, 41),
+            modArchCover      = GetVehicleMod(vehicle, 42),
+            modAerials        = GetVehicleMod(vehicle, 43),
+            modTrimB          = GetVehicleMod(vehicle, 44),
+            modTank           = GetVehicleMod(vehicle, 45),
+            modWindows        = GetVehicleMod(vehicle, 46),
+            modLivery         = modlivery
+        }
+    else
+        return
     end
 end
 
@@ -646,13 +644,11 @@ end)
 RegisterNUICallback("choosecolor", function(data, cb)
     if colortype == 'primary' then
         presetprimarycolor = {r = data.r, g = data.g, b = data.b}
-        print(presetprimarycolor.r,presetprimarycolor.g,presetprimarycolor.b)
         if IsPedInAnyVehicle(PlayerPedId()) then
             SetVehicleCustomPrimaryColour(GetVehiclePedIsIn(PlayerPedId()),tonumber(presetprimarycolor.r),tonumber(presetprimarycolor.g),tonumber(presetprimarycolor.b))
         end
     else
         presetsecondarycolor = {r = data.r, g = data.g, b = data.b}
-        print(presetsecondarycolor.r,presetsecondarycolor.g,presetsecondarycolor.b)
         if IsPedInAnyVehicle(PlayerPedId()) then
             SetVehicleCustomSecondaryColour(GetVehiclePedIsIn(PlayerPedId()),tonumber(presetsecondarycolor.r),tonumber(presetsecondarycolor.g),tonumber(presetsecondarycolor.b))
         end
@@ -662,7 +658,6 @@ end)
 RegisterNUICallback("setlivery", function(data, cb)
     local vehicle = GetVehiclePedIsIn(PlayerPedId())
     SetVehicleModKit(vehicle,0)
-    print(GetVehicleLiveryCount(vehicle),data.next)
     if GetVehicleLiveryCount(vehicle) ~= -1 then
         if data.next then
             SetVehicleLivery(vehicle,GetVehicleLivery(vehicle) + 1)
@@ -726,14 +721,30 @@ RegisterNUICallback("choosecategory", function(data, cb)
             RequestCollisionAtCoord(926.15, -959.06, 61.94-30.0)
             for k,v in pairs(VehicleShop) do
                 local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
-                if dist <= 40.0 and id == v.name then
-                cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", v.shop_x-5.0, v.shop_y, v.shop_z-28.0, 360.00, 0.00, 0.00, 60.00, false, 0)
-                PointCamAtCoord(cam, v.shop_x, v.shop_y, v.shop_z-30.0)
-                SetCamActive(cam, true)
-                RenderScriptCams(true, true, 1, true, true)
-                SetFocusPosAndVel(v.shop_x, v.shop_y, v.shop_z-30.0, 0.0, 0.0, 0.0)
-                DisplayHud(false)
-                DisplayRadar(false)
+                if Config.UseArenaSpawn then
+                    if dist <= 40.0 and id == v.name then
+                        cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", 2800.5966796875-5.5,-3799.7370605469,122.41514587402, 360.00, 0.00, 0.00, 60.00, false, 0)
+                        PointCamAtCoord(cam, 2800.5966796875,-3799.7370605469,122.41514587402)
+                        SetCamActive(cam, true)
+                        SetCamFov(cam, 45.0)
+                        SetCamRot(cam, -15.0, 0.0, 252.063)
+                        RenderScriptCams(true, true, 1, true, true)
+                        SetFocusPosAndVel(2800.5966796875,-3799.7370605469,134.41514587402, 0.0, 0.0, 0.0)
+                        DisplayHud(false)
+                        DisplayRadar(false)
+                    end
+                else
+                    if dist <= 40.0 and id == v.name then
+                        cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", v.shop_x-5.0, v.shop_y-3.0, v.shop_z-28.5, 360.00, 0.00, 0.00, 60.00, false, 0)
+                        PointCamAtCoord(cam, v.shop_x, v.shop_y, v.shop_z-30.0)
+                        SetCamActive(cam, true)
+                        SetCamFov(cam, 45.0)
+                        SetCamRot(cam, -15.0, 0.0, 252.063)
+                        RenderScriptCams(true, true, 1, true, true)
+                        SetFocusPosAndVel(v.shop_x, v.shop_y, v.shop_z-30.0, 0.0, 0.0, 0.0)
+                        DisplayHud(false)
+                        DisplayRadar(false)
+                    end
                 end
             end
             while inGarage do
@@ -751,20 +762,19 @@ end)
 
 RegisterNetEvent('renzu_vehicleshop:receive_vehicles')
 AddEventHandler('renzu_vehicleshop:receive_vehicles', function(tb,shoptype)
+    local shoptype = shoptype
+    local tb = tb
     fetchdone = false
-    OwnedVehicles = nil
-    Wait(100)
     OwnedVehicles = {}
-    tableVehicles = nil
-    tableVehicles = tb
+    Wait(1000)
     cats = {}
-    for _,value in pairs(tableVehicles) do
+    for _,value in pairs(tb) do
         OwnedVehicles[value.category] = {}
         cats[value.category] = value.shop
     end
     vehiclesdb = tb
 
-    for _,value in pairs(tableVehicles) do
+    for _,value in pairs(tb) do
         --local props = json.decode(value.vehicle)
         local vehicleModel = GetHashKey(value.model)
         local label = nil
@@ -827,9 +837,13 @@ function OpenShop(id)
     local vehtable = {}
     vehtable[id] = {}
     local cars = 0
+    DoScreenFadeOut(0)
+    while Config.UseArenaSpawn and not IsIplActive("xs_arena_interior") do Wait(0) end
+    while not HasCollisionLoadedAroundEntity(ped) do Wait(0) DoScreenFadeOut(0) end
+    Wait(1000)
+    DoScreenFadeIn(3000)
     for k,v2 in pairs(OwnedVehicles) do
         for k2,v in pairs(v2) do
-            --if id == v.garage_id or v.garage_id == 'impound' then
             if id == v.shop and IsModelInCdimage(GetHashKey(v.model)) then
                 cars = cars + 1
                 if vehtable[v.name] == nil then
@@ -870,21 +884,45 @@ function OpenShop(id)
 
         SetNuiFocus(true, true)
         if not Config.Quickpick then
-            RequestCollisionAtCoord(926.15, -959.06, 61.94-30.0)
+            RequestCollisionAtCoord(2800.5966796875,-3799.7370605469,139.41514587402)
             for k,v in pairs(VehicleShop) do
                 local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
-                if dist <= 40.0 and id == v.name then
-                cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", v.shop_x-5.0, v.shop_y, v.shop_z-28.5, 360.00, 0.00, 0.00, 60.00, false, 0)
-                PointCamAtCoord(cam, v.shop_x, v.shop_y, v.shop_z-30.0)
-                SetCamActive(cam, true)
-                SetCamFov(cam, 55.0)
-                SetCamRot(cam, -15.0, 0.0, 252.063)
-                RenderScriptCams(true, true, 1, true, true)
-                SetFocusPosAndVel(v.shop_x, v.shop_y, v.shop_z-30.0, 0.0, 0.0, 0.0)
-                DisplayHud(false)
-                DisplayRadar(false)
+                if Config.UseArenaSpawn then
+                    vec = vector3(2800.5966796875,-3799.7370605469,139.41514587402)
+                    dist = #(vec - GetEntityCoords(ped))
+                    if dist <= 40.0 and id == v.name then
+                        cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", 2800.5966796875-4.0,-3799.7370605469-3.0,140.4514587402, 360.00, 0.00, 0.00, 60.00, false, 0)
+                        PointCamAtCoord(cam, 2800.5966796875,-3799.7370605469,139.51514587402)
+                        SetCamActive(cam, true)
+                        SetCamFov(cam, 55.0)
+                        SetCamRot(cam, -15.0, 0.0, 252.063)
+                        RenderScriptCams(true, true, 1, true, true)
+                        SetFocusPosAndVel(2800.5966796875,-3799.7370605469,139.41514587402, 0.0, 0.0, 0.0)
+                        DisplayHud(false)
+                        DisplayRadar(false)
+                    end
+                else
+                    if dist <= 40.0 and id == v.name then
+                        cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", v.shop_x-5.0, v.shop_y-3.0, v.shop_z-28.5, 360.00, 0.00, 0.00, 60.00, false, 0)
+                        PointCamAtCoord(cam, v.shop_x, v.shop_y, v.shop_z-30.0)
+                        SetCamActive(cam, true)
+                        SetCamFov(cam, 45.0)
+                        SetCamRot(cam, -15.0, 0.0, 252.063)
+                        RenderScriptCams(true, true, 1, true, true)
+                        SetFocusPosAndVel(v.shop_x, v.shop_y, v.shop_z-30.0, 0.0, 0.0, 0.0)
+                        DisplayHud(false)
+                        DisplayRadar(false)
+                    end
                 end
             end
+            Citizen.CreateThread(function()
+                local coord = vector3(2800.5966796875,-3799.7370605469,139.41514587402)
+                while inGarage do
+                    Citizen.Wait(0)
+                    DrawLightWithRange(coord.x-4.0, coord.y-3.0, coord.z+ 0.3, 255,255,255, 40.0, 15.0)
+                    DrawSpotLight(coord.x-4.0, coord.y+5.0, coord.z, coord, 255, 255, 255, 20.0, 1.0, 1.0, 20.0, 0.95)
+                end
+            end)
             while inGarage do
                 Citizen.Wait(111)
             end
@@ -899,12 +937,12 @@ function OpenShop(id)
 end
 
 local inshell = false
-function InGarageShell(bool)
+function inShowRoom(bool)
     if bool == 'enter' then
         inshell = true
         while inshell do
-        Citizen.Wait(0)
-        NetworkOverrideClockTime(16, 00, 00)
+            Citizen.Wait(0)
+            NetworkOverrideClockTime(22, 00, 00)
         end
     elseif bool == 'exit' then
         inshell = false
@@ -938,17 +976,23 @@ function SetCoords(ped, x, y, z, h, freeze)
 end
 
 local shell = nil
+local arenacoord = vector4(2800.5966796875,-3799.7370605469,139.41514587402,244.5432434082)
 function CreateGarageShell()
     local ped = PlayerPedId()
     garage_coords = GetEntityCoords(ped)-vector3(0,0,30)
     local model = GetHashKey('garage')
-    shell = CreateObject(model, garage_coords.x, garage_coords.y, garage_coords.z, false, false, false)
-    while not DoesEntityExist(shell) do Wait(0) end
-    FreezeEntityPosition(shell, true)
-    SetEntityAsMissionEntity(shell, true, true)
-    SetModelAsNoLongerNeeded(model)
-    shell_door_coords = vector3(garage_coords.x+7, garage_coords.y-19, garage_coords.z)
-    SetCoords(ped, shell_door_coords.x, shell_door_coords.y, shell_door_coords.z, 82.0, true)
+    if Config.UseArenaSpawn then
+        LoadArena()
+        SetCoords(ped, arenacoord, 82.0, true)
+    else
+        shell = CreateObject(model, garage_coords.x, garage_coords.y, garage_coords.z, false, false, false)
+        while not DoesEntityExist(shell) do Wait(0) end
+        FreezeEntityPosition(shell, true)
+        SetEntityAsMissionEntity(shell, true, true)
+        SetModelAsNoLongerNeeded(model)
+        shell_door_coords = vector3(garage_coords.x+7, garage_coords.y-19, garage_coords.z)
+        SetCoords(ped, shell_door_coords.x, shell_door_coords.y, shell_door_coords.z, 82.0, true)
+    end
     SetPlayerInvisibleLocally(ped, true)
 end
 
@@ -1084,6 +1128,10 @@ function SpawnVehicleLocal(model)
 
     for k,v in pairs(VehicleShop) do
         local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
+        if Config.UseArenaSpawn then
+            vec = vector3(2800.5966796875,-3799.7370605469,139.41514587402)
+            dist = #(vec - GetEntityCoords(ped))
+        end
         if dist <= 40.0 and id == v.name then
             local zaxis = v.shop_z
             local hash = tonumber(model)
@@ -1100,8 +1148,14 @@ function SpawnVehicleLocal(model)
                 loading = true
             end
             loading = false
-            LastVehicleFromGarage = CreateVehicle(hash, v.shop_x,v.shop_y,zaxis - 30, 42.0, 0, 1)
-            SetEntityHeading(LastVehicleFromGarage, 50.117)
+            if Config.UseArenaSpawn then
+                vec = vector3(2800.5966796875,-3799.7370605469,139.41514587402)
+            else
+                vec = vector3(v.shop_x,v.shop_y,zaxis - 30)
+            end
+            LastVehicleFromGarage = CreateVehicle(hash, vec, 90.0, 0, 1)
+            while not DoesEntityExist(LastVehicleFromGarage) do Wait(0) end
+            SetEntityHeading(LastVehicleFromGarage, 90.117)
             FreezeEntityPosition(LastVehicleFromGarage, true)
             SetEntityCollision(LastVehicleFromGarage,false)
             SetVehicleDirtLevel(LastVehicleFromGarage, 0.0)
@@ -1112,7 +1166,7 @@ function SpawnVehicleLocal(model)
                 SetModelAsNoLongerNeeded(hash)
             end
             TaskWarpPedIntoVehicle(PlayerPedId(), LastVehicleFromGarage, -1)
-            --InGarageShell('enter')
+            inShowRoom('enter')
         end
     end
 end
@@ -1225,6 +1279,7 @@ RegisterNUICallback(
     end
 )
 
+local testdrive = false
 RegisterNUICallback(
     "TestDriveCallback",
     function(data, cb)
@@ -1234,6 +1289,18 @@ RegisterNUICallback(
         local v = nil
         local hash = tonumber(data.modelcar)
         local count = 0
+        testdrive = true
+        if Config.UseArenaSpawn then
+            CloseNui()
+            LoadArena()
+            DoScreenFadeOut(0)
+            while Config.UseArenaSpawn and not IsIplActive("xs_arena_interior") do Wait(0) end
+            while not HasCollisionLoadedAroundEntity(ped) do Wait(0) DoScreenFadeOut(0) end
+            Wait(1000)
+            DoScreenFadeIn(3000)
+        else
+            while not HasCollisionLoadedAroundEntity(ped) do Wait(0) DoScreenFadeOut(0) end
+        end
         if Config.EnableTestDrive then
             ReqAndDelete(LastVehicleFromGarage)
             RequestModel(hash)
@@ -1248,18 +1315,35 @@ RegisterNUICallback(
                 end
             end
             ESX.TriggerServerCallback("renzu_vehicleshop:GenPlate",function(plate)
-                v = CreateVehicle(tonumber(data.modelcar), VehicleShop[data.shop].spawn_x,VehicleShop[data.shop].spawn_y,VehicleShop[data.shop].spawn_z, VehicleShop[data.shop].heading, 1, 1)
+                local vec = {}
+                if Config.UseArenaSpawn then
+                    vec = vector4(2954.2451171875,-3730.5334472656,140.69311523438,47.894153594971)
+                else
+                    vec = vector4(VehicleShop[data.shop].spawn_x,VehicleShop[data.shop].spawn_y,VehicleShop[data.shop].spawn_z,VehicleShop[data.shop].heading)
+                end
+                v = CreateVehicle(tonumber(data.modelcar), vec.x,vec.y,vec.z, vec.w, 1, 1)
                 veh = v
                 while not DoesEntityExist(v) do Wait(1) end
+                if presetprimarycolor ~= nil and presetprimarycolor.r ~= nil then
+                    SetVehicleCustomPrimaryColour(v,tonumber(presetprimarycolor.r),tonumber(presetprimarycolor.g),tonumber(presetprimarycolor.b))
+                end
+                if presetsecondarycolor ~= nil and presetsecondarycolor.r ~= nil then
+                    SetVehicleCustomSecondaryColour(v,tonumber(presetsecondarycolor.r),tonumber(presetsecondarycolor.g),tonumber(presetsecondarycolor.b))
+                end
+                if GetVehicleLiveryCount(vehicle) ~= -1 and livery ~= nil then
+                    SetVehicleLivery(v,livery)
+                elseif livery ~= nil then
+                    SetVehicleMod(v, 48, livery, false)
+                end
                 SetVehicleNumberPlateText(v,plate)
                 props = GetVehicleProperties(v)
                 props.plate = plate
                 SetEntityAlpha(v, 51, false)
                 LastVehicleFromGarage = nil
                 TaskWarpPedIntoVehicle(GetPlayerPed(-1), veh, -1)
-                CloseNui()
                 ESX.ShowNotification("Test Drive: Start")
                 SetEntityAlpha(v, 255, false)
+                SetVehicleProp(v,props)
                 TaskWarpPedIntoVehicle(GetPlayerPed(-1), veh, -1)
                 --SetVehicleEngineHealth(v,props.engineHealth)
                 --Wait(100)
@@ -1271,9 +1355,10 @@ RegisterNUICallback(
                 drawtext = false
                 oldcoord = vector3(VehicleShop[data.shop].spawn_x,VehicleShop[data.shop].spawn_y,VehicleShop[data.shop].spawn_z)
                 indist = false
+                if not Config.UseArenaSpawn then CloseNui() end
                 SendNUIMessage(
                 {
-                type = "cleanup"
+                    type = "cleanup"
                 })
                 local count = 30000
                 local function Draw2DText(x, y, text, scale)
@@ -1304,7 +1389,12 @@ RegisterNUICallback(
                     Wait(0)
                     ReqAndDelete(veh)
                 end
+                if Config.UseArenaSpawn then UnloadArena() end
                 SetEntityCoords(PlayerPedId(),oldcoord)
+                testdrive = false
+                presetsecondarycolor = {}
+                presetprimarycolor = {}
+                livery = nil
             end)
         else
             ESX.ShowNotification("Test Driving is Disable")
@@ -1321,7 +1411,7 @@ RegisterNUICallback("Close",function(data, cb)
         local actualShop = v
         if v.shop_x ~= nil then
             local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
-            if dist <= 40.0 and id == v.name then
+            if id == v.name then
                 SetEntityCoords(ped, v.shop_x,v.shop_y,v.shop_z, 0, 0, 0, false)  
             end
         end
@@ -1338,7 +1428,7 @@ function CloseNui()
     )
     neargarage = false
     SetNuiFocus(false, false)
-    InGarageShell('exit')
+    inShowRoom('exit')
     if inGarage then
         if LastVehicleFromGarage ~= nil then
             ReqAndDelete(LastVehicleFromGarage)
@@ -1350,14 +1440,19 @@ function CloseNui()
         ClearFocus()
         DisplayHud(true)
     end
+    if Config.UseArenaSpawn then
+        UnloadArena()
+    end
 
     inGarage = false
     DeleteGarage()
     drawtext = false
     indist = false
-    presetsecondarycolor = {}
-    presetprimarycolor = {}
-    livery = nil
+    if not testdrive then
+        presetsecondarycolor = {}
+        presetprimarycolor = {}
+        livery = nil
+    end
 end
 
 function ReqAndDelete(object, detach)
@@ -1396,3 +1491,115 @@ Citizen.CreateThread(function() --load IPL for Vehicleshop
 	EnableInteriorProp(interiorID, 'csr_beforeMission')
 	RefreshInterior(interiorID)
 end)
+
+
+
+
+
+
+---------------------------------------------------------------------------------------
+--            Arena Resource by Titch2000 You may edit but please keep credit.
+---------------------------------------------------------------------------------------
+-- config
+local map = 9
+local scene = "scifi"
+
+
+--         NO TOUCHING BELOW THIS POINT, NO HELP WILL BE OFFERED IF YOU DO.
+---------------------------------------------------------------------------------------
+local maps = {
+    ["dystopian"] = {
+        "Set_Dystopian_01",
+        "Set_Dystopian_02",
+        "Set_Dystopian_03",
+        "Set_Dystopian_04",
+        "Set_Dystopian_05",
+        "Set_Dystopian_06",
+        "Set_Dystopian_07",
+        "Set_Dystopian_08",
+        "Set_Dystopian_09",
+        "Set_Dystopian_10",
+        "Set_Dystopian_11",
+        "Set_Dystopian_12",
+        "Set_Dystopian_13",
+        "Set_Dystopian_14",
+        "Set_Dystopian_15",
+        "Set_Dystopian_16",
+        "Set_Dystopian_17"
+    },
+
+    ["scifi"] = {
+        "Set_Scifi_01",
+        "Set_Scifi_02",
+        "Set_Scifi_03",
+        "Set_Scifi_04",
+        "Set_Scifi_05",
+        "Set_Scifi_06",
+        "Set_Scifi_07",
+        "Set_Scifi_08",
+        "Set_Scifi_09",
+        "Set_Scifi_10"
+    },
+
+    ["wasteland"] = {
+        "Set_Wasteland_01",
+        "Set_Wasteland_02",
+        "Set_Wasteland_03",
+        "Set_Wasteland_04",
+        "Set_Wasteland_05",
+        "Set_Wasteland_06",
+        "Set_Wasteland_07",
+        "Set_Wasteland_08",
+        "Set_Wasteland_09",
+        "Set_Wasteland_10"
+    }
+}
+
+
+function UnloadArena()
+    RemoveIpl('xs_arena_interior')
+end
+
+function LoadArena()
+        -- New Arena : 2800.00, -3800.00, 100.00
+        RequestIpl("xs_arena_interior")
+
+        -- The below are additional interiors / maps relating to this DLC play around with them at your own risk and want.
+        --RequestIpl("xs_arena_interior_mod")
+        --RequestIpl("xs_arena_interior_mod_2")
+        RequestIpl("xs_arena_interior_vip") -- This is the interior bar for VIP's
+        --RequestIpl("xs_int_placement_xs")
+        RequestIpl("xs_arena_banners_ipl")
+        --RequestIpl("xs_mpchristmasbanners")
+        --RequestIpl("xs_mpchristmasbanners_strm_0")
+
+        -- Lets get and save our interior ID for use later
+        local interiorID = GetInteriorAtCoords(2800.000, -3800.000, 100.000)
+
+        -- now lets check the interior is ready if not lets just wait a moment
+        if (not IsInteriorReady(interiorID)) then
+            Wait(1)
+        end
+        -- We need to add the crowds as who does stuff on their own for nobody?
+        EnableInteriorProp(interiorID, "Set_Crowd_A")
+        EnableInteriorProp(interiorID, "Set_Crowd_B")
+        EnableInteriorProp(interiorID, "Set_Crowd_C")
+        EnableInteriorProp(interiorID, "Set_Crowd_D")
+
+        -- now lets set our map type and scene.
+        if (scene == "dystopian") then
+            EnableInteriorProp(interiorID, "Set_Dystopian_Scene")
+            print("[Arena by Titch]: enabling map: "..maps[scene][map])
+            EnableInteriorProp(interiorID, maps[scene][map])
+        end
+        if (scene == "scifi") then
+            EnableInteriorProp(interiorID, "Set_Scifi_Scene")
+            print("[Arena by Titch]: enabling map: "..maps[scene][map])
+            EnableInteriorProp(interiorID, maps[scene][map])
+        end
+        if (scene == "wasteland") then
+            EnableInteriorProp(interiorID, "Set_Wasteland_Scene")
+            print("[Arena by Titch]: enabling map: "..maps[scene][map])
+            EnableInteriorProp(interiorID, maps[scene][map])
+        end
+end

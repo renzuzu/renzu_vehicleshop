@@ -14,6 +14,9 @@ Config.CustomImg = false -- if true your Config.CustomImgColumn IMAGE url will b
 Config.CustomImgColumn = 'imglink' -- db column name
 Config.RgbColor = true -- your framework or garage must support custom colors ex. https://github.com/renzuzu/renzu_garage
 
+--EXTRA
+Config.UseArenaSpawn = true -- will use custom location for spawning vehicle in quickpick == false
+-- MAIN
 VehicleShop = {
     ['pdm'] = { -- same with name
         name = "pdm", --LEGION
@@ -22,7 +25,7 @@ VehicleShop = {
         type = 'car',
         job = 'all',
         default_garage = 'A',
-        Dist = 3, -- distance (DEPRECATED)
+        Dist = 10, -- distance (DEPRECATED)
         Blip = {color = 38, sprite = 595, scale = 0.9},
         shop_x = -35.469879150391,
         shop_y = -1100.3621826172,
