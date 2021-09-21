@@ -717,7 +717,7 @@ RegisterNUICallback("choosecategory", function(data, cb)
         )
 
         SetNuiFocus(true, true)
-        if not Config.Quickpick then
+        if not Config.Quickpick and type == 'car' then
             RequestCollisionAtCoord(926.15, -959.06, 61.94-30.0)
             for k,v in pairs(VehicleShop) do
                 local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
@@ -825,10 +825,11 @@ AddEventHandler('renzu_vehicleshop:receive_vehicles', function(tb,shoptype)
     fetchdone = true
 end)
 
+DoScreenFadeIn(1)
 function OpenShop(id)
     inGarage = true
     local ped = PlayerPedId()
-    if not Config.Quickpick then
+    if not Config.Quickpick and type == 'car' then
         CreateGarageShell()
     end
     while not fetchdone do
@@ -837,8 +838,10 @@ function OpenShop(id)
     local vehtable = {}
     vehtable[id] = {}
     local cars = 0
-    DoScreenFadeOut(0)
-    while Config.UseArenaSpawn and not IsIplActive("xs_arena_interior") do Wait(0) end
+    if not Config.Quickpick and type == 'car' then
+        DoScreenFadeOut(0)
+    end
+    while Config.UseArenaSpawn and type == 'car' and not IsIplActive("xs_arena_interior") do Wait(0) end
     while not HasCollisionLoadedAroundEntity(ped) do Wait(0) DoScreenFadeOut(0) end
     Wait(1000)
     DoScreenFadeIn(3000)
@@ -872,18 +875,22 @@ function OpenShop(id)
         break
     end
     if cars > 0 then
+        local quick = Config.Quickpick
+        if type ~= 'car' then
+            quick = true
+        end
         SendNUIMessage(
             {
                 garage_id = id,
                 data = vehtable,
                 type = "display",
                 shop = {icon = VehicleShop[id].icon, shop = VehicleShop[id].title},
-                quickpick = Config.Quickpick,
+                quickpick = quick,
             }
         )
 
         SetNuiFocus(true, true)
-        if not Config.Quickpick then
+        if not Config.Quickpick and type == 'car' then
             RequestCollisionAtCoord(2800.5966796875,-3799.7370605469,139.41514587402)
             for k,v in pairs(VehicleShop) do
                 local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
@@ -1172,7 +1179,7 @@ function SpawnVehicleLocal(model)
 end
 
 RegisterNUICallback("SpawnVehicle",function(data, cb)
-    if not Config.Quickpick then
+    if not Config.Quickpick and type == 'car' then
         SpawnVehicleLocal(data.modelcar)
     end
 end)
@@ -1290,7 +1297,7 @@ RegisterNUICallback(
         local hash = tonumber(data.modelcar)
         local count = 0
         testdrive = true
-        if Config.UseArenaSpawn then
+        if Config.UseArenaSpawn and type == 'car' then
             CloseNui()
             LoadArena()
             DoScreenFadeOut(0)
@@ -1439,6 +1446,7 @@ function CloseNui()
         DestroyAllCams(true)
         ClearFocus()
         DisplayHud(true)
+        DisplayRadar(true)
     end
     if Config.UseArenaSpawn then
         UnloadArena()
