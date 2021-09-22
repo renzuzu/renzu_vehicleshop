@@ -16,6 +16,7 @@ local vehiclesdb = {}
 presetprimarycolor = {}
 presetsecondarycolor = {}
 livery = nil
+shopcoords = {}
 Citizen.CreateThread(function()
 	while ESX == nil do
 		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
@@ -373,6 +374,7 @@ AddEventHandler('vehicleshop', function()
                             while not fetchdone do
                                 Wait(0)
                             end
+                            shopcoords = vector3(v.shop_x,v.shop_y,v.shop_z)
                             OpenShop(k)
                         else
                             ESX.ShowNotification("You Dont have a drivers licensed")
@@ -391,6 +393,7 @@ AddEventHandler('vehicleshop', function()
                     while not fetchdone do
                         Wait(0)
                     end
+                    shopcoords = vector3(v.shop_x,v.shop_y,v.shop_z)
                     OpenShop(k)
                     break
                 end
@@ -644,19 +647,19 @@ end)
 RegisterNUICallback("choosecolor", function(data, cb)
     if colortype == 'primary' then
         presetprimarycolor = {r = data.r, g = data.g, b = data.b}
-        if IsPedInAnyVehicle(PlayerPedId()) then
-            SetVehicleCustomPrimaryColour(GetVehiclePedIsIn(PlayerPedId()),tonumber(presetprimarycolor.r),tonumber(presetprimarycolor.g),tonumber(presetprimarycolor.b))
+        if LastVehicleFromGarage then
+            SetVehicleCustomPrimaryColour(LastVehicleFromGarage,tonumber(presetprimarycolor.r),tonumber(presetprimarycolor.g),tonumber(presetprimarycolor.b))
         end
     else
         presetsecondarycolor = {r = data.r, g = data.g, b = data.b}
-        if IsPedInAnyVehicle(PlayerPedId()) then
-            SetVehicleCustomSecondaryColour(GetVehiclePedIsIn(PlayerPedId()),tonumber(presetsecondarycolor.r),tonumber(presetsecondarycolor.g),tonumber(presetsecondarycolor.b))
+        if LastVehicleFromGarage then
+            SetVehicleCustomSecondaryColour(LastVehicleFromGarage,tonumber(presetsecondarycolor.r),tonumber(presetsecondarycolor.g),tonumber(presetsecondarycolor.b))
         end
     end
 end)
 
 RegisterNUICallback("setlivery", function(data, cb)
-    local vehicle = GetVehiclePedIsIn(PlayerPedId())
+    local vehicle = LastVehicleFromGarage
     SetVehicleModKit(vehicle,0)
     if GetVehicleLiveryCount(vehicle) ~= -1 then
         if data.next then
@@ -756,7 +759,7 @@ RegisterNUICallback("choosecategory", function(data, cb)
             ReqAndDelete(LastVehicleFromGarage)
         end
     else
-        ESX.ShowNotification("You dont have any vehicle")
+        ESX.ShowNotification("No Vehicle is Available")
     end
 end)
 
@@ -898,6 +901,7 @@ function OpenShop(id)
                     vec = vector3(2800.5966796875,-3799.7370605469,139.41514587402)
                     dist = #(vec - GetEntityCoords(ped))
                     if dist <= 40.0 and id == v.name then
+                        shopcoords = vector3(v.shop_x,v.shop_y,v.shop_z)
                         cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", 2800.5966796875-4.0,-3799.7370605469-3.0,140.4514587402, 360.00, 0.00, 0.00, 60.00, false, 0)
                         PointCamAtCoord(cam, 2800.5966796875,-3799.7370605469,139.51514587402)
                         SetCamActive(cam, true)
@@ -907,9 +911,11 @@ function OpenShop(id)
                         SetFocusPosAndVel(2800.5966796875,-3799.7370605469,139.41514587402, 0.0, 0.0, 0.0)
                         DisplayHud(false)
                         DisplayRadar(false)
+                        break
                     end
                 else
                     if dist <= 40.0 and id == v.name then
+                        shopcoords = vector3(v.shop_x,v.shop_y,v.shop_z)
                         cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", v.shop_x-5.0, v.shop_y-3.0, v.shop_z-28.5, 360.00, 0.00, 0.00, 60.00, false, 0)
                         PointCamAtCoord(cam, v.shop_x, v.shop_y, v.shop_z-30.0)
                         SetCamActive(cam, true)
@@ -919,27 +925,35 @@ function OpenShop(id)
                         SetFocusPosAndVel(v.shop_x, v.shop_y, v.shop_z-30.0, 0.0, 0.0, 0.0)
                         DisplayHud(false)
                         DisplayRadar(false)
+                        break
                     end
                 end
             end
             Citizen.CreateThread(function()
                 local coord = vector3(2800.5966796875,-3799.7370605469,139.41514587402)
+                SetEntityAlpha(PlayerPedId(),1,true)
                 while inGarage do
                     Citizen.Wait(0)
+                    if LastVehicleFromGarage ~= nil then
+                        SetEntityHeading(LastVehicleFromGarage, GetEntityHeading(LastVehicleFromGarage) - 0.1)
+                    end
                     DrawLightWithRange(coord.x-4.0, coord.y-3.0, coord.z+ 0.3, 255,255,255, 40.0, 15.0)
                     DrawSpotLight(coord.x-4.0, coord.y+5.0, coord.z, coord, 255, 255, 255, 20.0, 1.0, 1.0, 20.0, 0.95)
                 end
             end)
             while inGarage do
+                SetEntityAlpha(PlayerPedId(),1,true)
                 Citizen.Wait(111)
             end
+            ResetEntityAlpha(PlayerPedId())
         end
 
         if LastVehicleFromGarage ~= nil then
             ReqAndDelete(LastVehicleFromGarage)
         end
     else
-        ESX.ShowNotification("You dont have any vehicle")
+        SetEntityCoords(PlayerPedId(),shopcoords)
+        ESX.ShowNotification("No Vehicle is Available")
     end
 end
 
@@ -1172,7 +1186,9 @@ function SpawnVehicleLocal(model)
                 ReqAndDelete(LastVehicleFromGarage)
                 SetModelAsNoLongerNeeded(hash)
             end
-            TaskWarpPedIntoVehicle(PlayerPedId(), LastVehicleFromGarage, -1)
+            SetEntityAlpha(PlayerPedId(),1,true)
+            SetVehicleEngineOn(LastVehicleFromGarage,true,true,false)
+            --TaskWarpPedIntoVehicle(PlayerPedId(), LastVehicleFromGarage, -1)
             inShowRoom('enter')
         end
     end
@@ -1352,6 +1368,7 @@ RegisterNUICallback(
                 SetEntityAlpha(v, 255, false)
                 SetVehicleProp(v,props)
                 TaskWarpPedIntoVehicle(GetPlayerPed(-1), veh, -1)
+                SetVehicleDirtLevel(veh, 0.0)
                 --SetVehicleEngineHealth(v,props.engineHealth)
                 --Wait(100)
                 --SetVehicleStatus(GetVehiclePedIsIn(PlayerPedId()))

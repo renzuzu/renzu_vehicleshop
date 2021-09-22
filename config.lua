@@ -25,7 +25,7 @@ VehicleShop = {
         type = 'car',
         job = 'all',
         default_garage = 'A',
-        Dist = 10, -- distance (DEPRECATED)
+        Dist = 4, -- distance (DEPRECATED)
         Blip = {color = 38, sprite = 595, scale = 0.9},
         shop_x = -35.469879150391,
         shop_y = -1100.3621826172,
@@ -36,9 +36,9 @@ VehicleShop = {
         heading = 340.23065185547, -- Vehicle spawn location,
         displaycars = {
             [1] = {label = 'Suprang Bagal', model = 'jester3', value = 100000, coord = vector4(-47.427722930908,-1101.3747558594,25.714616775513,341.64694213867)},
-            [2] = {label = 'Suprang Bagal', model = 'zr350', value = 1000000, coord = vector4(-44.736125946045,-1094.1976318359,25.748092651367,158.2547454834)},
+            [2] = {label = 'Suprang Bagal', model = 'fmj', value = 1000000, coord = vector4(-44.736125946045,-1094.1976318359,25.748092651367,158.2547454834)},
             [3] = {label = 'Suprang Bagal', model = 'adder', value = 1000000, coord = vector4(-40.32751083374,-1095.6105957031,26.009906768799,158.58676147461)},
-            [4] = {label = 'Suprang Bagal', model = 'rt3000', value = 1000000, coord = vector4(-43.318450927734,-1102.1627197266,25.758722305298,340.29724121094)},
+            [4] = {label = 'Suprang Bagal', model = 'zentorno', value = 1000000, coord = vector4(-43.318450927734,-1102.1627197266,25.758722305298,340.29724121094)},
         }
     },
 
