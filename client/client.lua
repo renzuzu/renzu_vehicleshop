@@ -1324,7 +1324,7 @@ RegisterNUICallback(
         else
             while not HasCollisionLoadedAroundEntity(ped) do Wait(0) DoScreenFadeOut(0) end
         end
-        if Config.EnableTestDrive then
+        if Config.EnableTestDrive and type ~= 'plane' then
             ReqAndDelete(LastVehicleFromGarage)
             RequestModel(hash)
             if not HasModelLoaded(hash) then
@@ -1339,7 +1339,7 @@ RegisterNUICallback(
             end
             ESX.TriggerServerCallback("renzu_vehicleshop:GenPlate",function(plate)
                 local vec = {}
-                if Config.UseArenaSpawn then
+                if Config.UseArenaSpawn and type == 'car' then
                     vec = vector4(2954.2451171875,-3730.5334472656,140.69311523438,47.894153594971)
                 else
                     vec = vector4(VehicleShop[data.shop].spawn_x,VehicleShop[data.shop].spawn_y,VehicleShop[data.shop].spawn_z,VehicleShop[data.shop].heading)
@@ -1377,9 +1377,9 @@ RegisterNUICallback(
                 max = 10
                 plus = 0
                 drawtext = false
-                oldcoord = vector3(VehicleShop[data.shop].spawn_x,VehicleShop[data.shop].spawn_y,VehicleShop[data.shop].spawn_z)
+                oldcoord = vector3(VehicleShop[data.shop].shop_x,VehicleShop[data.shop].shop_y,VehicleShop[data.shop].shop_z)
                 indist = false
-                if not Config.UseArenaSpawn then CloseNui() end
+                if not Config.UseArenaSpawn or Config.UseArenaSpawn and type ~= 'car' then CloseNui() end
                 SendNUIMessage(
                 {
                     type = "cleanup"
