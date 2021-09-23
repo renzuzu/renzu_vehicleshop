@@ -1219,6 +1219,7 @@ function BuyVehicle(data,notregister)
     local hash = tonumber(data.modelcar)
     local count = 0
     ReqAndDelete(LastVehicleFromGarage)
+    DoScreenFadeOut(100)
     ESX.TriggerServerCallback("renzu_vehicleshop:GenPlate",function(plate)
         RequestModel(hash)
         while not HasModelLoaded(hash) and count < 555 do
@@ -1281,6 +1282,7 @@ function BuyVehicle(data,notregister)
                 presetsecondarycolor = {}
                 presetprimarycolor = {}
                 livery = nil
+                SetVehicleDirtLevel(veh, 0.0)
             else
                 CloseNui()
                 ReqAndDelete(v)
@@ -1292,7 +1294,10 @@ function BuyVehicle(data,notregister)
             CloseNui()
             ReqAndDelete(v)
         end
+        DoScreenFadeIn(1000)
     end)
+    Wait(3000)
+    DoScreenFadeIn(1000)
 end
 
 RegisterNUICallback(
