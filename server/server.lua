@@ -50,33 +50,8 @@ AddEventHandler('renzu_vehicleshop:GetAvailableVehicle', function(shop)
     end
 end)
 
-local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/' -- You will need this for encoding/decoding
--- encoding
-function veh(data)
-	data = tostring(data)
-    return ((data:gsub('.', function(x) 
-        local r,b='',x:byte()
-        for i=8,1,-1 do r=r..(b%2^i-b%2^(i-1)>0 and '1' or '0') end
-        return r;
-    end)..'0000'):gsub('%d%d%d?%d?%d?%d?', function(x)
-        if (#x < 6) then return '' end
-        local c=0
-        for i=1,6 do c=c+(x:sub(i,i)=='1' and 2^(6-i) or 0) end
-        return b:sub(c+1,c+1)
-    end)..({ '', '==', '=' })[#data%3+1])
-end
-
 local NumberCharset = {}
 for i = 48,  57 do table.insert(NumberCharset, string.char(i)) end
-function GetRandomNumber(length)
-	Citizen.Wait(1)
-	math.randomseed(GetGameTimer())
-	if length > 0 then
-		return GetRandomNumber(length - 1) .. NumberCharset[math.random(1, #NumberCharset)]
-	else
-		return ''
-	end
-end
 
 function Database(query,var,src,type)
     if Config.Mysql == 'mysql-async' and type =='fetch' then
@@ -107,6 +82,8 @@ function Deleteveh(plate,src)
         print('error not string - Delete Vehicle')
     end
 end
+
+
 
 RegisterServerEvent('renzu_vehicleshop:sellvehicle')
 AddEventHandler('renzu_vehicleshop:sellvehicle', function()
@@ -140,41 +117,32 @@ AddEventHandler('renzu_vehicleshop:sellvehicle', function()
     end
 end)
 
-ESX.RegisterServerCallback('renzu_vehicleshop:GenPlate', function (source, cb)
+local Charset = {}
+for i = 65,  90 do table.insert(Charset, string.char(i)) end
+for i = 97, 122 do table.insert(Charset, string.char(i)) end
+local temp = {}
+CreateThread(function()
+    Wait(1000)
     if Config.Mysql == 'mysql-async' then
-        MySQL.Async.fetchAll('SELECT * FROM owned_vehicles', {}, function (result)
-            local plate = veh(tonumber(#result))
-            plate = plate:gsub("=", "")
-            if not Config.PlateSpace then
-                total = 8 - plate:len()
-            else
-                total = 7 - plate:len()
+        local vehicles = MySQL.Sync.fetchAll('SELECT * FROM owned_vehicles ', {})
+        for k,v in pairs(vehicles) do
+            if v.plate ~= nil then
+                temp[v.plate] = v
             end
-            if total ~= 0 then
-                if not Config.PlateSpace then
-                    plate = string.upper(veh(tonumber(#result))..GetRandomNumber(total))
-                else
-                    plate = string.upper(""..veh(tonumber(#result)).." "..GetRandomNumber(total).."")
-                end
-                --plate = veh(tonumber(#result))..GetRandomNumber(total)
-                plate = plate:gsub("=", "")
-            end
-            print(plate,plate:len())
-            cb(plate:upper())
-        end)
+        end
     else
         exports['ghmattimysql']:execute('SELECT * FROM owned_vehicles', {}, function(result)
-            local plate = veh(tonumber(#result))
-            plate = plate:gsub("=", "")
-            local total = 8 - plate:len()
-            if total ~= 0 then
-                plate = veh(tonumber(#result))..GetRandomNumber(total)
-                plate = plate:gsub("=", "")
+            for k,v in pairs(result) do
+                if v.plate ~= nil then
+                    temp[v.plate] = v
+                end
             end
-            --print(plate,plate:len())
-            cb(plate:upper())
         end)
     end
+end)
+
+ESX.RegisterServerCallback('renzu_vehicleshop:GenPlate', function (source, cb)
+    cb(GenPlate())
 end)
 
 ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb, model, props, payment, job, type, garage, notregister)
@@ -346,4 +314,56 @@ function Buy(result,xPlayer,model, props, payment, job, type, garage, notregiste
     while not fetchdone do Wait(0) end
     print("SENDING TO CLIENT SUCCESS")
     return bool
+end
+
+function GetRandomLetter(length)
+	math.randomseed(GetGameTimer())
+	if length > 0 then
+		return GetRandomLetter(length - 1) .. Charset[math.random(1, #Charset)]
+	else
+		return ''
+	end
+end
+
+function GenPlate()
+    local plate = LetterRand()..' '..NumRand()
+    if temp[plate] == nil then
+        return plate
+    end
+    Wait(10)
+    print(plate)
+    return GenPlate()
+end
+
+function LetterRand()
+    local emptyString = {}
+    local randomLetter;
+    while (#emptyString < 6) do
+        randomLetter = GetRandomLetter(1)
+        table.insert(emptyString,randomLetter)
+        Wait(0)
+    end
+    local a = string.format("%s%s%s", table.unpack(emptyString)):upper()  -- "2 words"
+    return a
+end
+
+function NumRand()
+    local emptyString = {}
+    local randomLetter;
+    while (#emptyString < 6) do
+        randomLetter = GetRandomNumber(1)
+        table.insert(emptyString,randomLetter)
+        Wait(0)
+    end
+    local a = string.format("%i%i%i", table.unpack(emptyString))  -- "2 words"
+    return a
+end
+
+function GetRandomNumber(length)
+	math.randomseed(GetGameTimer())
+	if length > 0 then
+		return GetRandomNumber(length - 1) .. NumberCharset[math.random(1, #NumberCharset)]
+	else
+		return ''
+	end
 end
