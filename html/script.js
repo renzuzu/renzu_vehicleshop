@@ -127,8 +127,8 @@ window.addEventListener('message', function(event) {
         }
         renzu_vehicleshop.Open(VehicleArr);
         ShowVehicle(0);
-        document.getElementById("shopicon").src = event.data.shop.icon;
-        document.getElementById("shopname").innerHTML = event.data.shop.shop;
+        document.getElementById("shopicon").src = event.data.shop.icon || '';
+        document.getElementById("shopname").innerHTML = event.data.shop.shop || 'VehicleShop';
         if (event.data.quickpick) {
             document.getElementById("customextra").style.display = 'none';
         }

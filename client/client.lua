@@ -832,6 +832,7 @@ DoScreenFadeIn(1)
 function OpenShop(id)
     inGarage = true
     local ped = PlayerPedId()
+    FreezeEntityPosition(PlayerPedId(),true)
     if not Config.Quickpick and type == 'car' then
         CreateGarageShell()
     end
@@ -952,7 +953,10 @@ function OpenShop(id)
             ReqAndDelete(LastVehicleFromGarage)
         end
     else
+        FreezeEntityPosition(PlayerPedId(),true)
         SetEntityCoords(PlayerPedId(),shopcoords)
+        while not HasCollisionLoadedAroundEntity(PlayerPedId()) do Wait(0) end
+        FreezeEntityPosition(PlayerPedId(),false)
         ESX.ShowNotification("No Vehicle is Available")
     end
 end
@@ -1327,7 +1331,7 @@ RegisterNUICallback(
             Wait(1000)
             DoScreenFadeIn(3000)
         else
-            while not HasCollisionLoadedAroundEntity(ped) do Wait(0) DoScreenFadeOut(0) end
+            while not HasCollisionLoadedAroundEntity(ped) do Wait(0) end
         end
         if Config.EnableTestDrive and type ~= 'plane' then
             ReqAndDelete(LastVehicleFromGarage)
@@ -1372,6 +1376,7 @@ RegisterNUICallback(
                 ESX.ShowNotification("Test Drive: Start")
                 SetEntityAlpha(v, 255, false)
                 SetVehicleProp(v,props)
+                FreezeEntityPosition(PlayerPedId(),false)
                 TaskWarpPedIntoVehicle(GetPlayerPed(-1), veh, -1)
                 SetVehicleDirtLevel(veh, 0.0)
                 --SetVehicleEngineHealth(v,props.engineHealth)
@@ -1420,6 +1425,8 @@ RegisterNUICallback(
                 end
                 if Config.UseArenaSpawn then UnloadArena() end
                 SetEntityCoords(PlayerPedId(),oldcoord)
+                while not HasCollisionLoadedAroundEntity(PlayerPedId()) do Wait(0) end
+                FreezeEntityPosition(PlayerPedId(),false)
                 testdrive = false
                 presetsecondarycolor = {}
                 presetprimarycolor = {}
@@ -1441,7 +1448,10 @@ RegisterNUICallback("Close",function(data, cb)
         if v.shop_x ~= nil then
             local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
             if id == v.name then
+                FreezeEntityPosition(PlayerPedId(),true)
                 SetEntityCoords(ped, v.shop_x,v.shop_y,v.shop_z, 0, 0, 0, false)  
+                while not HasCollisionLoadedAroundEntity(PlayerPedId()) do Wait(0) end
+                FreezeEntityPosition(PlayerPedId(),false)
             end
         end
     end
@@ -1478,6 +1488,7 @@ function CloseNui()
     DeleteGarage()
     drawtext = false
     indist = false
+    FreezeEntityPosition(PlayerPedId(),false)
     if not testdrive then
         presetsecondarycolor = {}
         presetprimarycolor = {}
