@@ -7,10 +7,11 @@ local ingarage = false
 local garage_coords = {}
 local shell = nil
 ESX = nil
-local fetchdone = false
-local PlayerData = {}
-local playerLoaded = false
-local jobcar = false
+QBCore = nil
+fetchdone = false
+PlayerData = {}
+playerLoaded = false
+jobcar = false
 local type = 'car'
 local vehiclesdb = {}
 presetprimarycolor = {}
@@ -18,18 +19,7 @@ presetsecondarycolor = {}
 livery = nil
 shopcoords = {}
 Citizen.CreateThread(function()
-	while ESX == nil do
-		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-		Citizen.Wait(100)
-	end
-
-	while PlayerData.job == nil do
-		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-		PlayerData = ESX.GetPlayerData()
-		Citizen.Wait(111)
-	end
-
-	PlayerData = ESX.GetPlayerData()
+    Framework()
     for k, v in pairs (VehicleShop) do
         local blip = AddBlipForCoord(v.shop_x, v.shop_y, v.shop_z)
         SetBlipSprite (blip, v.Blip.sprite)
@@ -43,10 +33,7 @@ Citizen.CreateThread(function()
     end
 end)
 
-RegisterNetEvent('esx:playerLoaded')
-AddEventHandler('esx:playerLoaded', function(xPlayer)
-    playerloaded = true
-end)
+Playerloaded()
 
 RegisterNetEvent('renzu_vehicleshop:manage')
 AddEventHandler('renzu_vehicleshop:manage', function(xPlayer)
@@ -58,11 +45,7 @@ AddEventHandler('renzu_vehicleshop:manage', function(xPlayer)
     SetNuiFocus(true, true)
 end)
 
-RegisterNetEvent('esx:setJob')
-AddEventHandler('esx:setJob', function(job)
-	PlayerData.job = job
-	playerjob = PlayerData.job.name
-end)
+SetJob()
 
 local drawtext = false
 local indist = false
@@ -156,7 +139,7 @@ CreateThread(function()
                     if dist < v.Dist and inveh then
                         neargarage = true
                         if Config.Marker then
-                            Marker(vec,"Sell Vehicle",'renzu_vehicleshop:sellvehicle',true)
+                            Marker(vec,"Sell Vehicle",'renzu_vehicleshop:sellvehicle',true,3)
                         else
                             PopUI(v.title or v.name,vec,"renzu_vehicleshop:sellvehicle",Config.RefundPercent,true)
                         end
@@ -226,6 +209,7 @@ CreateThread(function()
     Wait(2000)
     if Config.DisplayCars then
         local stats_show = nil
+        local cleared = false
         while true do
             for shop,v in pairs(VehicleShop) do
                 local vec = vector3(v.shop_x,v.shop_y,v.shop_z)
@@ -233,6 +217,10 @@ CreateThread(function()
                 local dist = #(vec - GetEntityCoords(PlayerPedId()))
                 if dist < 50 and not inveh and v.displaycars then
                     neargarage = true
+                    if not cleared then
+                        ClearAreaOfVehicles(v.shop_x,v.shop_y,v.shop_z, 100, false, false, false, false, false)
+                    end
+                    cleared = true
                     for k,v in pairs(v.displaycars) do
                         local k = tostring(k)
                         if displaycars[k] == nil then
@@ -240,14 +228,14 @@ CreateThread(function()
                             local count = 0
                             if not HasModelLoaded(hash) then
                                 RequestModel(hash)
-                                while not HasModelLoaded(hash) and count < 2000 do
-                                    count = count + 101
+                                while not HasModelLoaded(hash) do
+                                    RequestModel(hash)
                                     Citizen.Wait(10)
                                 end
                             end
                             --local posZ = coord.z + 999.0
                             --_,posZ = GetGroundZFor_3dCoord(coord.x,coord.y+.0,coord.z,1)
-                            displaycars[k] = CreateVehicle(hash, v.coord.x,v.coord.y,v.coord.z, 42.0, 0, 0)
+                            displaycars[k] = CreateVehicle(hash, v.coord.x,v.coord.y,v.coord.z, 42.0, 0, true)
                             SetEntityHeading(displaycars[k], v.coord.w)
                             SetVehicleDoorsLocked(displaycars[k],2)
                             NetworkFadeInEntity(displaycars[k],1)
@@ -359,14 +347,14 @@ AddEventHandler('vehicleshop', function()
         local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
         if not DoesEntityExist(vehiclenow) then
             if dist <= v.Dist and job then
-                if Config.Licensed then
-                    ESX.TriggerServerCallback('esx_license:checkLicense', function(cb)
+                if Config.Licensed and not Config.framework == 'QBCORE' then
+                    TriggerServerCallback_('esx_license:checkLicense', function(cb)
                         if cb then
                             if PlayerData.job.name == v.job then
                                 jobcar = v.job
                             end
                             type = v.type
-                            ESX.ShowNotification("Opening Shop...Please wait..")
+                            ShowNotification("Opening Shop...Please wait..")
                             TriggerServerEvent("renzu_vehicleshop:GetAvailableVehicle",v.name)
                             fetchdone = false
                             id = k
@@ -377,7 +365,7 @@ AddEventHandler('vehicleshop', function()
                             shopcoords = vector3(v.shop_x,v.shop_y,v.shop_z)
                             OpenShop(k)
                         else
-                            ESX.ShowNotification("You Dont have a drivers licensed")
+                            ShowNotification("You Dont have a drivers licensed")
                         end
                     end, GetPlayerServerId(PlayerId()), 'drive')
                 else
@@ -385,7 +373,7 @@ AddEventHandler('vehicleshop', function()
                         jobcar = v.job
                     end
                     type = v.type
-                    ESX.ShowNotification("Opening Shop...Please wait..")
+                    ShowNotification("Opening Shop...Please wait..")
                     TriggerServerEvent("renzu_vehicleshop:GetAvailableVehicle",v.name)
                     fetchdone = false
                     id = k
@@ -759,7 +747,7 @@ RegisterNUICallback("choosecategory", function(data, cb)
             ReqAndDelete(LastVehicleFromGarage)
         end
     else
-        ESX.ShowNotification("No Vehicle is Available")
+        ShowNotification("No Vehicle is Available")
     end
 end)
 
@@ -957,7 +945,7 @@ function OpenShop(id)
         SetEntityCoords(PlayerPedId(),shopcoords)
         while not HasCollisionLoadedAroundEntity(PlayerPedId()) do Wait(0) end
         FreezeEntityPosition(PlayerPedId(),false)
-        ESX.ShowNotification("No Vehicle is Available")
+        ShowNotification("No Vehicle is Available")
     end
 end
 
@@ -1136,7 +1124,7 @@ end
 
 local loading = false
 function SpawnVehicleLocal(model)
-    if loading then return end
+    if loading or GetNumberOfStreamingRequests() > 0 then return end
     local ped = PlayerPedId()
 
     SetNuiFocus(true, true)
@@ -1144,11 +1132,13 @@ function SpawnVehicleLocal(model)
         ReqAndDelete(LastVehicleFromGarage)
         SetModelAsNoLongerNeeded(hash)
     end
+    print(GetNumberOfStreamingRequests(),'requests')
     for i = 1, 2 do
         local nearveh = GetClosestVehicle(GetEntityCoords(PlayerPedId()), 2.000, 0, 70)
         if DoesEntityExist(nearveh) then
             ReqAndDelete(nearveh)
         end
+        while DoesEntityExist((nearveh)) do ReqAndDelete(nearveh) Wait(100) end
     end
 
     for k,v in pairs(VehicleShop) do
@@ -1224,7 +1214,7 @@ function BuyVehicle(data,notregister)
     local count = 0
     ReqAndDelete(LastVehicleFromGarage)
     DoScreenFadeOut(100)
-    ESX.TriggerServerCallback("renzu_vehicleshop:GenPlate",function(plate)
+    TriggerServerCallback_("renzu_vehicleshop:GenPlate",function(plate)
         RequestModel(hash)
         while not HasModelLoaded(hash) and count < 555 do
             count = count + 10
@@ -1250,7 +1240,7 @@ function BuyVehicle(data,notregister)
         SetEntityAlpha(v, 51, false)
         TaskWarpPedIntoVehicle(PlayerPedId(), v, -1)
         local successbuy = false
-        ESX.TriggerServerCallback("renzu_vehicleshop:buyvehicle",function(canbuy)
+        TriggerServerCallback_("renzu_vehicleshop:buyvehicle",function(canbuy)
             if canbuy then
                 successbuy = canbuy
                 for k,v in pairs(VehicleShop) do
@@ -1270,7 +1260,7 @@ function BuyVehicle(data,notregister)
                 LastVehicleFromGarage = nil
                 TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
                 CloseNui()
-                ESX.ShowNotification("Purchase Success: Plate: "..props.plate.."")
+                ShowNotification("Purchase Success: Plate: "..props.plate.."")
                 SetEntityAlpha(v, 255, false)
                 TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
                 i = 0
@@ -1346,7 +1336,7 @@ RegisterNUICallback(
                     end
                 end
             end
-            ESX.TriggerServerCallback("renzu_vehicleshop:GenPlate",function(plate)
+            TriggerServerCallback_("renzu_vehicleshop:GenPlate",function(plate)
                 local vec = {}
                 if Config.UseArenaSpawn and type == 'car' then
                     vec = vector4(2954.2451171875,-3730.5334472656,140.69311523438,47.894153594971)
@@ -1373,7 +1363,7 @@ RegisterNUICallback(
                 SetEntityAlpha(v, 51, false)
                 LastVehicleFromGarage = nil
                 TaskWarpPedIntoVehicle(GetPlayerPed(-1), veh, -1)
-                ESX.ShowNotification("Test Drive: Start")
+                ShowNotification("Test Drive: Start")
                 SetEntityAlpha(v, 255, false)
                 SetVehicleProp(v,props)
                 FreezeEntityPosition(PlayerPedId(),false)
@@ -1412,7 +1402,7 @@ RegisterNUICallback(
                 Wait(1000)
                 while count > 1 and IsPedInAnyVehicle(PlayerPedId()) do
                     count = count - 1
-                    --ESX.ShowNotification("Seconds Left: "..count)
+                    --ShowNotification("Seconds Left: "..count)
                     local timeSeconds = count/100
                     local timeMinutes = math.floor(timeSeconds/60.0)
                     timeSeconds = timeSeconds - 60.0*timeMinutes
@@ -1433,7 +1423,7 @@ RegisterNUICallback(
                 livery = nil
             end)
         else
-            ESX.ShowNotification("Test Driving is Disable")
+            ShowNotification("Test Driving is Disable")
         end
     end
 )

@@ -1,83 +1,54 @@
 ESX = nil
+QBCore = nil
+vehicletable = 'owned_vehicles'
+vehiclemod = 'vehicle'
+owner = 'owner'
+stored = 'stored'
+garage_id = 'garage_id'
+type_ = 'type'
+Initialized()
 local vehicles = {}
-TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-
-RegisterCommand('pdm', function(source,args)
-    TriggerClientEvent('renzu_vehicleshop:manage', source)
-end, false)
 
 RegisterServerEvent('renzu_vehicleshop:GetAvailableVehicle')
 AddEventHandler('renzu_vehicleshop:GetAvailableVehicle', function(shop)
     local src = source 
-    local xPlayer = ESX.GetPlayerFromId(src)
+    local xPlayer = GetPlayerFromId(src)
     local identifier = xPlayer.identifier
     local shop = shop or 'pdm'
     Owned_Vehicle = {}
-    if Config.Mysql == 'mysql-async' then
-        Owned_Vehicle = MySQL.Sync.fetchAll('SELECT * FROM vehicles WHERE shop = @shop', {['@shop'] = shop})
-        --TriggerClientEvent('table',-1,Owned_Vehicle)
-        if Owned_Vehicle[1] then
-            Owned_Vehicle = Owned_Vehicle
-        else
-            local shoplist = {}
-            for k,v in pairs(VehicleShop[shop].shop) do
-                if v.grade ~= nil and v.grade <= xPlayer.job.grade then
-                    shoplist[k] = v
-                elseif v.grade == nil then
-                    shoplist[k] = v
-                end
-            end
-            Owned_Vehicle = shoplist
-        end
-        TriggerClientEvent("renzu_vehicleshop:receive_vehicles", src , Owned_Vehicle,VehicleShop[shop].type or 'car')
+    local othershop = false
+    if Config.framework == 'ESX' then
+        Owned_Vehicle = CustomsSQL(Config.Mysql,'fetchAll','SELECT * FROM vehicles WHERE shop = @shop',{['@shop'] = shop})
     else
-        exports['ghmattimysql']:execute('SELECT * FROM vehicles WHERE shop = @shop', {['@shop'] = shop}, function(result)
-            if #result > 0 then
-                Owned_Vehicle = result
-            else
-                local shoplist = {}
-                for k,v in pairs(VehicleShop[shop].shop) do
-                    if v.grade ~= nil and v.grade <= xPlayer.job.grade then
-                        shoplist[k] = v
-                    elseif v.grade == nil then
-                        shoplist[k] = v
-                    end
-                end
-                Owned_Vehicle = shoplist
-            end
-            TriggerClientEvent("renzu_vehicleshop:receive_vehicles", src , Owned_Vehicle,VehicleShop[shop].type or 'car')
-        end)
+        if shop ~= 'pdm' then
+            othershop = true
+        end
+        Owned_Vehicle = QBCore.Shared.Vehicles
     end
+    --TriggerClientEvent('table',-1,Owned_Vehicle)
+    if Owned_Vehicle[1] and not othershop then
+        Owned_Vehicle = Owned_Vehicle
+    else
+        local shoplist = {}
+        for k,v in pairs(VehicleShop[shop].shop) do
+            if v.grade ~= nil and v.grade <= xPlayer.job.grade then
+                shoplist[k] = v
+            elseif v.grade == nil then
+                shoplist[k] = v
+            end
+        end
+        Owned_Vehicle = shoplist
+    end
+    TriggerClientEvent("renzu_vehicleshop:receive_vehicles", src , Owned_Vehicle,VehicleShop[shop].type or 'car')
 end)
 
 local NumberCharset = {}
 for i = 48,  57 do table.insert(NumberCharset, string.char(i)) end
 
-function Database(query,var,src,type)
-    if Config.Mysql == 'mysql-async' and type =='fetch' then
-        return MySQL.Sync.fetchAll(query,var)
-    elseif Config.Mysql == 'mysql-async' and type == 'execute' then
-        MySQL.Async.execute(query,var, function (rowsChanged)
-            TriggerClientEvent('sellvehiclecallback',src)
-        end)
-    else
-        local res = nil
-        exports['ghmattimysql']:execute(query,var, function (result)
-            res = result
-            if type == 'execute' then
-                TriggerClientEvent('sellvehiclecallback',src)
-            end
-        end)
-        local c = 0
-        while res == nil and c < 2000 do Wait(10) c = c + 1 end
-        return res
-    end
-end
-
 function Deleteveh(plate,src)
     local plate = tostring(plate)
     if plate and type(plate) == 'string' then
-        Database('DELETE FROM owned_vehicles WHERE plate=@plate', {['@plate'] = plate},src,'execute')
+        CustomsSQL(Config.Mysql,'execute','DELETE FROM '..vehicletable..' WHERE TRIM(UPPER(plate)) = @plate',{['@plate'] = string.gsub(plate:upper(), ' ', '')})
     else
         print('error not string - Delete Vehicle')
     end
@@ -88,16 +59,21 @@ end
 RegisterServerEvent('renzu_vehicleshop:sellvehicle')
 AddEventHandler('renzu_vehicleshop:sellvehicle', function()
     local source = source
-    local xPlayer = ESX.GetPlayerFromId(source)
+    local xPlayer = GetPlayerFromId(source)
     local price = 1000
     local vehicle = GetVehiclePedIsIn(GetPlayerPed(source))
     local plate = GetVehicleNumberPlateText(vehicle)
-    r = Database('SELECT * FROM owned_vehicles WHERE UPPER(plate) = @plate and owner = @owner', {['@plate'] = plate:upper(), ['@owner'] = xPlayer.identifier},xPlayer.source,'fetch')
+    r = CustomsSQL(Config.Mysql,'fetchAll','SELECT * FROM '..vehicletable..' WHERE UPPER(plate) = @plate and '..owner..' = @'..owner..'',{['@plate'] = plate:upper(), ['@'..owner..''] = xPlayer.identifier})
     if #r > 0 then
-        local model = json.decode(r[1].vehicle).model
+        local model = json.decode(r[1][vehiclemod]).model
         if model == GetEntityModel(vehicle) then
-            result = Database('SELECT * FROM vehicles', {},xPlayer.source,'fetch')
-                if #result > 0 then
+            result = {}
+            if Config.framework == 'ESX' then
+                result = CustomsSQL(Config.Mysql,'fetchAll','SELECT * FROM vehicles', {})
+            elseif Config.framework == 'QBCORE' then
+                result = QBCore.Shared.Vehicles
+            end
+                if result then
                     for k,v in pairs(result) do
                         if model == GetHashKey(v.model) then
                             price = v.price * (Config.RefundPercent * 0.01)
@@ -106,6 +82,7 @@ AddEventHandler('renzu_vehicleshop:sellvehicle', function()
                     Deleteveh(plate,xPlayer.source)
                     xPlayer.addMoney(price)
                     xPlayer.showNotification('Vehicle has been Sold for ^g '..price..'',1,0,110)
+                    TriggerClientEvent('sellvehiclecallback',xPlayer.source)
                 end
         else
             print("EXPLOIT")
@@ -123,49 +100,31 @@ for i = 97, 122 do table.insert(Charset, string.char(i)) end
 local temp = {}
 CreateThread(function()
     Wait(1000)
-    if Config.Mysql == 'mysql-async' then
-        local vehicles = MySQL.Sync.fetchAll('SELECT * FROM owned_vehicles ', {})
-        for k,v in pairs(vehicles) do
-            if v.plate ~= nil then
-                temp[v.plate] = v
-            end
+    local vehicles = CustomsSQL(Config.Mysql,'fetchAll','SELECT * FROM '..vehicletable..'',{})
+    for k,v in pairs(vehicles) do
+        if v.plate ~= nil then
+            temp[v.plate] = v
         end
-    else
-        exports['ghmattimysql']:execute('SELECT * FROM owned_vehicles', {}, function(result)
-            for k,v in pairs(result) do
-                if v.plate ~= nil then
-                    temp[v.plate] = v
-                end
-            end
-        end)
     end
 end)
 
-ESX.RegisterServerCallback('renzu_vehicleshop:GenPlate', function (source, cb)
+RegisterServerCallBack_('renzu_vehicleshop:GenPlate', function (source, cb)
     cb(GenPlate())
 end)
 
-ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb, model, props, payment, job, type, garage, notregister)
-    print("BUYING START")
+RegisterServerCallBack_('renzu_vehicleshop:buyvehicle', function (source, cb, model, props, payment, job, type, garage, notregister)
+    print("BUYING START",model)
     local source = source
-	local xPlayer = ESX.GetPlayerFromId(source)
+	local xPlayer = GetPlayerFromId(source)
     local function sqlfunc(sql, query)
-        if sql == 'mysql-async' then
-            MySQL.Async.fetchAll(query, {
+        if Config.framework == 'ESX' then
+            result = CustomsSQL(Config.Mysql,'fetchAll',query,{
                 ['@model'] = model
-            }, function (result)
-                print("USING MYSQL ASYNC")
-                cb(Buy(result,xPlayer,model, props, payment, job, type , garage))
-                return result
-            end)
+            })
+            cb(Buy(result,xPlayer,model, props, payment, job, type , garage))
         else
-            exports['ghmattimysql']:execute(query, {
-                ['@model'] = model
-            }, function (result)
-                print("USING GHMATTISQL")
-                cb(Buy(result,xPlayer,model, props, payment, job, type , garage))
-                return result
-            end)
+            cb(Buy({[1] = QBCore.Shared.Vehicles[model]},xPlayer,model, props, payment, job, type , garage))
+            return result
         end
     end
     --print(type)
@@ -173,7 +132,8 @@ ESX.RegisterServerCallback('renzu_vehicleshop:buyvehicle', function (source, cb,
         print("BUYING VEHICLES SAVED FROM SQL vehicles tables")
         sqlfunc(Config.Mysql,'SELECT * FROM vehicles WHERE model = @model LIMIT 1')
     elseif notregister then
-        cb(Buy(true,xPlayer,model, props, payment, job, type or 'car' , garage or false, notregister))
+        print('DISPLAY',model, props)
+        cb(Buy(true,xPlayer,model, props, payment or 'cash', job or 'civ', type or 'car' , garage or 'A' or false, notregister))
     else
         print("BUYING CUSTOM CARS FROM CONFIG SHOP")
         for k,v in pairs(VehicleShop) do
@@ -216,10 +176,10 @@ end)
 function Buy(result,xPlayer,model, props, payment, job, type, garage, notregister)
     fetchdone = false
     bool = false
-    print(" FUNCTION  BUY")
+    model = model
+    --print(notregister," FUNCTION  BUY",model,notregister,garage,type,job,payment,props)
     if result then
         print("RESULT FETCHED")
-        local model = nil
         local price = nil
         local stock = nil
         if not notregister then
@@ -236,72 +196,56 @@ function Buy(result,xPlayer,model, props, payment, job, type, garage, notregiste
         else
             money = xPlayer.getAccount('bank').money >= tonumber(price)
         end
-        stock = 999
-        if stock > 0 then
-            print("STOCK CONDITION")         
-            if money then
-                print("MONEY CONDITION")
-                if payment == 'cash' then
-                    xPlayer.removeMoney(tonumber(price))
-                else
-                    xPlayer.removeAccountMoney('bank', tonumber(price))
-                end
-                stock = stock - 1
-                local data = json.encode(props)
-                local query = 'INSERT INTO owned_vehicles (owner, plate, vehicle, `stored`, garage_id, `type`) VALUES (@owner, @plate, @props, @stored, @garage_id, @type)'
-                local var = {
-                    ['@owner']   = xPlayer.identifier,
+        stock = 999      
+        if money then
+            --print("MONEY CONDITION",price,props,xPlayer.getMoney(),xPlayer.citizenid)
+            if payment == 'cash' then
+                xPlayer.removeMoney(tonumber(price))
+            elseif payment == 'bank' then
+                xPlayer.removeAccountMoney('bank', tonumber(price))
+            else
+                xPlayer.removeMoney(tonumber(price))
+            end
+            stock = stock - 1
+            local data = json.encode(props)
+            if Config.framework == 'QBCORE' then
+                type = model
+            end
+            local query = 'INSERT INTO '..vehicletable..' ('..owner..', plate, '..vehiclemod..', `'..stored..'`, '..garage_id..', `'..type_..'`) VALUES (@'..owner..', @plate, @props, @'..stored..', @'..garage_id..', @'..type_..')'
+            if Config.framework == 'QBCORE' then
+                query = 'INSERT INTO '..vehicletable..' ('..owner..', plate, '..vehiclemod..', `'..stored..'`, '..garage_id..', `'..type_..'`, citizenid, hash) VALUES (@'..owner..', @plate, @props, @'..stored..', @'..garage_id..', @'..type_..', @citizenid, @hash)'
+            end
+            local var = {
+                ['@'..owner..'']   = xPlayer.identifier,
+                ['@plate']   = props.plate:upper(),
+                ['@props'] = data,
+                ['@'..stored..''] = 1,
+                ['@'..garage_id..''] = garage,
+                ['@'..type_..''] = type
+            }
+            if Config.framework == 'QBCORE' then
+                var['@hash'] = tostring(GetHashKey(model))
+                var['@citizenid'] = xPlayer.citizenid
+            end
+            if Config.SaveJob and job ~= false and not Config.framework == 'QBCORE' then
+                query = 'INSERT INTO '..vehicletable..' ('..owner..', plate, '..vehiclemod..', `'..stored..'`, job, '..garage_id..', `'..type_..'`) VALUES (@'..owner..', @plate, @props, @'..stored..', @job, @'..garage_id..', @'..type_..')'
+                var = {
+                    ['@'..owner..'']   = xPlayer.identifier,
                     ['@plate']   = props.plate:upper(),
                     ['@props'] = data,
-                    ['@stored'] = 1,
-                    ['@garage_id'] = garage,
-                    ['@type'] = type
+                    ['@'..stored..''] = 1,
+                    ['@job'] = job,
+                    ['@'..garage_id..''] = garage,
+                    ['@'..type_..''] = type
                 }
-                if Config.SaveJob and job ~= false then
-                    query = 'INSERT INTO owned_vehicles (owner, plate, vehicle, `stored`, job, garage_id, `type`) VALUES (@owner, @plate, @props, @stored, @job, @garage_id, @type)'
-                    var = {
-                        ['@owner']   = xPlayer.identifier,
-                        ['@plate']   = props.plate:upper(),
-                        ['@props'] = data,
-                        ['@stored'] = 1,
-                        ['@job'] = job,
-                        ['@garage_id'] = garage,
-                        ['@type'] = type
-                    }
-                end
-                if Config.Mysql == 'mysql-async' then
-                    print("SAVING TO MYSQL ASYNC")
-                    MySQL.Async.execute(query,var, function (rowsChanged)
-                        MySQL.Sync.execute('UPDATE vehicles SET stock = @stock WHERE model = @model',
-                        {
-                            ['@stock'] = stock,
-                            ['@model'] = model
-                        })
-                        print("BUY DONE")
-                        fetchdone = true
-                        bool = true
-                    end)
-                else
-                    exports['ghmattimysql']:execute(query,var, function (rowsChanged)
-                        print("USING GHMATTI SQL BUY")
-                        exports['ghmattimysql']:execute('UPDATE vehicles SET stock = @stock WHERE model = @model', {
-                            ['@stock'] = stock,
-                            ['@model'] = model
-                        })
-                        print("BUY DONE GHMATTI")
-                        fetchdone = true
-                        bool = true
-                    end)
-                end
-            else
-                print("NOT ENOUGH MONEY")
-                xPlayer.showNotification('Not Enough Money',1,0,110)
-                fetchdone = true
-                bool = false
             end
+            CustomsSQL(Config.Mysql,'execute',query,var)
+            fetchdone = true
+            bool = true
+            print("BUY DONE")
         else
-            print("VEHICLE OUT OF STOCK")
-            xPlayer.showNotification('Vehicle Out of stock',1,0,110)
+            print("NOT ENOUGH MONEY")
+            xPlayer.showNotification('Not Enough Money',1,0,110)
             fetchdone = true
             bool = false
         end
