@@ -29,6 +29,7 @@ FIVEM VEHICLE SHOP HUD (WIP)
 # Dependency
 - PopUI https://github.com/renzuzu/renzu_popui
 - ESX
+- QBCore
 
 # DEMO
 https://www.youtube.com/watch?v=F4HldNMwvr0
