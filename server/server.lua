@@ -26,7 +26,7 @@ AddEventHandler('renzu_vehicleshop:GetAvailableVehicle', function(shop)
         Owned_Vehicle = QBCore.Shared.Vehicles
     end
     --TriggerClientEvent('table',-1,Owned_Vehicle)
-    if Owned_Vehicle[1] and not othershop then
+    if Config.framework == 'ESX' and Owned_Vehicle[1] and not othershop or Config.framework == 'QBCORE' and Owned_Vehicle and not othershop then
         Owned_Vehicle = Owned_Vehicle
     else
         local shoplist = {}
