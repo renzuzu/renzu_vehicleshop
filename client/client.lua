@@ -920,7 +920,7 @@ function OpenShop(id)
             end
             Citizen.CreateThread(function()
                 local coord = vector3(2800.5966796875,-3799.7370605469,139.41514587402)
-                SetEntityAlpha(PlayerPedId(),1,true)
+                --SetEntityAlpha(PlayerPedId(),1,true)
                 while inGarage do
                     Citizen.Wait(0)
                     if LastVehicleFromGarage ~= nil then
@@ -931,7 +931,7 @@ function OpenShop(id)
                 end
             end)
             while inGarage do
-                SetEntityAlpha(PlayerPedId(),1,true)
+                --SetEntityAlpha(PlayerPedId(),1,true)
                 Citizen.Wait(111)
             end
             ResetEntityAlpha(PlayerPedId())
@@ -983,7 +983,7 @@ function SetCoords(ped, x, y, z, h, freeze)
     end
     DoScreenFadeOut(950)
     Wait(1000)                            
-    SetEntityCoords(ped, x, y, z)
+    SetEntityCoords(ped, x+5.0, y-5.0, z)
     SetEntityHeading(ped, h)
     DoScreenFadeIn(3000)
 end
@@ -1180,7 +1180,7 @@ function SpawnVehicleLocal(model)
                 ReqAndDelete(LastVehicleFromGarage)
                 SetModelAsNoLongerNeeded(hash)
             end
-            SetEntityAlpha(PlayerPedId(),1,true)
+            --SetEntityAlpha(PlayerPedId(),1,true)
             SetVehicleEngineOn(LastVehicleFromGarage,true,true,false)
             --TaskWarpPedIntoVehicle(PlayerPedId(), LastVehicleFromGarage, -1)
             inShowRoom('enter')
