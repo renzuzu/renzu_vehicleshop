@@ -1311,19 +1311,19 @@ RegisterNUICallback(
         local v = nil
         local hash = tonumber(data.modelcar)
         local count = 0
-        testdrive = true
-        if Config.UseArenaSpawn and type == 'car' then
-            CloseNui()
-            LoadArena()
-            DoScreenFadeOut(0)
-            while Config.UseArenaSpawn and not IsIplActive("xs_arena_interior") do Wait(0) end
-            while not HasCollisionLoadedAroundEntity(ped) do Wait(0) DoScreenFadeOut(0) end
-            Wait(1000)
-            DoScreenFadeIn(3000)
-        else
-            while not HasCollisionLoadedAroundEntity(ped) do Wait(0) end
-        end
         if Config.EnableTestDrive and type ~= 'plane' then
+            testdrive = true
+            if Config.UseArenaSpawn and type == 'car' then
+                CloseNui()
+                LoadArena()
+                DoScreenFadeOut(0)
+                while Config.UseArenaSpawn and not IsIplActive("xs_arena_interior") do Wait(0) end
+                while not HasCollisionLoadedAroundEntity(ped) do Wait(0) DoScreenFadeOut(0) end
+                Wait(1000)
+                DoScreenFadeIn(3000)
+            else
+                while not HasCollisionLoadedAroundEntity(ped) do Wait(0) end
+            end
             ReqAndDelete(LastVehicleFromGarage)
             RequestModel(hash)
             if not HasModelLoaded(hash) then
@@ -1423,7 +1423,13 @@ RegisterNUICallback(
                 livery = nil
             end)
         else
-            ShowNotification("Test Driving is Disable")
+            SendNUIMessage(
+            {
+                type = "notify",
+                typenotify = 'error',
+                message = "Test Driving is Disable",
+                }
+            ) 
         end
     end
 )

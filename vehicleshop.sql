@@ -1,3 +1,19 @@
+--ADD THIS TO YOUR TABLE IF YOU DO NOT HAVE A OWNED_VEHICLES TABLE ALREADY.
+CREATE TABLE `owned_vehicles` (
+	`owner` VARCHAR(22) NOT NULL COLLATE 'utf8mb4_bin',
+	`plate` VARCHAR(12) NOT NULL COLLATE 'utf8mb4_bin',
+	`vehicle` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_bin',
+	`impound` INT(1) NOT NULL DEFAULT '0',
+	`stored` INT(1) NOT NULL DEFAULT '0',
+	`garage_type` VARCHAR(50) NULL DEFAULT 'car' COLLATE 'utf8mb4_bin',
+	`garage_id` VARCHAR(50) NULL DEFAULT 'A' COLLATE 'utf8mb4_bin',
+	PRIMARY KEY (`plate`) USING BTREE,
+	INDEX `vehsowned` (`owner`) USING BTREE
+)
+COLLATE='utf8mb4_bin'
+ENGINE=InnoDB
+;
+
 CREATE TABLE `vehicles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(60) NOT NULL,
@@ -7,20 +23,37 @@ CREATE TABLE `vehicles` (
   PRIMARY KEY (`id`)
 );
 
+--ADD THIS TO YOUR TABLE IF YOU DO NOT HAVE this column.
+
 ALTER TABLE vehicles
 ADD shop varchar(32) NOT NULL DEFAULT 'pdm';
+
+--ADD THIS TO YOUR TABLE IF YOU DO NOT HAVE this column.
 
 ALTER TABLE vehicles
 ADD stock int(11) NOT NULL DEFAULT 100;
 
+--ADD THIS TO YOUR TABLE IF YOU DO NOT HAVE this column.
+
+ALTER TABLE owned_vehicles
+ADD `type` varchar(32) NOT NULL DEFAULT 'car';
+
+--ADD THIS TO YOUR TABLE IF YOU DO NOT HAVE this column.
+
 ALTER TABLE owned_vehicles
 ADD `garage_id` varchar(32) NOT NULL DEFAULT 'A';
+
+--ADD THIS TO YOUR TABLE IF YOU DO NOT HAVE this column.
+
+--ADD THIS TO YOUR TABLE IF YOU DO NOT HAVE this column.
 
 ALTER TABLE owned_vehicles
 ADD job varchar(32) NOT NULL DEFAULT 'civ';
 
+--ADD THIS TO YOUR TABLE IF YOU DO NOT HAVE this column.
+
 ALTER TABLE owned_vehicles
-ADD `type` varchar(32) NOT NULL DEFAULT 'car';
+ADD `stored` varchar(32) NOT NULL DEFAULT 1;
 
 REPLACE  INTO `vehicles` (`name`, `model`, `price`, `category`) VALUES
 	('Adder', 'adder', 900000, 'super'); 
