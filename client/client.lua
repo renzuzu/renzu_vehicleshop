@@ -934,7 +934,6 @@ function OpenShop(id)
                 --SetEntityAlpha(PlayerPedId(),1,true)
                 Citizen.Wait(111)
             end
-            ResetEntityAlpha(PlayerPedId())
         end
 
         if LastVehicleFromGarage ~= nil then
@@ -1006,7 +1005,6 @@ function CreateGarageShell()
         shell_door_coords = vector3(garage_coords.x+7, garage_coords.y-19, garage_coords.z)
         SetCoords(ped, shell_door_coords.x, shell_door_coords.y, shell_door_coords.z, 82.0, true)
     end
-    SetPlayerInvisibleLocally(ped, true)
 end
 
 local spawnedgarage = {}
@@ -1107,7 +1105,6 @@ end
 function DeleteGarage()
     ingarage = false
     ReqAndDelete(shell)
-    SetPlayerInvisibleLocally(GetPlayerPed(-1), false)
     shell = nil
     i = 0
     min = 0
