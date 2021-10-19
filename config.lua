@@ -15,6 +15,12 @@ Config.CustomImg = false -- if true your Config.CustomImgColumn IMAGE url will b
 Config.CustomImgColumn = 'imglink' -- db column name
 Config.RgbColor = true -- your framework or garage must support custom colors ex. https://github.com/renzuzu/renzu_garage
 
+-- CARKEYS -- -- you need to replace the event
+Config.Carkeys = function(plate,source)
+    print("Sending Keys")
+    TriggerClientEvent('vehiclekeys:client:SetOwner',source,plate) -- THIS EVENT IS QBCORE CAR KEYS!, replace the event name to your carkeys event
+end
+-- CARKEYS --
 --EXTRA
 Config.UseArenaSpawn = true -- will use custom location for spawning vehicle in quickpick == false
 -- MAIN

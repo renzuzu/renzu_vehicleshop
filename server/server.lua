@@ -243,6 +243,8 @@ function Buy(result,xPlayer,model, props, payment, job, type, garage, notregiste
             fetchdone = true
             bool = true
             print("BUY DONE")
+            Config.Carkeys(props.plate,xPlayer.source)
+            --TriggerClientEvent('mycarkeys:setowned',xPlayer.source,props.plate) -- sample
         else
             print("NOT ENOUGH MONEY")
             xPlayer.showNotification('Not Enough Money',1,0,110)
