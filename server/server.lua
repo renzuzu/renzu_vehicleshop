@@ -63,8 +63,8 @@ AddEventHandler('renzu_vehicleshop:sellvehicle', function()
     local price = 1000
     local vehicle = GetVehiclePedIsIn(GetPlayerPed(source))
     local plate = GetVehicleNumberPlateText(vehicle)
-    r = CustomsSQL(Config.Mysql,'fetchAll','SELECT * FROM '..vehicletable..' WHERE UPPER(plate) = @plate and '..owner..' = @'..owner..'',{['@plate'] = plate:upper(), ['@'..owner..''] = xPlayer.identifier})
-    if #r > 0 then
+    r = CustomsSQL(Config.Mysql,'fetchAll','SELECT * FROM '..vehicletable..' WHERE UPPER(TRIM(plate)) = @plate and '..owner..' = @'..owner..'',{['@plate'] = string.gsub(plate:upper(), '^%s*(.-)%s*$', '%1'), ['@'..owner..''] = xPlayer.identifier})
+    if r and #r > 0 then
         local model = json.decode(r[1][vehiclemod]).model
         if model == GetEntityModel(vehicle) then
             result = {}
