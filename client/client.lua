@@ -1286,7 +1286,7 @@ function BuyVehicle(data,notregister)
             ReqAndDelete(v)
         end
         DoScreenFadeIn(1000)
-    end)
+    end,VehicleShop[data.shop].plateprefix or false)
     Wait(3000)
     DoScreenFadeIn(1000)
 end

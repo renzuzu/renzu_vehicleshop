@@ -1,6 +1,6 @@
 Config = {}
 Config.Locale = "en"
-Config.Mysql = 'ghmattisql' -- "ghmattisql", "mysql-async", "oxmysql"
+Config.Mysql = 'mysql-async' -- "ghmattisql", "mysql-async", "oxmysql"
 Config.framework = 'ESX' -- ESX or QBCORE
 Config.UseRayZone = false -- unrelease script https://github.com/renzuzu/renzu_rayzone
 Config.UsePopUI = true -- Create a Thread for checking playercoords and Use POPUI to Trigger Event, set this to false if using rayzone. Popui is originaly built in to RayZone -- DOWNLOAD https://github.com/renzuzu/renzu_popui
@@ -65,6 +65,7 @@ VehicleShop = {
         spawn_y = -1025.3255615234,
         spawn_z = 27.905115127563,
         heading = 2.6015937328339, -- Vehicle spawn location
+        plateprefix = 'LSPD', -- carefull using this, maximum should be 4, recommended is 3, use this only for limited vehicles, if you use this parameter in other shop, you might have a limited plates available, ex. LSPD1234 (max char of plate is 8) it means you only have 9999 vehicles possible with this LSPD
         shop = { -- if not vehicle is setup in Database SQL, we will use this
             {shop='Police Vehicle Shop',category='Police Sedan',stock=50,price=100000,model='police',name="Police Car", grade = 1},
             {shop='Police Vehicle Shop',category='Police Sedan',stock=50,price=100000,model='police2',name="Police 2", grade = 1},
@@ -106,7 +107,7 @@ VehicleShop = {
         name = "DEVIN WESTON PLANE SHOP", --LEGION
         title = "DEVIN PLANE SHOP",
         icon = 'https://i.imgur.com/12rKk6E.png',
-        type = 'plane', -- type of shop
+        type = 'air', -- type of shop
         job = 'all',
         default_garage = 'Plane Hangar A',
         Dist = 7, -- distance (DEPRECATED)

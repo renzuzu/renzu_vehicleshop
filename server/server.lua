@@ -108,8 +108,8 @@ CreateThread(function()
     end
 end)
 
-RegisterServerCallBack_('renzu_vehicleshop:GenPlate', function (source, cb)
-    cb(GenPlate())
+RegisterServerCallBack_('renzu_vehicleshop:GenPlate', function (source, cb, prefix)
+    cb(GenPlate(prefix))
 end)
 
 RegisterServerCallBack_('renzu_vehicleshop:buyvehicle', function (source, cb, model, props, payment, job, type, garage, notregister)
@@ -271,14 +271,15 @@ function GetRandomLetter(length)
 	end
 end
 
-function GenPlate()
+function GenPlate(prefix)
     local plate = LetterRand()..' '..NumRand()
+    if prefix then plate = prefix..' '..NumRand() end
     if temp[plate] == nil then
         return plate
     end
-    Wait(10)
+    Wait(1)
     print(plate)
-    return GenPlate()
+    return GenPlate(prefix)
 end
 
 function LetterRand()
