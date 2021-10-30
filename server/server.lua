@@ -31,7 +31,11 @@ AddEventHandler('renzu_vehicleshop:GetAvailableVehicle', function(shop)
     else
         local shoplist = {}
         for k,v in pairs(VehicleShop[shop].shop) do
-            if v.grade ~= nil and tonumber(v.grade) <= tonumber(xPlayer.job.grade) then
+            local grade = xPlayer.job.grade
+            if type(xPlayer.job.grade) == 'table' then
+                grade = xPlayer.job.grade.level
+            end
+            if v.grade ~= nil and tonumber(v.grade) <= tonumber(grade) then
                 shoplist[k] = v
             elseif v.grade == nil then
                 shoplist[k] = v
