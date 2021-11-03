@@ -11,8 +11,14 @@ Config.SaveJob = true -- this config is to save the value to owned_vehicles.job 
 Config.Licensed = false -- Enable Driver Licensed Checker
 Config.DisplayCars = true -- enable display of cars
 Config.Marker = true -- use draw marker and Iscontrollpress native , popui will not work if this is true
+
+-- VEHICLE THUMBNAILS IMAGE
+-- this is standalone
 Config.CustomImg = false -- if true your Config.CustomImgColumn IMAGE url will be used for each vehicles else, the imgs/uploads/MODEL.jpg
 Config.CustomImgColumn = 'imglink' -- db column name
+-- this is standalone
+-- Config.use_renzu_vehthumb -- Config.CustomImg must be false
+Config.use_renzu_vehthumb = false -- use vehicle thumb generation script
 Config.RgbColor = true -- your framework or garage must support custom colors ex. https://github.com/renzuzu/renzu_garage
 
 -- CARKEYS -- -- you need to replace the event

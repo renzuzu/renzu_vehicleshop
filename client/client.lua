@@ -764,7 +764,7 @@ AddEventHandler('renzu_vehicleshop:receive_vehicles', function(tb,shoptype)
         cats[value.category] = value.shop
     end
     vehiclesdb = tb
-
+    local gstate = GlobalState and GlobalState.VehicleImages
     for _,value in pairs(tb) do
         --local props = json.decode(value.vehicle)
         local vehicleModel = GetHashKey(value.model)
@@ -782,8 +782,11 @@ AddEventHandler('renzu_vehicleshop:receive_vehicles', function(tb,shoptype)
             pmult,tmult,handling, brake = 10,8,GetPerformanceStats(vehicleModel).handling * 0.1, GetPerformanceStats(vehicleModel).brakes * 0.1
         end
         local img = 'https://cfx-nui-renzu_vehicleshop/imgs/uploads/'..value.model..'.jpg'
-        if Config.CustomImg then
+        local hashmodel = GetHashKey(value.model)
+        if Config.CustomImg and not Config.use_renzu_vehthumb then
             img = value[Config.CustomImgColumn]
+        elseif Config.use_renzu_vehthumb and gstate[tostring(hashmodel)] then
+            img = gstate[tostring(hashmodel)]
         end
         local VTable = {
             brand = GetVehicleClassnamemodel(GetHashKey(value.model)),
@@ -1129,7 +1132,6 @@ function SpawnVehicleLocal(model)
         ReqAndDelete(LastVehicleFromGarage)
         SetModelAsNoLongerNeeded(hash)
     end
-    print(GetNumberOfStreamingRequests(),'requests')
     for i = 1, 2 do
         local nearveh = GetClosestVehicle(GetEntityCoords(PlayerPedId()), 2.000, 0, 70)
         if DoesEntityExist(nearveh) then
@@ -1623,17 +1625,14 @@ function LoadArena()
         -- now lets set our map type and scene.
         if (scene == "dystopian") then
             EnableInteriorProp(interiorID, "Set_Dystopian_Scene")
-            print("[Arena by Titch]: enabling map: "..maps[scene][map])
             EnableInteriorProp(interiorID, maps[scene][map])
         end
         if (scene == "scifi") then
             EnableInteriorProp(interiorID, "Set_Scifi_Scene")
-            print("[Arena by Titch]: enabling map: "..maps[scene][map])
             EnableInteriorProp(interiorID, maps[scene][map])
         end
         if (scene == "wasteland") then
             EnableInteriorProp(interiorID, "Set_Wasteland_Scene")
-            print("[Arena by Titch]: enabling map: "..maps[scene][map])
             EnableInteriorProp(interiorID, maps[scene][map])
         end
 end
