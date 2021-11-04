@@ -1152,12 +1152,8 @@ function SpawnVehicleLocal(model)
             local count = 0
             if not HasModelLoaded(hash) then
                 RequestModel(hash)
-                while not HasModelLoaded(hash) and count < 1111 do
-                    count = count + 10
+                while not HasModelLoaded(hash) do
                     Citizen.Wait(10)
-                    if count > 9999 then
-                    return
-                    end
                 end
                 loading = true
             end
@@ -1177,8 +1173,8 @@ function SpawnVehicleLocal(model)
             currentcar = LastVehicleFromGarage
             if currentcar ~= LastVehicleFromGarage then
                 ReqAndDelete(LastVehicleFromGarage)
-                SetModelAsNoLongerNeeded(hash)
             end
+            SetModelAsNoLongerNeeded(hash)
             --SetEntityAlpha(PlayerPedId(),1,true)
             SetVehicleEngineOn(LastVehicleFromGarage,true,true,false)
             --TaskWarpPedIntoVehicle(PlayerPedId(), LastVehicleFromGarage, -1)
@@ -1215,8 +1211,8 @@ function BuyVehicle(data,notregister)
     DoScreenFadeOut(100)
     TriggerServerCallback_("renzu_vehicleshop:GenPlate",function(plate)
         RequestModel(hash)
-        while not HasModelLoaded(hash) and count < 555 do
-            count = count + 10
+        while not HasModelLoaded(hash) do
+            RequestModel(hash)
             Citizen.Wait(1)
         end
         v = CreateVehicle(tonumber(data.modelcar), VehicleShop[data.shop].spawn_x,VehicleShop[data.shop].spawn_y,VehicleShop[data.shop].spawn_z, VehicleShop[data.shop].heading, 1, 1)
@@ -1327,12 +1323,8 @@ RegisterNUICallback(
             RequestModel(hash)
             if not HasModelLoaded(hash) then
                 RequestModel(hash)
-                while not HasModelLoaded(hash) and count < 555 do
-                    count = count + 10
+                while not HasModelLoaded(hash) do
                     Citizen.Wait(1)
-                    if count > 9999 then
-                    return
-                    end
                 end
             end
             TriggerServerCallback_("renzu_vehicleshop:GenPlate",function(plate)
