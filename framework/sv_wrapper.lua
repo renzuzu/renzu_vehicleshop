@@ -6,7 +6,7 @@ function Initialized()
 		vehicletable = 'owned_vehicles'
 		vehiclemod = 'vehicle'
 	elseif Config.framework == 'QBCORE' then
-		QBCore = exports['qb-core']:GetSharedObject()
+		QBCore = exports['qb-core']:GetCoreObject()
 		RegisterServerCallBack_ =  QBCore.Functions.CreateCallback
 		vehicletable = 'player_vehicles '
 		vehiclemod = 'mods'
