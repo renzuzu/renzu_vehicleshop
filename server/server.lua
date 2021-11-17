@@ -29,7 +29,7 @@ AddEventHandler('renzu_vehicleshop:GetAvailableVehicle', function(shop)
     local shop = shop or 'pdm'
     local Owned_Vehicle, foundshop = GetVehiclesFromShop(shop or 'pdm')
     --TriggerClientEvent('table',-1,Owned_Vehicle)
-    if Config.framework == 'ESX' and Owned_Vehicle and foundshop then
+    if Owned_Vehicle and foundshop then
         Owned_Vehicle = Owned_Vehicle
     else
         local shoplist = {}
