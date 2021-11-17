@@ -11,11 +11,7 @@ function Framework()
 		end
 		PlayerData = ESX.GetPlayerData()
 	elseif Config.framework == 'QBCORE' then
-		while QBCore == nil do
-			TriggerEvent('QBCore:GetObject', function(obj) QBCore = obj end)
-			Citizen.Wait(30)
-		end
-		--QBCore = exports['qb-core']:GetSharedObject()
+		QBCore = exports['qb-core']:GetCoreObject()
 		while QBCore == nil do Wait(0) end
 		QBCore.Functions.GetPlayerData(function(p)
 			PlayerData = p
