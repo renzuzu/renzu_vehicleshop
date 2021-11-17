@@ -13,6 +13,11 @@ function changecategory(c,v) {
     $.post("https://renzu_vehicleshop/choosecategory", JSON.stringify({ id: v, category: c}));
 }
 
+function changebrands(c,v) {
+    //console.log(c,v)
+    $.post("https://renzu_vehicleshop/choosebrands", JSON.stringify({ id: v, brand: c}));
+}
+
 function icon(c) {
     //console.log(c)
     if (c == 'suvs') {
@@ -43,7 +48,7 @@ window.addEventListener('message', function(event) {
     if (event.data.type == "cleanup") {
         cleanup()
     }
-    if (event.data.type == "categories") {
+    if (event.data.type == "categories"  && event.data.shoptype !== 'car') {
         categories = event.data.cats
         $('#category').empty();
         //console.log(categories)
@@ -53,6 +58,22 @@ window.addEventListener('message', function(event) {
             <li class="darkerlishadow">
             <a onclick="changecategory('`+k+`','`+v+`');">
             <i class="`+icon(''+k+'')+`"></i>
+            <span class="nav-text">`+k+`</span>
+            </a>
+            </li>`)
+        }
+    }
+    console.log(event.data.shoptype)
+    if (event.data.type == "brands" && event.data.shoptype == 'car') {
+        brands = event.data.brands
+        $('#brands').empty();
+        //console.log(categories)
+        for(var [k,v] of Object.entries(brands)){
+            //console.log(k,v)
+            $('#brands').append(`</li>
+            <li class="darkerlishadow">
+            <a onclick="changebrands('`+k+`','`+v+`');">
+            <i class="fas"><img src="brands/`+k+`.png" onerror="this.src='https://ui-avatars.com/api/?name=`+k+`&background=000000&color=fff'"  style="height:20px;"></i>
             <span class="nav-text">`+k+`</span>
             </a>
             </li>`)
@@ -178,8 +199,10 @@ $(document).ready(function() {
   </main>\
   <div class="container">\
     <div class="right">\
-        <nav class="main-menu">\
+        <nav class="main-menu" style="">\
         <div class="scrollbar" id="style-1">\
+        <ul id="brands">\
+        </ul>\
         <ul id="category">\
         </ul>\
         </nav>\
@@ -191,7 +214,7 @@ $(document).ready(function() {
     </div>\
     <div id="closemenu" class="modal" style="background-color:#050505c5 !important; color:#fff;">\
   </div>\
-    <div class="middle-left-container" style="/* display:none; */position: absolute;top: 0%;left: 1%;background: unset;width: 40%;">\
+    <div class="middle-left-container" style="/* display:none; */position: absolute;top: 0%;left: 1%;width: auto;">\
     <div class="column" style="display:block;" id="nameBrand">\
     </div>\
     <div class="column" id="vehicleclass">\
@@ -269,15 +292,32 @@ function ShowVehicle(currentTarget) {
             document.getElementById("contentVehicle").innerHTML = '';
                         
             document.getElementById("vehicleclass").innerHTML = ' ';
-
+            if (!data.brand) {
+                data.brand = data.category
+            }
             $('#nameBrand').append(`
-                <span id="vehicle_class" style="font-size:2em;">`+data.brand+`,</span> 
+                <span id="vehicle_class" style="font-size:2em;"><img src="brands/`+data.brand+`.png" onerror="this.src='https://ui-avatars.com/api/?name=`+data.brand+`&background=000000&color=fff'" style="width:120px;height:120px;">`+data.brand+`,</span>
                 <span id="vehicle_name">`+data.name+`</span> 
             `);
 
             $(".menu-modifications").css("display","block");
 
             CurrentVehicle = {brand: data.brand, model: data.model, modelcar: data.model2, sale: 1, name: data.name, props: data.props, shop: data.shop ,payment: payment}
+            if (data.handling > 10) {
+                data.handling = 10.0
+            }
+            if (data.topspeed > 540) {
+                data.topspeed = 540.0
+            }
+            if (data.power > 8000) {
+                data.power = 8000.0
+            }
+            if (data.torque > 600) {
+                data.torque = 600.0
+            }
+            if (data.brake > 2.5) {
+                data.brake = 2.5
+            }
             $('#contentVehicle').append(`
                 <div class="row spacebetween">
                     <span class="title">HANDLING</span>

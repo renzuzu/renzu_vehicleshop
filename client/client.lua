@@ -18,6 +18,8 @@ presetprimarycolor = {}
 presetsecondarycolor = {}
 livery = nil
 shopcoords = {}
+brand = nil
+shoptype = nil
 Citizen.CreateThread(function()
     Framework()
     for k, v in pairs (VehicleShop) do
@@ -330,6 +332,25 @@ end)
 RegisterNetEvent('sellvehiclecallback')
 AddEventHandler('sellvehiclecallback', function()
     ReqAndDelete(GetVehiclePedIsIn(PlayerPedId()))
+end)
+
+RegisterNetEvent('table2')
+AddEventHandler('table2', function(data)
+    local t = {}
+    for k,v in pairs(data) do
+        print(v.model)
+        print(classlist(tostring(GetVehicleClassFromName(v.model))))
+        t[v.model] = {
+            ['name'] = v.name,
+            ['brand'] = v.category,
+            ['model'] = v.model,
+            ['price'] = v.price,
+            ['category'] = classlist(tostring(GetVehicleClassFromName(v.model))):lower(),
+            ['hash'] = GetHashKey(v.model),
+            ['shop'] = 'pdm',
+        }
+    end
+    TriggerEvent('table',t)
 end)
 
 RegisterNetEvent('vehicleshop')
@@ -666,14 +687,115 @@ RegisterNUICallback("setlivery", function(data, cb)
     end
 end)
 
-RegisterNUICallback("choosecategory", function(data, cb)
+RegisterNUICallback("choosebrands", function(data, cb)
     local vehtable = {}
     vehtable[data.id] = {}
     local cars = 0
+    print(data.brand)
+    brand = data.brand
+    local cats = {}
     for k,v2 in pairs(OwnedVehicles) do
         for k2,v in pairs(v2) do
-            if data.category == v.category and IsModelInCdimage(GetHashKey(v.model)) then
+            print(data.brand,v.brand)
+            if data.brand == v.brand and IsModelInCdimage(GetHashKey(v.model)) then
                 cars = cars + 1
+                cats[v.category] = true
+                if vehtable[v.name] == nil then
+                    vehtable[v.name] = {}
+                end
+                veh = 
+                {
+                brand = v.brand,
+                category = v.category,
+                image = v.image,
+                name = v.name,
+                brake = v.brake,
+                handling = v.handling,
+                topspeed = v.topspeed,
+                power = v.power,
+                torque = v.torque,
+                model = v.model,
+                model2 = v.model2,
+                name = v.name,
+                price = v.price,
+                shop = v.shop,
+                }
+                table.insert(vehtable[v.name], veh)
+            end
+        end
+    end
+    if cars > 0 then
+        SendNUIMessage({
+            cats = cats,
+            type = "categories"
+        })
+        Wait(100)
+        SendNUIMessage(
+            {
+                garage_id = id,
+                data = vehtable,
+                type = "display"
+            }
+        )
+
+        SetNuiFocus(true, true)
+        if not Config.Quickpick and type == 'car' then
+            RequestCollisionAtCoord(926.15, -959.06, 61.94-30.0)
+            for k,v in pairs(VehicleShop) do
+                local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
+                if Config.UseArenaSpawn then
+                    if dist <= 40.0 and id == v.name then
+                        cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", 2800.5966796875-5.5,-3799.7370605469,122.41514587402, 360.00, 0.00, 0.00, 60.00, false, 0)
+                        PointCamAtCoord(cam, 2800.5966796875,-3799.7370605469,122.41514587402)
+                        SetCamActive(cam, true)
+                        SetCamFov(cam, 45.0)
+                        SetCamRot(cam, -15.0, 0.0, 252.063)
+                        RenderScriptCams(true, true, 1, true, true)
+                        SetFocusPosAndVel(2800.5966796875,-3799.7370605469,134.41514587402, 0.0, 0.0, 0.0)
+                        DisplayHud(false)
+                        DisplayRadar(false)
+                    end
+                else
+                    if dist <= 40.0 and id == v.name then
+                        cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", v.shop_x-5.0, v.shop_y-3.0, v.shop_z-28.5, 360.00, 0.00, 0.00, 60.00, false, 0)
+                        PointCamAtCoord(cam, v.shop_x, v.shop_y, v.shop_z-30.0)
+                        SetCamActive(cam, true)
+                        SetCamFov(cam, 45.0)
+                        SetCamRot(cam, -15.0, 0.0, 252.063)
+                        RenderScriptCams(true, true, 1, true, true)
+                        SetFocusPosAndVel(v.shop_x, v.shop_y, v.shop_z-30.0, 0.0, 0.0, 0.0)
+                        DisplayHud(false)
+                        DisplayRadar(false)
+                    end
+                end
+            end
+            while inGarage do
+                Citizen.Wait(111)
+            end
+        end
+
+        if LastVehicleFromGarage ~= nil then
+            ReqAndDelete(LastVehicleFromGarage)
+        end
+    else
+        ShowNotification("No Vehicle is Available")
+    end
+end)
+
+RegisterNUICallback("choosecategory", function(data, cb)
+    local vehtable = {}
+    vehtable[data.id] = {}
+    if brand == nil then
+        brand = 'sports'
+    end
+    local cars = 0
+    local cats = {}
+    for k,v2 in pairs(OwnedVehicles) do
+        for k2,v in pairs(v2) do
+            if shoptype == 'car' and brand == v.brand and data.category == v.category and IsModelInCdimage(GetHashKey(v.model))
+            or shoptype ~= 'car' and data.category == v.category and IsModelInCdimage(GetHashKey(v.model)) then
+                cars = cars + 1
+                cats[v.category] = true
                 if vehtable[v.name] == nil then
                     vehtable[v.name] = {}
                 end
@@ -753,58 +875,67 @@ end)
 
 RegisterNetEvent('renzu_vehicleshop:receive_vehicles')
 AddEventHandler('renzu_vehicleshop:receive_vehicles', function(tb,shoptype)
-    local shoptype = shoptype
+    shoptype = shoptype
     local tb = tb
     fetchdone = false
     OwnedVehicles = {}
     Wait(1000)
     cats = {}
+    brands = {}
     for _,value in pairs(tb) do
         OwnedVehicles[value.category] = {}
-        cats[value.category] = value.shop
+        if  value.category ~= 'cycles' then
+            print(value.name,value.brand)
+            cats[value.category] = value.shop
+            if value.brand ~= nil then
+                brands[value.brand] = value.shop
+            end
+        end
     end
     vehiclesdb = tb
     local gstate = GlobalState and GlobalState.VehicleImages
     for _,value in pairs(tb) do
         --local props = json.decode(value.vehicle)
         local vehicleModel = GetHashKey(value.model)
-        local label = nil
-        if label == nil then
-            label = 'Unknown'
-        end
+        if IsModelInCdimage(vehicleModel) then
+            local label = nil
+            if label == nil then
+                label = 'Unknown'
+            end
 
-        local vehname = value.name
-        if vehname == nil then
-            vehname = GetDisplayNameFromVehicleModel(value.name)
+            local vehname = value.name
+            if vehname == nil then
+                vehname = GetDisplayNameFromVehicleModel(value.name)
+            end
+            local pmult, tmult, handling, brake = 1000,800,GetPerformanceStats(vehicleModel).handling,GetPerformanceStats(vehicleModel).brakes
+            if shoptype == 'boat' or shoptype == 'plane' then
+                pmult,tmult,handling, brake = 10,8,GetPerformanceStats(vehicleModel).handling * 0.1, GetPerformanceStats(vehicleModel).brakes * 0.1
+            end
+            local img = 'https://cfx-nui-renzu_vehicleshop/imgs/uploads/'..value.model..'.jpg'
+            local hashmodel = GetHashKey(value.model)
+            if Config.CustomImg and not Config.use_renzu_vehthumb then
+                img = value[Config.CustomImgColumn]
+            elseif Config.use_renzu_vehthumb and gstate[tostring(hashmodel)] then
+                img = gstate[tostring(hashmodel)]
+            end
+            local VTable = {
+                brand = value.brand,
+                name = vehname:upper(),
+                brake = brake,
+                handling = handling,
+                topspeed = math.ceil(GetVehicleModelEstimatedMaxSpeed(vehicleModel)*4.605936),
+                power = math.ceil(GetVehicleModelAcceleration(vehicleModel)*pmult),
+                torque = math.ceil(GetVehicleModelAcceleration(vehicleModel)*tmult),
+                model = value.model,
+                category = value.category,
+                image = img,
+                model2 = GetHashKey(value.model),
+                price = value.price,
+                name = value.name,
+                shop = value.shop
+            }
+            table.insert(OwnedVehicles[value.category], VTable)
         end
-        local pmult, tmult, handling, brake = 1000,800,GetPerformanceStats(vehicleModel).handling,GetPerformanceStats(vehicleModel).brakes
-        if shoptype == 'boat' or shoptype == 'plane' then
-            pmult,tmult,handling, brake = 10,8,GetPerformanceStats(vehicleModel).handling * 0.1, GetPerformanceStats(vehicleModel).brakes * 0.1
-        end
-        local img = 'https://cfx-nui-renzu_vehicleshop/imgs/uploads/'..value.model..'.jpg'
-        local hashmodel = GetHashKey(value.model)
-        if Config.CustomImg and not Config.use_renzu_vehthumb then
-            img = value[Config.CustomImgColumn]
-        elseif Config.use_renzu_vehthumb and gstate[tostring(hashmodel)] then
-            img = gstate[tostring(hashmodel)]
-        end
-        local VTable = {
-            brand = GetVehicleClassnamemodel(GetHashKey(value.model)),
-            name = vehname:upper(),
-            brake = brake,
-            handling = handling,
-            topspeed = math.ceil(GetVehicleModelEstimatedMaxSpeed(vehicleModel)*4.605936),
-            power = math.ceil(GetVehicleModelAcceleration(vehicleModel)*pmult),
-            torque = math.ceil(GetVehicleModelAcceleration(vehicleModel)*tmult),
-            model = value.model,
-            category = value.category,
-            image = img,
-            model2 = GetHashKey(value.model),
-            price = value.price,
-            name = value.name,
-            shop = value.shop
-        }
-        table.insert(OwnedVehicles[value.category], VTable)
     end
     SendNUIMessage(
         {
@@ -814,7 +945,13 @@ AddEventHandler('renzu_vehicleshop:receive_vehicles', function(tb,shoptype)
     Wait(1000)
     SendNUIMessage({
         cats = cats,
-        type = "categories"
+        type = "categories",
+        shoptype = shoptype
+    })
+    SendNUIMessage({
+        brands = brands,
+        type = "brands",
+        shoptype = shoptype
     })
     fetchdone = true
 end)
@@ -1123,10 +1260,10 @@ function DeleteGarage()
 end
 
 local loading = false
+downloading = false
 function SpawnVehicleLocal(model)
-    if loading or GetNumberOfStreamingRequests() > 0 then return end
+    if downloading or not IsModelInCdimage(model) then return end
     local ped = PlayerPedId()
-
     SetNuiFocus(true, true)
     if LastVehicleFromGarage ~= nil then
         ReqAndDelete(LastVehicleFromGarage)
@@ -1152,10 +1289,36 @@ function SpawnVehicleLocal(model)
             local count = 0
             if not HasModelLoaded(hash) then
                 RequestModel(hash)
+                SetNuiFocus(false, false)
+                BusyspinnerOff()
+                Wait(10)
+                AddTextEntry("CUSTOMLOADSTR", 'Downloading Vehicle Assets..')
+                BeginTextCommandBusyspinnerOn("CUSTOMLOADSTR")
+                EndTextCommandBusyspinnerOn(4)
+                downloading = true
+                local c = 0
                 while not HasModelLoaded(hash) do
-                    Citizen.Wait(10)
+                    c = c + 1
+                    if IsControlPressed(0,202) then
+                        BusyspinnerOff()
+                        CloseNui()
+                        break
+                    end
+                    if c > 20000 then
+                        BusyspinnerOff()
+                        Wait(10)
+                        AddTextEntry("CUSTOMLOADSTR", 'Vehicle Download Taking too long, ask server admin..')
+                        BeginTextCommandBusyspinnerOn("CUSTOMLOADSTR")
+                        EndTextCommandBusyspinnerOn(4)
+                        Wait(2000)
+                        break
+                    end
+                    Citizen.Wait(0)
                 end
+                BusyspinnerOff()
+                SetNuiFocus(true, true)
                 loading = true
+                downloading = false
             end
             loading = false
             if Config.UseArenaSpawn then

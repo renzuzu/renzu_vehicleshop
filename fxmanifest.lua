@@ -5,12 +5,14 @@ ui_page 'html/index.html'
 server_scripts {
 	'@mysql-async/lib/MySQL.lua',	
 	'config.lua',
+	'vehicles.lua',
 	'framework/sv_wrapper.lua',
 	'server/server.lua'
 }
 
 client_scripts {
 	'config.lua',
+	'vehicles.lua',
 	'framework/cl_wrapper.lua',
 	'client/client.lua',
 	'client/threads.lua',
@@ -22,6 +24,7 @@ files {
 	'html/index.html',
 	'html/script.js',
 	'html/fonts/*',	
+	'html/brands/*.png',	
 	'imgs/*.png',
 	'imgs/uploads/*.jpg',
 }

@@ -9,24 +9,27 @@ type_ = 'type'
 Initialized()
 local vehicles = {}
 
+function GetVehiclesFromShop(shop)
+    local vehicles = {}
+    local found = false
+    for k,v in pairs(Config.Vehicles) do
+        if v.shop == shop then
+            vehicles[k] = v
+            found = true
+        end
+    end
+    return vehicles, found
+end
+
 RegisterServerEvent('renzu_vehicleshop:GetAvailableVehicle')
 AddEventHandler('renzu_vehicleshop:GetAvailableVehicle', function(shop)
     local src = source 
     local xPlayer = GetPlayerFromId(src)
     local identifier = xPlayer.identifier
     local shop = shop or 'pdm'
-    Owned_Vehicle = {}
-    local othershop = false
-    if Config.framework == 'ESX' then
-        Owned_Vehicle = CustomsSQL(Config.Mysql,'fetchAll','SELECT * FROM vehicles WHERE shop = @shop',{['@shop'] = shop})
-    else
-        if shop ~= 'pdm' then
-            othershop = true
-        end
-        Owned_Vehicle = QBCore.Shared.Vehicles
-    end
+    local Owned_Vehicle, foundshop = GetVehiclesFromShop(shop or 'pdm')
     --TriggerClientEvent('table',-1,Owned_Vehicle)
-    if Config.framework == 'ESX' and Owned_Vehicle[1] and not othershop or Config.framework == 'QBCORE' and Owned_Vehicle and not othershop then
+    if Config.framework == 'ESX' and Owned_Vehicle and foundshop then
         Owned_Vehicle = Owned_Vehicle
     else
         local shoplist = {}
@@ -71,12 +74,7 @@ AddEventHandler('renzu_vehicleshop:sellvehicle', function()
     if r and #r > 0 then
         local model = json.decode(r[1][vehiclemod]).model
         if model == GetEntityModel(vehicle) then
-            result = {}
-            if Config.framework == 'ESX' then
-                result = CustomsSQL(Config.Mysql,'fetchAll','SELECT * FROM vehicles', {})
-            elseif Config.framework == 'QBCORE' then
-                result = QBCore.Shared.Vehicles
-            end
+            result = Config.Vehicles
                 if result then
                     for k,v in pairs(result) do
                         if model == GetHashKey(v.model) then
@@ -120,21 +118,10 @@ RegisterServerCallBack_('renzu_vehicleshop:buyvehicle', function (source, cb, mo
     print("BUYING START",model)
     local source = source
 	local xPlayer = GetPlayerFromId(source)
-    local function sqlfunc(sql, query)
-        if Config.framework == 'ESX' then
-            result = CustomsSQL(Config.Mysql,'fetchAll',query,{
-                ['@model'] = model
-            })
-            cb(Buy(result,xPlayer,model, props, payment, job, type , garage))
-        else
-            cb(Buy({[1] = QBCore.Shared.Vehicles[model]},xPlayer,model, props, payment, job, type , garage))
-            return result
-        end
-    end
     --print(type)
     if not job and type == 'car' and not notregister then
-        print("BUYING VEHICLES SAVED FROM SQL vehicles tables")
-        sqlfunc(Config.Mysql,'SELECT * FROM vehicles WHERE model = @model LIMIT 1')
+        print("BUYING VEHICLES SAVED FROM Cofnig vehicles tables")
+        cb(Buy({[1] = Config.Vehicles[model]},xPlayer,model, props, payment, job, type , garage))
     elseif notregister then
         print('DISPLAY',model, props)
         cb(Buy(true,xPlayer,model, props, payment or 'cash', job or 'civ', type or 'car' , garage or 'A' or false, notregister))

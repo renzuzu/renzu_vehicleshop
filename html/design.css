@@ -159,7 +159,16 @@
           flex-direction: row;
           align-self: center;
           background-color: rgb(23 24 25 / 94%);
-          padding: 11px;
+          /* padding: 11px; */
+          position: absolute;
+          top: 0%;
+          left: 1%;
+          background: unset;
+          /* width: 40%; */
+          background: #101113d9;
+          /* padding: 20px; */
+          border-radius: 20px;
+          font-size: 12px;
       }
       
       .container .middle-left-container img {
@@ -177,6 +186,8 @@
           color: white;
           text-shadow: 1px 2px #505050;
           line-height: 1.8em;
+          padding-left: 6vw;
+          /* display: block; */
       }
       
       .container .middle-left-container .column #vehicle_class {
@@ -198,6 +209,12 @@
       .container .middle-left-container .column img {
           max-height: 16px;
           max-width: 32px;
+          max-height: 60px;
+          max-width: 80px;
+          position: absolute;
+          /* padding-top: 20px; */
+          left: 20px;
+          top: 20px;
       }
       
       .container .middle-right-container {
@@ -753,7 +770,7 @@ width: 17vw;
   opacity: 1;
 }
 }
-.app_inner {position: relative;/* top: 0; */height: 60vh;overflow-x: hidden;}
+.app_inner {position: relative;/* top: 0; */height: 60vh;overflow-x: hidden;background: #070808bd;box-shadow: 2px 2px #b7bec3;}
 .app_inner input[type=radio] {
 display: none;
 }
@@ -1042,10 +1059,13 @@ border-color: #41EFB6;
         .scrollbar
         {
         
-        height: 100%;
-        width: 100%;
-        overflow-y: hidden;
-        overflow-x: hidden;
+height: 100%;
+        
+width: 100%;
+        
+overflow-y: hidden;
+        
+overflow-x: hidden;
         }
         
         .scrollbar:hover
@@ -1259,7 +1279,7 @@ border-color: #41EFB6;
         {background-color: #0a0a0a;text-transform:capitalize;}
         
         .darkerlishadow
-        {background-color: #060505;text-transform:capitalize;-webkit-box-shadow: inset 0px 5px 5px -4px rgba(50, 50, 50, 0.55);-moz-box-shadow:    inset 0px 5px 5px -4px rgba(50, 50, 50, 0.55);box-shadow:         inset 0px 5px 5px -4px rgba(50, 50, 50, 0.55);}
+        {background-color: #00000085;text-transform:capitalize;-webkit-box-shadow: inset 0px 5px 5px -4px rgba(50, 50, 50, 0.55);-moz-box-shadow:    inset 0px 5px 5px -4px rgba(50, 50, 50, 0.55);box-shadow:         inset 0px 5px 5px -4px rgba(50, 50, 50, 0.55);}
         
         
         .darkerlishadowdown
