@@ -1,6 +1,6 @@
 Config = {}
 Config.Locale = "en"
-Config.Mysql = 'oxmysql' -- "ghmattisql", "mysql-async", "oxmysql"
+Config.Mysql = 'mysql-async' -- "ghmattisql", "mysql-async", "oxmysql"
 Config.framework = 'ESX' -- ESX or QBCORE
 Config.UseRayZone = false -- unrelease script https://github.com/renzuzu/renzu_rayzone
 Config.UsePopUI = true -- Create a Thread for checking playercoords and Use POPUI to Trigger Event, set this to false if using rayzone. Popui is originaly built in to RayZone -- DOWNLOAD https://github.com/renzuzu/renzu_popui
@@ -60,7 +60,7 @@ VehicleShop = {
         title = "Police Vehicle Shop",
         icon = 'https://i.imgur.com/t1OPuVL.png',
         job = 'police',
-        type = 'car',
+        type = 'carshop',
         default_garage = 'Police Garage',
         Dist = 3, -- distance (DEPRECATED)
         Blip = {color = 38, sprite = 662, scale = 0.9},

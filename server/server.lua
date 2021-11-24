@@ -8,6 +8,22 @@ garage_id = 'garage_id'
 type_ = 'type'
 Initialized()
 local vehicles = {}
+local shops = {}
+Citizen.CreateThread(function()
+    for k,v in pairs(VehicleShop) do
+        local list, foundshop = GetVehiclesFromShop(k or 'pdm')
+        if not shops[k] then shops[k] = {} end
+        --TriggerClientEvent('table',-1,Owned_Vehicle)
+        if v.shop then
+            shops[k].list = v.shop
+            shops[k].type = v.type
+        else
+            shops[k].list = list
+            shops[k].type = v.type
+        end
+    end
+    GlobalState.VehicleShops = shops
+end)
 
 function GetVehiclesFromShop(shop)
     local vehicles = {}
@@ -20,34 +36,6 @@ function GetVehiclesFromShop(shop)
     end
     return vehicles, found
 end
-
-RegisterServerEvent('renzu_vehicleshop:GetAvailableVehicle')
-AddEventHandler('renzu_vehicleshop:GetAvailableVehicle', function(shop)
-    local src = source 
-    local xPlayer = GetPlayerFromId(src)
-    local identifier = xPlayer.identifier
-    local shop = shop or 'pdm'
-    local Owned_Vehicle, foundshop = GetVehiclesFromShop(shop or 'pdm')
-    --TriggerClientEvent('table',-1,Owned_Vehicle)
-    if Owned_Vehicle and foundshop then
-        Owned_Vehicle = Owned_Vehicle
-    else
-        local shoplist = {}
-        for k,v in pairs(VehicleShop[shop].shop) do
-            local grade = xPlayer.job.grade
-            if type(xPlayer.job.grade) == 'table' then
-                grade = xPlayer.job.grade.level
-            end
-            if v.grade ~= nil and tonumber(v.grade) <= tonumber(grade) then
-                shoplist[k] = v
-            elseif v.grade == nil then
-                shoplist[k] = v
-            end
-        end
-        Owned_Vehicle = shoplist
-    end
-    TriggerClientEvent("renzu_vehicleshop:receive_vehicles", src , Owned_Vehicle,VehicleShop[shop].type or 'car')
-end)
 
 local NumberCharset = {}
 for i = 48,  57 do table.insert(NumberCharset, string.char(i)) end

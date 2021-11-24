@@ -1,6 +1,8 @@
 fx_version 'cerulean'
-games {'common'}
+games {'gta5'}
 ui_page 'html/index.html'
+lua54 'yes'
+use_fxv2_oal 'yes'
 
 server_scripts {
 	'@mysql-async/lib/MySQL.lua',	
@@ -15,8 +17,6 @@ client_scripts {
 	'vehicles.lua',
 	'framework/cl_wrapper.lua',
 	'client/client.lua',
-	'client/threads.lua',
-	'client/scaleform.lua',
 }
 
 files {
