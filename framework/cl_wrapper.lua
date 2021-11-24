@@ -11,7 +11,16 @@ function Framework()
 		end
 		PlayerData = ESX.GetPlayerData()
 	elseif Config.framework == 'QBCORE' then
-		QBCore = exports['qb-core']:GetCoreObject()
+		CreateThread(function()
+			QBCore = exports['qb-core']:GetCoreObject()
+		end)
+		Wait(1000)
+		if not QBCore then -- support old version in ugly way
+			CreateThread(function()
+				QBCore = exports['qb-core']:GetSharedObject()
+			end)
+		end
+		--QBCore = exports['qb-core']:GetSharedObject()
 		while QBCore == nil do Wait(0) end
 		QBCore.Functions.GetPlayerData(function(p)
 			PlayerData = p

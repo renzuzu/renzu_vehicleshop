@@ -1,9 +1,3 @@
---ADD or IMPORT TABLE and Columns only if its not existed yet on your Database!
-
--- ADD ONE BY ONE to avoid issue
-
--- DO NOT COPY THIS MESSAGE and paste to the SQL QUERY Import
-
 CREATE TABLE `owned_vehicles` (
 	`owner` VARCHAR(64) NOT NULL COLLATE 'utf8mb4_bin',
 	`plate` VARCHAR(12) NOT NULL COLLATE 'utf8mb4_bin',
@@ -28,3 +22,6 @@ ADD `job` varchar(32) NOT NULL DEFAULT 'civ';
 
 ALTER TABLE owned_vehicles
 ADD `stored` tinyint(1) NOT NULL DEFAULT 1;
+
+ALTER TABLE owned_vehicles
+ADDt `type` varchar(32) NOT NULL DEFAULT 'car';

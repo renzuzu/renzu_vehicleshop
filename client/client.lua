@@ -878,7 +878,7 @@ PopulateVehicleshop = function(k)
             if shoptype ~= 'car' then
                 cats[value.category] = value.shop
             end
-            if value.brand ~= nil then
+            if shoptype == 'car' and value.brand ~= nil then
                 brands[value.brand] = value.shop
             end
             local label = nil

@@ -187,27 +187,18 @@ function Buy(result,xPlayer,model, props, payment, job, type, garage, notregiste
             end
             stock = stock - 1
             local data = json.encode(props)
-            if Config.framework == 'QBCORE' then
-                type = model
-            end
-            local query = 'INSERT INTO '..vehicletable..' ('..owner..', plate, '..vehiclemod..', `'..stored..'`, '..garage_id..', `'..type_..'`) VALUES (@'..owner..', @plate, @props, @'..stored..', @'..garage_id..', @'..type_..')'
-            if Config.framework == 'QBCORE' then
-                query = 'INSERT INTO '..vehicletable..' ('..owner..', plate, '..vehiclemod..', `'..stored..'`, '..garage_id..', `'..type_..'`, citizenid, hash) VALUES (@'..owner..', @plate, @props, @'..stored..', @'..garage_id..', @'..type_..', @citizenid, @hash)'
-            end
+            local query = 'INSERT INTO '..vehicletable..' ('..owner..', plate, '..vehiclemod..', job, `'..stored..'`, '..garage_id..', `'..type_..'`) VALUES (@'..owner..', @plate, @props, @job, @'..stored..', @'..garage_id..', @'..type_..')'
             local var = {
                 ['@'..owner..'']   = xPlayer.identifier,
                 ['@plate']   = props.plate:upper(),
                 ['@props'] = data,
+                ['@job'] = job,
                 ['@'..stored..''] = 1,
                 ['@'..garage_id..''] = garage,
                 ['@'..type_..''] = type
             }
             if Config.framework == 'QBCORE' then
-                var['@hash'] = tostring(GetHashKey(model))
-                var['@citizenid'] = xPlayer.citizenid
-            end
-            if Config.SaveJob and job ~= false and not Config.framework == 'QBCORE' then
-                query = 'INSERT INTO '..vehicletable..' ('..owner..', plate, '..vehiclemod..', `'..stored..'`, job, '..garage_id..', `'..type_..'`) VALUES (@'..owner..', @plate, @props, @'..stored..', @job, @'..garage_id..', @'..type_..')'
+                query = 'INSERT INTO '..vehicletable..' ('..owner..', plate, '..vehiclemod..', `'..stored..'`, job, '..garage_id..', `'..type_..'`, `vehicle`,`hash`, `citizenid`) VALUES (@'..owner..', @plate, @props, @'..stored..', @job, @'..garage_id..', @'..type_..', @vehicle, @hash, @citizenid)'
                 var = {
                     ['@'..owner..'']   = xPlayer.identifier,
                     ['@plate']   = props.plate:upper(),
@@ -215,7 +206,10 @@ function Buy(result,xPlayer,model, props, payment, job, type, garage, notregiste
                     ['@'..stored..''] = 1,
                     ['@job'] = job,
                     ['@'..garage_id..''] = garage,
-                    ['@'..type_..''] = type
+                    ['@'..type_..''] = type,
+                    ['@vehicle'] = model,
+                    ['@hash'] = tostring(GetHashKey(model)),
+                    ['@citizenid'] = xPlayer.citizenid,
                 }
             end
             CustomsSQL(Config.Mysql,'execute',query,var)
