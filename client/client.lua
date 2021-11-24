@@ -1246,6 +1246,20 @@ end
 
 local loading = false
 downloading = false
+
+GetClosestVehicle = function(coord,distance)
+    local entity = 0
+    local nearest = -1
+    for k,vehicle in pairs(GetGamePool('CVehicle')) do
+        local dist = #(GetEntityCoords(vehicle) - coord)
+        if dist < distance and nearest == -1 or nearest > dist then
+            nearest = dist
+            entity = vehicle
+        end
+    end
+    return entity
+end
+
 function SpawnVehicleLocal(model)
     if downloading or not IsModelInCdimage(model) then return end
     local ped = PlayerPedId()
