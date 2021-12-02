@@ -5254,3 +5254,7 @@ Config.Vehicles = {
 		['shop'] = 'pdm',
 	},
 }
+
+exports('VehiclesTable', function()
+    return Config.Vehicles
+end)
