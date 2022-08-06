@@ -441,6 +441,8 @@ function SetVehicleProp(vehicle, props)
 		if props.engineHealth then SetVehicleEngineHealth(vehicle, props.engineHealth + 0.0) end
 		if props.tankHealth then SetVehiclePetrolTankHealth(vehicle, props.tankHealth + 0.0) end
 		if props.dirtLevel then SetVehicleDirtLevel(vehicle, props.dirtLevel + 0.0) end
+		--If you are using QBCore in your new version, you must comment out line 446 and 447 (rgb and rgb2).
+		--This solves the problem of being able to change the color of the vehicle once purchased
 		if props.rgb then SetVehicleCustomPrimaryColour(vehicle, props.rgb[1], props.rgb[2], props.rgb[3]) end
 		if props.rgb2 then SetVehicleCustomSecondaryColour(vehicle, props.rgb2[1], props.rgb2[2], props.rgb2[3]) end
 		if props.color1 then SetVehicleColours(vehicle, props.color1, colorSecondary) end
