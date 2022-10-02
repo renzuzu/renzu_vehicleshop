@@ -41,9 +41,9 @@ local NumberCharset = {}
 for i = 48,  57 do table.insert(NumberCharset, string.char(i)) end
 
 function Deleteveh(plate,src)
-    local plate = tostring(plate)
+    local plate = string.gsub(plate, '^%s*(.-)%s*$', '%1')
     if plate and type(plate) == 'string' then
-        CustomsSQL(Config.Mysql,'execute','DELETE FROM '..vehicletable..' WHERE TRIM(UPPER(plate)) = @plate',{['@plate'] = string.gsub(plate:upper(), ' ', '')})
+        CustomsSQL(Config.Mysql,'execute','DELETE FROM '..vehicletable..' WHERE TRIM(UPPER(plate)) = @plate',{['@plate'] = plate})
     else
         print('error not string - Delete Vehicle')
     end
@@ -287,3 +287,15 @@ function GetRandomNumber(length)
 		return ''
 	end
 end
+
+exports('GenPlate', function(plate)
+    return GenPlate(plate)
+end)
+
+exports('VehiclesList', function()
+    return Config.Vehicles
+end)
+
+exports('Deleteveh', function(plate)
+    return Deleteveh(plate)
+end)
