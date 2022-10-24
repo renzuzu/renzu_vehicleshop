@@ -1,6 +1,7 @@
 function Initialized()
 	if Config.framework == 'ESX' then
-		ESX = exports['es_extended']:getSharedObject()
+		ESX = nil
+		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 		RegisterServerCallBack_ = ESX.RegisterServerCallback
 		vehicletable = 'owned_vehicles'
 		vehiclemod = 'vehicle'
