@@ -30,7 +30,7 @@ Citizen.CreateThread(function()
         SetBlipColour (blip, v.Blip.color)
         SetBlipAsShortRange(blip, true)
         BeginTextCommandSetBlipName('STRING')
-        AddTextComponentSubstringPlayerName("Vehicle Shop: "..v.name.."")
+        AddTextComponentSubstringPlayerName(""..v.name.."")
         EndTextCommandSetBlipName(blip)
     end
 end)
@@ -100,7 +100,7 @@ function Marker(vec,msg,event,server,dist)
     while #(vec - GetEntityCoords(PlayerPedId())) < dist and neargarage do
         Wait(0)
         DrawMarker(36, vec ,0,0,0,0,0,2.0,2.0,2.0,1.0,255, 255, 220,200,0,0,0,1)
-        ShowFloatingHelpNotification("Press [E] "..msg,vec,r)
+        ShowFloatingHelpNotification("~INPUT_CONTEXT~ "..msg,vec,r)
         if IsControlJustReleased(0,38) then
             if not server then
                 TriggerEvent(event)
@@ -142,7 +142,7 @@ CreateThread(function()
                     if dist < v.Dist and inveh then
                         neargarage = true
                         if Config.Marker then
-                            Marker(vec,"Sell Vehicle",'renzu_vehicleshop:sellvehicle',true,3)
+                            Marker(vec,"Prodat vozidlo",'renzu_vehicleshop:sellvehicle',true,3)
                         else
                             PopUI(v.title or v.name,vec,"renzu_vehicleshop:sellvehicle",Config.RefundPercent,true)
                         end
@@ -367,8 +367,8 @@ AddEventHandler('vehicleshop', function()
         local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
         if not DoesEntityExist(vehiclenow) then
             if dist <= v.Dist and job then
-                if Config.Licensed and not Config.framework == 'QBCORE' then
-                    TriggerServerCallback_('esx_license:checkLicense', function(cb)
+                if Config.Licensed and Config.framework ~= 'QBCORE' then -- odstranena podminka pro QBCORE
+                    TriggerServerCallback_('esx_license:checkLicense', function(cb) 
                         if cb then
                             if PlayerData.job.name == v.job then
                                 jobcar = v.job
@@ -380,7 +380,7 @@ AddEventHandler('vehicleshop', function()
                             shopcoords = vector3(v.shop_x,v.shop_y,v.shop_z)
                             OpenShop(k)
                         else
-                            ShowNotification("You Dont have a drivers licensed")
+                            ShowNotification("NEMATE RIDICSKY PRUKAZ!")
                         end
                     end, GetPlayerServerId(PlayerId()), 'drive')
                 else
@@ -1417,7 +1417,7 @@ function BuyVehicle(data,notregister)
 
                 LastVehicleFromGarage = nil
                 CloseNui()
-                ShowNotification("Purchase Success: Plate: "..props.plate.."")
+                ShowNotification("Nákup proběhl úspěšně: SPZ: "..props.plate.."")
                 SetEntityAlpha(v, 255, false)
                 TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
                 i = 0
