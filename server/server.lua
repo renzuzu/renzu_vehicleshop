@@ -41,9 +41,9 @@ local NumberCharset = {}
 for i = 48,  57 do table.insert(NumberCharset, string.char(i)) end
 
 function Deleteveh(plate,src)
-    local plate = string.gsub(plate, '^%s*(.-)%s*$', '%1')
+    local plate = tostring(plate)
     if plate and type(plate) == 'string' then
-        CustomsSQL(Config.Mysql,'execute','DELETE FROM '..vehicletable..' WHERE TRIM(UPPER(plate)) = @plate',{['@plate'] = plate})
+        CustomsSQL(Config.Mysql,'execute','DELETE FROM '..vehicletable..' WHERE TRIM(UPPER(plate)) = @plate',{['@plate'] = string.gsub(plate:upper(), '^%s*(.-)%s*$', '%1')})
     else
         print('error not string - Delete Vehicle')
     end
@@ -71,15 +71,15 @@ AddEventHandler('renzu_vehicleshop:sellvehicle', function()
                     end
                     Deleteveh(plate,xPlayer.source)
                     xPlayer.addMoney(price)
-                    xPlayer.showNotification('Vehicle has been Sold for ^g '..price..'',1,0,110)
+                    xPlayer.showNotification('Vozidlo bylo prodáno za '..price..'',1,0,110)
                     TriggerClientEvent('sellvehiclecallback',xPlayer.source)
                 end
         else
             print("EXPLOIT")
-            xPlayer.showNotification('Are you really sure this is the vehicle?',1,0,110)
+            xPlayer.showNotification('Jste si opravdu jistý, že je to to vozidlo?',1,0,110)
         end
     else
-        xPlayer.showNotification('You dont owned this vehicle',1,0,110)
+        xPlayer.showNotification('Toto vozidlo nevlastníte.',1,0,110)
         print("not owned")
     end
 end)
@@ -220,13 +220,13 @@ function Buy(result,xPlayer,model, props, payment, job, type, garage, notregiste
             --TriggerClientEvent('mycarkeys:setowned',xPlayer.source,props.plate) -- sample
         else
             print("NOT ENOUGH MONEY")
-            xPlayer.showNotification('Not Enough Money',1,0,110)
+            xPlayer.showNotification('Nedostatek peněz.',1,0,110)
             fetchdone = true
             bool = false
         end
     else
         print("VEHICLE NOT IN DATABASE or CONFIG")
-        xPlayer.showNotification('Vehicle does not Exist',1,0,110)
+        xPlayer.showNotification('Vozidlo neexistuje.',1,0,110)
         fetchdone = true
         bool = false
     end
@@ -287,15 +287,3 @@ function GetRandomNumber(length)
 		return ''
 	end
 end
-
-exports('GenPlate', function(plate)
-    return GenPlate(plate)
-end)
-
-exports('VehiclesList', function()
-    return Config.Vehicles
-end)
-
-exports('Deleteveh', function(plate)
-    return Deleteveh(plate)
-end)
