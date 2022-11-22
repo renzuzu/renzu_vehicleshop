@@ -22,6 +22,7 @@ brand = nil
 shoptype = nil
 Citizen.CreateThread(function()
     Framework()
+    Playerloaded()
     for k, v in pairs (VehicleShop) do
         local blip = AddBlipForCoord(v.shop_x, v.shop_y, v.shop_z)
         SetBlipSprite (blip, v.Blip.sprite)
@@ -34,8 +35,6 @@ Citizen.CreateThread(function()
         EndTextCommandSetBlipName(blip)
     end
 end)
-
-Playerloaded()
 
 RegisterNetEvent('renzu_vehicleshop:manage')
 AddEventHandler('renzu_vehicleshop:manage', function(xPlayer)
@@ -361,6 +360,7 @@ AddEventHandler('vehicleshop', function()
     jobcar = false
     for k,v in pairs(VehicleShop) do
         local job = true
+        print(PlayerData.job,v.job)
         if PlayerData.job.name ~= v.job and v.job ~= 'all' then
             job = false
         end

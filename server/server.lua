@@ -198,15 +198,14 @@ function Buy(result,xPlayer,model, props, payment, job, type, garage, notregiste
                 ['@'..type_..''] = type
             }
             if Config.framework == 'QBCORE' then
-                query = 'INSERT INTO '..vehicletable..' ('..owner..', plate, '..vehiclemod..', `'..stored..'`, job, '..garage_id..', `'..type_..'`, `vehicle`,`hash`, `citizenid`) VALUES (@'..owner..', @plate, @props, @'..stored..', @job, @'..garage_id..', @'..type_..', @vehicle, @hash, @citizenid)'
+                query = 'INSERT INTO '..vehicletable..' ('..owner..', plate, '..vehiclemod..', `'..stored..'`, job, '..garage_id..', `'..type_..'`, `hash`, `citizenid`) VALUES (@'..owner..', @plate, @props, @'..stored..', @job, @'..garage_id..', @vehicle, @hash, @citizenid)'
                 var = {
                     ['@'..owner..'']   = xPlayer.identifier,
                     ['@plate']   = props.plate:upper(),
                     ['@props'] = data,
                     ['@'..stored..''] = 1,
                     ['@job'] = job,
-                    ['@'..garage_id..''] = garage,
-                    ['@'..type_..''] = type,
+                    ['@'..garage_id..''] = 'pillboxgarage',
                     ['@vehicle'] = model,
                     ['@hash'] = tostring(GetHashKey(model)),
                     ['@citizenid'] = xPlayer.citizenid,
@@ -215,7 +214,7 @@ function Buy(result,xPlayer,model, props, payment, job, type, garage, notregiste
             CustomsSQL(Config.Mysql,'execute',query,var)
             fetchdone = true
             bool = true
-            print("BUY DONE")
+            print("BUY DONE",props.plate,xPlayer.source)
             Config.Carkeys(props.plate,xPlayer.source)
             --TriggerClientEvent('mycarkeys:setowned',xPlayer.source,props.plate) -- sample
         else
@@ -234,6 +233,20 @@ function Buy(result,xPlayer,model, props, payment, job, type, garage, notregiste
     print("SENDING TO CLIENT SUCCESS")
     return bool
 end
+
+local Charset = {}
+for i = 65,  90 do table.insert(Charset, string.char(i)) end
+for i = 97, 122 do table.insert(Charset, string.char(i)) end
+local temp = {}
+CreateThread(function()
+    Wait(1000)
+    local vehicles = CustomsSQL(Config.Mysql,'fetchAll','SELECT * FROM '..vehicletable..'',{})
+    for k,v in pairs(vehicles) do
+        if v.plate ~= nil then
+            temp[v.plate] = v
+        end
+    end
+end)
 
 function GetRandomLetter(length)
 	math.randomseed(GetGameTimer())
