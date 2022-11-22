@@ -1140,19 +1140,21 @@ overflow-x: hidden;
         .main-menu {
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
-    top: -3.3%;
+    top: 2%;
     bottom: 0;
     height: 100%;
     right: 25%;
-    width: 55px;
+    width: 100%;
     /* margin-left: 66%; */
-    height: 36.6vh;
+    height: 50vh;
     overflow: hidden;
     -webkit-transition: width .2s linear;
     transition: width .2s linear;
     -webkit-transform: translateZ(0) scale(1,1);
     opacity: 1;
     position: absolute;
+    left: 2%;
+    border-radius: 1%;
     }
         
         .main-menu>ul {
@@ -1161,15 +1163,14 @@ overflow-x: hidden;
         }
         
         .main-menu li {
-        position:relative;
-        display:block;
+        position:
+        relative;
+        display:
+        block;
         width:250px;
-          
-        
-        
         }
         
-        .main-menu li>a {position:relative;width:255px;display:table;/* border-collapse:collapse; */border-spacing:0;color: #d6d6d6;font-size: 13px;text-decoration:none;-webkit-transform:translateZ(0) scale(1,1);-webkit-transition:all .14s linear;transition:all .14s linear;font-family: 'Strait', sans-serif;border-top: 1px solid #737373;text-shadow: 1px 1px 1px #848484;}
+        .main-menu li>a {position:relative;width:255px;display:table;/* border-collapse:collapse; */border-spacing:0;color: #d6d6d6;font-size: 13px;text-decoration:none;-webkit-transform:translateZ(0) scale(1,1);-webkit-transition:all .14s linear;transition:all .14s linear;font-family: 'Strait', sans-serif;border-top: 1px solid #343434;text-shadow: 1px 1px 1px #848484;padding: 15px;}
         
         
         
@@ -1279,7 +1280,7 @@ overflow-x: hidden;
         {background-color: #0a0a0a;text-transform:capitalize;}
         
         .darkerlishadow
-        {background-color: #00000085;text-transform:capitalize;-webkit-box-shadow: inset 0px 5px 5px -4px rgba(50, 50, 50, 0.55);-moz-box-shadow:    inset 0px 5px 5px -4px rgba(50, 50, 50, 0.55);box-shadow:         inset 0px 5px 5px -4px rgba(50, 50, 50, 0.55);}
+        {background-color: #040404c7;text-transform:capitalize;-webkit-box-shadow: inset 0px 5px 5px -4px rgba(50, 50, 50, 0.55);-moz-box-shadow:    inset 0px 5px 5px -4px rgba(50, 50, 50, 0.55);box-shadow:         inset 0px 5px 5px -4px rgba(50, 50, 50, 0.55);}
         
         
         .darkerlishadowdown
