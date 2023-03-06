@@ -51,9 +51,7 @@ window.addEventListener('message', function(event) {
     if (event.data.type == "categories"  && event.data.shoptype !== 'car') {
         categories = event.data.cats
         $('#category').empty();
-        //console.log(categories)
         for(var [k,v] of Object.entries(categories)){
-            //console.log(k,v)
             $('#category').append(`</li>
             <li class="darkerlishadow">
             <a onclick="changecategory('`+k+`','`+v+`');">
@@ -66,13 +64,11 @@ window.addEventListener('message', function(event) {
     if (event.data.type == "brands" && event.data.shoptype == 'car') {
         brands = event.data.brands
         $('#brands').empty();
-        //console.log(categories)
         for(var [k,v] of Object.entries(brands)){
-            //console.log(k,v)
             $('#brands').append(`</li>
             <li class="darkerlishadow">
             <a onclick="changebrands('`+k+`','`+v+`');">
-            <i class="fas"><img src="brands/`+k+`.png" onerror="this.src='https://ui-avatars.com/api/?name=`+k+`&background=000000&color=fff'"  style="height:20px;"></i>
+            <i class="fas"><img src="brands/`+k+`.png" onerror="this.src='https://ui-avatars.com/api/?name=`+k+`&background=000000&color=fff'"  style="height:20px;    max-width: 20px;"></i>
             <span class="nav-text">`+k+`</span>
             </a>
             </li>`)
@@ -217,7 +213,7 @@ $(document).ready(function() {
     </div>\
     <div id="closemenu" class="modal" style="background-color:#050505c5 !important; color:#fff;">\
   </div>\
-    <div class="middle-left-container" style="/* display:none; */position: absolute;top: 0%;left: 1%;width: auto;">\
+    <div class="middle-left-container" style="/* display:none; */position: absolute;top: 0%;left: 35%;width: auto;">\
     <div class="column" style="display:block;" id="nameBrand">\
     </div>\
     <div class="column" id="vehicleclass">\
