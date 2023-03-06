@@ -360,7 +360,6 @@ AddEventHandler('vehicleshop', function()
     jobcar = false
     for k,v in pairs(VehicleShop) do
         local job = true
-        print(PlayerData.job,v.job)
         if PlayerData.job.name ~= v.job and v.job ~= 'all' then
             job = false
         end
@@ -687,26 +686,25 @@ RegisterNUICallback("choosebrands", function(data, cb)
         for k2,v in pairs(v2) do
             if data.brand == v.brand and IsModelInCdimage(GetHashKey(v.model)) then
                 cars = cars + 1
-                cats[v.category] = true
+                cats[v.brand] = true
                 if vehtable[v.name] == nil then
                     vehtable[v.name] = {}
                 end
-                veh = 
-                {
-                brand = v.brand,
-                category = v.category,
-                image = v.image,
-                name = v.name,
-                brake = v.brake,
-                handling = v.handling,
-                topspeed = v.topspeed,
-                power = v.power,
-                torque = v.torque,
-                model = v.model,
-                model2 = v.model2,
-                name = v.name,
-                price = v.price,
-                shop = v.shop,
+                veh = {
+                    brand = v.brand,
+                    category = v.category,
+                    image = v.image,
+                    name = v.name,
+                    brake = v.brake,
+                    handling = v.handling,
+                    topspeed = v.topspeed,
+                    power = v.power,
+                    torque = v.torque,
+                    model = v.model,
+                    model2 = v.model2,
+                    name = v.name,
+                    price = v.price,
+                    shop = v.shop,
                 }
                 table.insert(vehtable[v.name], veh)
             end
@@ -872,9 +870,9 @@ PopulateVehicleshop = function(k)
     local gstate = GlobalState and GlobalState.VehicleImages
     for _,value in pairs(tb) do
         --local props = json.decode(value.vehicle)
-        local vehicleModel = GetHashKey(value.model)
+        local vehicleModel = joaat(value.model)
         if IsModelInCdimage(vehicleModel) then
-            if not Vehicles[value.category] then Vehicles[value.category] = {} end
+            if not Vehicles[value.brand] then Vehicles[value.brand] = {} end
             if shoptype ~= 'car' then
                 cats[value.category] = value.shop
             end
@@ -895,7 +893,7 @@ PopulateVehicleshop = function(k)
                 pmult,tmult,handling, brake = 10,8,GetPerformanceStats(vehicleModel).handling * 0.1, GetPerformanceStats(vehicleModel).brakes * 0.1
             end
             local img = 'https://cfx-nui-renzu_vehicleshop/imgs/uploads/'..value.model..'.jpg'
-            local hashmodel = GetHashKey(value.model)
+            local hashmodel = joaat(value.model)
             if Config.CustomImg and not Config.use_renzu_vehthumb then
                 img = value[Config.CustomImgColumn]
             elseif Config.use_renzu_vehthumb and gstate[tostring(hashmodel)] then
@@ -917,7 +915,7 @@ PopulateVehicleshop = function(k)
                 name = value.name,
                 shop = value.shop
             }
-            table.insert(Vehicles[value.category], VTable)
+            table.insert(Vehicles[value.brand], VTable)
         end
     end
     SendNUIMessage(
@@ -926,11 +924,11 @@ PopulateVehicleshop = function(k)
         }
     )
     Wait(1000)
-    SendNUIMessage({
-        cats = cats,
-        type = "categories",
-        shoptype = shoptype
-    })
+    -- SendNUIMessage({
+    --     cats = cats,
+    --     type = "categories",
+    --     shoptype = shoptype
+    -- })
     SendNUIMessage({
         brands = brands,
         type = "brands",
