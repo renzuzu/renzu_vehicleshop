@@ -103,25 +103,20 @@ RegisterServerCallBack_('renzu_vehicleshop:GenPlate', function (source, cb, pref
 end)
 
 RegisterServerCallBack_('renzu_vehicleshop:buyvehicle', function (source, cb, model, props, payment, job, type, garage, notregister)
-    print("BUYING START",model)
     local source = source
 	local xPlayer = GetPlayerFromId(source)
     --print(type)
     if not job and type == 'car' and not notregister then
-        print("BUYING VEHICLES SAVED FROM Cofnig vehicles tables")
         cb(Buy({[1] = Config.Vehicles[model]},xPlayer,model, props, payment, job, type , garage))
     elseif notregister then
-        print('DISPLAY',model, props)
         cb(Buy(true,xPlayer,model, props, payment or 'cash', job or 'civ', type or 'car' , garage or 'A' or false, notregister))
     else
-        print("BUYING CUSTOM CARS FROM CONFIG SHOP")
         for k,v in pairs(VehicleShop) do
             local actualShop = v
             if v.job == job then
                 local result = {}
                 for k,v in pairs(v.shop) do
                     if v.model:lower() == model:lower() then
-                        print("FOUND A MATCHING MODEL")
                         result[1] = {}
                         result[1].model = v.model
                         result[1].price = v.price
@@ -134,10 +129,7 @@ RegisterServerCallBack_('renzu_vehicleshop:buyvehicle', function (source, cb, mo
                 local result = {}
                 if v.shop then
                     for k,v in pairs(v.shop) do
-                        --print(model)
                         if v.model:lower() == model:lower() then
-                            --print(model)
-                            print("FOUND A MATCHING MODEL")
                             result[1] = {}
                             result[1].model = v.model
                             result[1].price = v.price
