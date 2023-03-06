@@ -4,17 +4,18 @@ ui_page 'html/index.html'
 lua54 'yes'
 use_fxv2_oal 'yes'
 
-server_scripts {
-	'@mysql-async/lib/MySQL.lua',	
+shared_scripts {
 	'config.lua',
 	'vehicles.lua',
+}
+
+server_scripts {
+	'@mysql-async/lib/MySQL.lua',	
 	'framework/sv_wrapper.lua',
 	'server/server.lua'
 }
 
 client_scripts {
-	'config.lua',
-	'vehicles.lua',
 	'framework/cl_wrapper.lua',
 	'client/client.lua',
 }
