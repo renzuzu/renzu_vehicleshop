@@ -928,7 +928,7 @@ PopulateVehicleshop = function(k)
         if IsModelInCdimage(vehicleModel) then
             if not Vehicles[value.brand] then Vehicles[value.brand] = {} end
             if shoptype ~= 'car' then
-                cats[value.category] = value.shop
+                cats[value.brand] = value.shop
             end
             if shoptype == 'car' and value.brand ~= nil then
                 brands[value.brand] = value.shop

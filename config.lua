@@ -72,10 +72,10 @@ VehicleShop = {
         heading = 2.6015937328339, -- Vehicle spawn location
         plateprefix = 'LSPD', -- carefull using this, maximum should be 4, recommended is 3, use this only for limited vehicles, if you use this parameter in other shop, you might have a limited plates available, ex. LSPD1234 (max char of plate is 8) it means you only have 9999 vehicles possible with this LSPD
         shop = { -- if not vehicle is setup in Database SQL, we will use this
-            {shop='Police Vehicle Shop',category='Police Sedan',stock=50,price=100000,model='police',name="Police Car", grade = 1},
-            {shop='Police Vehicle Shop',category='Police Sedan',stock=50,price=100000,model='police2',name="Police 2", grade = 1},
-            {shop='Police Vehicle Shop',category='Police Sedan',stock=50,price=100000,model='police4',name="Police 4", grade = 3},
-            {shop='Police Vehicle Shop',category='Police SUVs',stock=50,price=100000,model='police3',name="Police SUV",grade = 5},
+            {shop='Police Vehicle Shop',brand='Police Sedan',stock=50,price=100000,model='police',name="Police Car", grade = 1},
+            {shop='Police Vehicle Shop',brand='Police Sedan',stock=50,price=100000,model='police2',name="Police 2", grade = 1},
+            {shop='Police Vehicle Shop',brand='Police Sedan',stock=50,price=100000,model='police4',name="Police 4", grade = 3},
+            {shop='Police Vehicle Shop',brand='Police SUVs',stock=50,price=100000,model='police3',name="Police SUV",grade = 5},
         },
     },
 
@@ -97,14 +97,14 @@ VehicleShop = {
         spawn_z = 0.12045155465603,
         heading = 178.27006530762, -- Vehicle spawn location
         shop = { -- if not vehicle is setup in Database SQL, we will use this
-            {shop='Yacht Club Boat Shop',category='Normal Boat',stock=50,price=50000,model='dinghy',name="Dinghy"},
-            {shop='Yacht Club Boat Shop',category='Normal Boat',stock=50,price=100000,model='dinghy2',name="Dinghy2"},
-            {shop='Yacht Club Boat Shop',category='Normal Boat',stock=50,price=100000,model='dinghy3',name="Dinghy 3"},
-            {shop='Yacht Club Boat Shop',category='Normal Boat',stock=50,price=100000,model='dinghy4',name="Dinghy4"},
-            {shop='Yacht Club Boat Shop',category='Rich Boat',stock=50,price=100000,model='marquis',name="Marquiz"},
-            {shop='Yacht Club Boat Shop',category='Rich Boat',stock=50,price=100000,model='toro2',name="Toro 2"},
-            {shop='Yacht Club Boat Shop',category='Submarine',stock=50,price=100000,model='submersible',name="Submersible"},
-            {shop='Yacht Club Boat Shop',category='Submarine',stock=50,price=100000,model='submersible2',name="Submersible2"},
+            {shop='Yacht Club Boat Shop',brand='Normal Boat',stock=50,price=50000,model='dinghy',name="Dinghy"},
+            {shop='Yacht Club Boat Shop',brand='Normal Boat',stock=50,price=100000,model='dinghy2',name="Dinghy2"},
+            {shop='Yacht Club Boat Shop',brand='Normal Boat',stock=50,price=100000,model='dinghy3',name="Dinghy 3"},
+            {shop='Yacht Club Boat Shop',brand='Normal Boat',stock=50,price=100000,model='dinghy4',name="Dinghy4"},
+            {shop='Yacht Club Boat Shop',brand='Rich Boat',stock=50,price=100000,model='marquis',name="Marquiz"},
+            {shop='Yacht Club Boat Shop',brand='Rich Boat',stock=50,price=100000,model='toro2',name="Toro 2"},
+            {shop='Yacht Club Boat Shop',brand='Submarine',stock=50,price=100000,model='submersible',name="Submersible"},
+            {shop='Yacht Club Boat Shop',brand='Submarine',stock=50,price=100000,model='submersible2',name="Submersible2"},
         },
     },
     -- PLANE SHOP
@@ -125,14 +125,14 @@ VehicleShop = {
         spawn_z = 14.783501625061,
         heading = 54.631553649902, -- Vehicle spawn location
         shop = { -- if not vehicle is setup in Database SQL, we will use this
-            {shop='DEVIN WESTON PLANE SHOP',category='Military',stock=50,price=50000,model='hydra',name="Hydra"},
-            {shop='DEVIN WESTON PLANE SHOP',category='Military',stock=50,price=100000,model='titan',name="Titan"},
-            {shop='DEVIN WESTON PLANE SHOP',category='Private Plane',stock=50,price=100000,model='luxor2',name="Luxor 2"},
-            {shop='DEVIN WESTON PLANE SHOP',category='Private Plane',stock=50,price=100000,model='luxor',name="Luxor"},
-            {shop='DEVIN WESTON PLANE SHOP',category='Private Plane',stock=50,price=100000,model='nimbus',name="Nimbus"},
-            {shop='DEVIN WESTON PLANE SHOP',category='Propeller Type',stock=50,price=100000,model='dodo',name="Dodo"},
-            {shop='DEVIN WESTON PLANE SHOP',category='Propeller Type',stock=50,price=100000,model='duster',name="Duster"},
-            {shop='DEVIN WESTON PLANE SHOP',category='Propeller Type',stock=50,price=100000,model='nokota',name="Nokota"},
+            {shop='DEVIN WESTON PLANE SHOP',brand='Military',stock=50,price=50000,model='hydra',name="Hydra"},
+            {shop='DEVIN WESTON PLANE SHOP',brand='Military',stock=50,price=100000,model='titan',name="Titan"},
+            {shop='DEVIN WESTON PLANE SHOP',brand='Private Plane',stock=50,price=100000,model='luxor2',name="Luxor 2"},
+            {shop='DEVIN WESTON PLANE SHOP',brand='Private Plane',stock=50,price=100000,model='luxor',name="Luxor"},
+            {shop='DEVIN WESTON PLANE SHOP',brand='Private Plane',stock=50,price=100000,model='nimbus',name="Nimbus"},
+            {shop='DEVIN WESTON PLANE SHOP',brand='Propeller Type',stock=50,price=100000,model='dodo',name="Dodo"},
+            {shop='DEVIN WESTON PLANE SHOP',brand='Propeller Type',stock=50,price=100000,model='duster',name="Duster"},
+            {shop='DEVIN WESTON PLANE SHOP',brand='Propeller Type',stock=50,price=100000,model='nokota',name="Nokota"},
         },
     },
 }
