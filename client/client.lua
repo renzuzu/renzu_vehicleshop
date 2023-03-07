@@ -113,45 +113,99 @@ function Marker(vec,msg,event,server,dist)
     end
 end
 
+local garageped = nil
+local targetid = nil
+AddTarget = function(data)
+	function onEnter(self)
+		local model = `cs_jimmydisanto`
+		lib.requestModel(model)
+		garageped = CreatePed(4,model,self.coords.x,self.coords.y,self.coords.z,0.0,false,true)
+		while not DoesEntityExist(garageped) do Wait(0) end
+		SetPedConfigFlag(garageped,17,true)
+		TaskTurnPedToFaceEntity(garageped,cache.ped,-1)
+		local options = {
+			{
+				name = data.id,
+				onSelect = function()
+					TriggerEvent(data.event)
+				end,
+				icon = 'fas fa-warehouse',
+				label = data.label,
+			}
+		}
+        targetid = exports.ox_target:addLocalEntity(garageped, options)
+	end
+	
+	function onExit(self)
+		DeleteEntity(garageped)
+		if targetid then
+			exports.ox_target:removeZone(targetid)
+		end
+	end
+	
+	function inside(self)
+        local coord = GetEntityCoords(garageped)
+		DrawMarker(1, coord.x, coord.y, coord.z-0.4, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 1.0, 1.0, 1.0, 200, 255, 255, 50, false, true, 2, nil, nil, false)
+	end
+	lib.zones.box({
+		coords = vec3(data.coord.x,data.coord.y,data.coord.z),
+		size = vec3(9, 9, 9),
+		rotation = 45,
+		debug = false,
+		inside = inside,
+		onEnter = onEnter,
+		onExit = onExit
+	})
+end
+
 CreateThread(function()
-    if Config.UsePopUI then
-        while true do
-            neargarage = false
-            for k,v in pairs(VehicleShop) do
-                local vec = vector3(v.shop_x,v.shop_y,v.shop_z)
-                local inveh = IsPedInAnyVehicle(PlayerPedId())
-                local dist = #(vec - GetEntityCoords(PlayerPedId()))
-                if dist < v.Dist and not inveh then
+    TryOxLib('init')
+    local hastarget = false
+    for k,v in pairs(VehicleShop) do
+        local vec = vector3(v.shop_x,v.shop_y,v.shop_z)
+        local inveh = IsPedInAnyVehicle(PlayerPedId())
+        local dist = #(vec - GetEntityCoords(PlayerPedId()))
+        if GetResourceState('ox_target') == 'started' and GetResourceState('ox_lib') == 'started' then
+            AddTarget({coord = vec, id = 'vehicleshop:'..k, label = v.title, event = 'vehicleshop'})
+            hastarget = true
+        end
+    end
+    while not hastarget do
+        neargarage = false
+        for k,v in pairs(VehicleShop) do
+            local vec = vector3(v.shop_x,v.shop_y,v.shop_z)
+            local inveh = IsPedInAnyVehicle(PlayerPedId())
+            local dist = #(vec - GetEntityCoords(PlayerPedId()))
+            if dist < v.Dist and not inveh then
+                neargarage = true
+                if Config.Marker then
+                    Marker(vec,v.title,'vehicleshop',false,v.Dist)
+                elseif Config.UsePopUI then
+                    PopUI(v.title or v.name,vec,"vehicleshop")
+                end
+            end
+        end
+
+        for k,v in pairs(Refund) do
+            local vec = vector3(v.shop_x,v.shop_y,v.shop_z)
+            local dist = #(vec - GetEntityCoords(PlayerPedId()))
+            local inveh = IsPedInAnyVehicle(PlayerPedId())
+            while dist < v.Dist * 2 and inveh do
+                dist = #(vec - GetEntityCoords(PlayerPedId()))
+                DrawMarker(1, vec ,0,0,0,0,0,2.0,2.0,2.0,1.0,255, 102, 0,200,0,0,0,1)
+                if dist < v.Dist and inveh then
                     neargarage = true
                     if Config.Marker then
-                        Marker(vec,v.title,'vehicleshop',false,v.Dist)
-                    else
-                        PopUI(v.title or v.name,vec,"vehicleshop")
+                        Marker(vec,"Sell Vehicle",'renzu_vehicleshop:sellvehicle',true,3)
+                    elseif Config.UsePopUI then
+                        PopUI(v.title or v.name,vec,"renzu_vehicleshop:sellvehicle",Config.RefundPercent,true)
                     end
+                    break
                 end
+                Wait(0)
             end
-
-            for k,v in pairs(Refund) do
-                local vec = vector3(v.shop_x,v.shop_y,v.shop_z)
-                local dist = #(vec - GetEntityCoords(PlayerPedId()))
-                local inveh = IsPedInAnyVehicle(PlayerPedId())
-                while dist < v.Dist * 2 and inveh do
-                    dist = #(vec - GetEntityCoords(PlayerPedId()))
-                    DrawMarker(1, vec ,0,0,0,0,0,2.0,2.0,2.0,1.0,255, 102, 0,200,0,0,0,1)
-                    if dist < v.Dist and inveh then
-                        neargarage = true
-                        if Config.Marker then
-                            Marker(vec,"Sell Vehicle",'renzu_vehicleshop:sellvehicle',true,3)
-                        else
-                            PopUI(v.title or v.name,vec,"renzu_vehicleshop:sellvehicle",Config.RefundPercent,true)
-                        end
-                        break
-                    end
-                    Wait(0)
-                end
-            end
-            Wait(1000)
         end
+        Wait(1000)
     end
 end)
 

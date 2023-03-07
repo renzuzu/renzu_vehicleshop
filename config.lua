@@ -150,3 +150,16 @@ Refund = {
         shop_z = 25.91579246521, -- coordinates for selling / refunding the vehicle
     },
 }
+
+lib = nil
+
+function TryOxLib(file)
+    local fcall = function()
+        local name = ('%s.lua'):format(file)
+        local content = LoadResourceFile('ox_lib',name)
+        local f, err = load(content)
+        return f()
+    end
+    _, ret = pcall(fcall,false)
+    return ret
+end
