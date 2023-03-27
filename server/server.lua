@@ -80,7 +80,6 @@ AddEventHandler('renzu_vehicleshop:sellvehicle', function()
         end
     else
         xPlayer.showNotification('You dont owned this vehicle',1,0,110)
-        print("not owned")
     end
 end)
 
@@ -105,7 +104,6 @@ end)
 RegisterServerCallBack_('renzu_vehicleshop:buyvehicle', function (source, cb, model, props, payment, job, type, garage, notregister)
     local source = source
 	local xPlayer = GetPlayerFromId(source)
-    --print(type)
     if not job and type == 'car' and not notregister then
         cb(Buy({[1] = Config.Vehicles[model]},xPlayer,model, props, payment, job, type , garage))
     elseif notregister then
@@ -144,13 +142,13 @@ RegisterServerCallBack_('renzu_vehicleshop:buyvehicle', function (source, cb, mo
     end
 end)
 
+local temp = {}
+
 function Buy(result,xPlayer,model, props, payment, job, type, garage, notregister)
     fetchdone = false
     bool = false
     model = model
-    --print(notregister," FUNCTION  BUY",model,notregister,garage,type,job,payment,props)
     if result then
-        print("RESULT FETCHED")
         local price = nil
         local stock = nil
         if not notregister then
@@ -169,7 +167,6 @@ function Buy(result,xPlayer,model, props, payment, job, type, garage, notregiste
         end
         stock = 999      
         if money then
-            --print("MONEY CONDITION",price,props,xPlayer.getMoney(),xPlayer.citizenid)
             if payment == 'cash' then
                 xPlayer.removeMoney(tonumber(price))
             elseif payment == 'bank' then
@@ -206,8 +203,8 @@ function Buy(result,xPlayer,model, props, payment, job, type, garage, notregiste
             CustomsSQL(Config.Mysql,'execute',query,var)
             fetchdone = true
             bool = true
-            print("BUY DONE",props.plate,xPlayer.source)
             Config.Carkeys(props.plate,xPlayer.source)
+            temp[props.plate] = true
             --TriggerClientEvent('mycarkeys:setowned',xPlayer.source,props.plate) -- sample
         else
             print("NOT ENOUGH MONEY")
@@ -222,14 +219,12 @@ function Buy(result,xPlayer,model, props, payment, job, type, garage, notregiste
         bool = false
     end
     while not fetchdone do Wait(0) end
-    print("SENDING TO CLIENT SUCCESS")
     return bool
 end
 
 local Charset = {}
 for i = 65,  90 do table.insert(Charset, string.char(i)) end
 for i = 97, 122 do table.insert(Charset, string.char(i)) end
-local temp = {}
 CreateThread(function()
     Wait(1000)
     local vehicles = CustomsSQL(Config.Mysql,'fetchAll','SELECT * FROM '..vehicletable..'',{})
@@ -256,7 +251,6 @@ function GenPlate(prefix)
         return plate
     end
     Wait(1)
-    print(plate)
     return GenPlate(prefix)
 end
 
@@ -285,7 +279,7 @@ function NumRand()
 end
 
 function GetRandomNumber(length)
-	math.randomseed(GetGameTimer())
+	math.randomseed(os.time()+math.random(19999,999999))
 	if length > 0 then
 		return GetRandomNumber(length - 1) .. NumberCharset[math.random(1, #NumberCharset)]
 	else
