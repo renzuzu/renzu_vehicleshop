@@ -414,7 +414,7 @@ AddEventHandler('vehicleshop', function()
     jobcar = false
     for k,v in pairs(VehicleShop) do
         local job = true
-        if PlayerData.job.name ~= v.job and v.job ~= 'all' then
+        if PlayerData?.job?.name ~= v.job and v.job ~= 'all' then
             job = false
         end
         local dist = #(vector3(v.shop_x,v.shop_y,v.shop_z) - GetEntityCoords(ped))
