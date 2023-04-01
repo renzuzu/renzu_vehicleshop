@@ -111,7 +111,7 @@ RegisterServerCallBack_('renzu_vehicleshop:buyvehicle', function (source, cb, mo
     else
         for k,v in pairs(VehicleShop) do
             local actualShop = v
-            if v.job == job then
+            if v.job == job and v.shop then
                 local result = {}
                 for k,v in pairs(v.shop) do
                     if v.model:lower() == model:lower() then
