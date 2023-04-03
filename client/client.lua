@@ -1104,6 +1104,10 @@ function OpenShop(id)
                     end
                     DrawLightWithRange(coord.x-4.0, coord.y-3.0, coord.z+ 0.3, 255,255,255, 40.0, 15.0)
                     DrawSpotLight(coord.x-4.0, coord.y+5.0, coord.z, coord, 255, 255, 255, 20.0, 1.0, 1.0, 20.0, 0.95)
+
+                    if not Config.UseArenaSpawn then
+                        NetworkOverrideClockTime(18, 0, 0)
+                    end
                 end
             end)
             while inGarage do
