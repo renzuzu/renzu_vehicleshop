@@ -24,4 +24,4 @@ ALTER TABLE owned_vehicles
 ADD `stored` tinyint(1) NOT NULL DEFAULT 1;
 
 ALTER TABLE owned_vehicles
-ADDt `type` varchar(32) NOT NULL DEFAULT 'car';
+ADD `type` varchar(32) NOT NULL DEFAULT 'car';
